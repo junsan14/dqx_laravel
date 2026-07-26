@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Equipment;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -23,6 +24,7 @@ class EquipmentController extends Controller
                     'id',
                     'item_id',
                     'item_name',
+                    'item_name_kana',
                     'item_name_en',
                     'group_id',
                     'group_name',
@@ -53,10 +55,14 @@ class EquipmentController extends Controller
         if ($request->filled('q')) {
             $q = trim((string) $request->q);
             $escaped = addcslashes($q, '\\%_');
+            $hiraganaQ = mb_convert_kana($q, 'c', 'UTF-8');
+            $katakanaQ = mb_convert_kana($q, 'C', 'UTF-8');
+            $escapedHiraganaQ = addcslashes($hiraganaQ, '\\%_');
+            $escapedKatakanaQ = addcslashes($katakanaQ, '\\%_');
             $searchWords = array_values(array_unique([
                 $q,
-                mb_convert_kana($q, 'C', 'UTF-8'),
-                mb_convert_kana($q, 'c', 'UTF-8'),
+                $katakanaQ,
+                $hiraganaQ,
             ]));
 
             $query->where(function ($sub) use ($searchWords) {
@@ -66,6 +72,7 @@ class EquipmentController extends Controller
 
                     $sub->{$method}(function ($wordQuery) use ($escapedWord) {
                         $wordQuery->where('item_name', 'like', "%{$escapedWord}%")
+                            ->orWhere('item_name_kana', 'like', "%{$escapedWord}%")
                             ->orWhere('item_name_en', 'like', "%{$escapedWord}%")
                             ->orWhere('item_id', 'like', "%{$escapedWord}%")
                             ->orWhere('group_name', 'like', "%{$escapedWord}%")
@@ -76,14 +83,27 @@ class EquipmentController extends Controller
                 ->orderByRaw(
                     "
                     CASE
-                        WHEN item_name = ? THEN 0
-                        WHEN item_name_en = ? THEN 0
-                        WHEN item_name LIKE ? THEN 1
-                        WHEN item_name_en LIKE ? THEN 1
+                        WHEN item_name = ?
+                            OR item_name_kana = ?
+                            OR item_name_kana = ?
+                            OR item_name_en = ? THEN 0
+                        WHEN item_name LIKE ?
+                            OR item_name_kana LIKE ?
+                            OR item_name_kana LIKE ?
+                            OR item_name_en LIKE ? THEN 1
                         ELSE 2
                     END
                     ",
-                    [$q, $q, $escaped . '%', $escaped . '%']
+                    [
+                        $q,
+                        $hiraganaQ,
+                        $katakanaQ,
+                        $q,
+                        $escaped . '%',
+                        $escapedHiraganaQ . '%',
+                        $escapedKatakanaQ . '%',
+                        $escaped . '%',
+                    ]
                 )
                 ->orderByRaw('LENGTH(COALESCE(item_name_en, item_name)) ASC');
         }
@@ -171,6 +191,9 @@ class EquipmentController extends Controller
         $jobOverrides = $validated['job_overrides'] ?? [];
         unset($validated['job_overrides']);
 
+        $itemNameKana = $validated['item_name_kana'] ?? null;
+        unset($validated['item_name_kana']);
+
         if (empty($validated['item_id'])) {
             $validated['item_id'] = $this->makeItemId(
                 $validated['item_name'],
@@ -186,6 +209,8 @@ class EquipmentController extends Controller
         }
 
         $equipment = Equipment::create($validated);
+        $equipment->item_name_kana = $itemNameKana;
+        $equipment->save();
 
         $this->syncJobOverrides($equipment, $jobOverrides);
 
@@ -215,6 +240,10 @@ class EquipmentController extends Controller
         $jobOverrides = $validated['job_overrides'] ?? [];
         unset($validated['job_overrides']);
 
+        $hasItemNameKana = array_key_exists('item_name_kana', $validated);
+        $itemNameKana = $validated['item_name_kana'] ?? null;
+        unset($validated['item_name_kana']);
+
         if (
             array_key_exists('item_id', $validated)
             && ($validated['item_id'] === null || $validated['item_id'] === '')
@@ -236,6 +265,11 @@ class EquipmentController extends Controller
         }
 
         $equipment->update($validated);
+
+        if ($hasItemNameKana) {
+            $equipment->item_name_kana = $itemNameKana;
+            $equipment->save();
+        }
 
         $this->syncJobOverrides($equipment, $jobOverrides);
 
@@ -276,6 +310,7 @@ class EquipmentController extends Controller
         $validated = $request->validate([
             'item_id' => ['nullable', 'string', 'max:255'],
             'item_name' => ['required', 'string', 'max:255'],
+            'item_name_kana' => ['nullable', 'string', 'max:255'],
             'item_name_en' => ['nullable', 'string', 'max:255'],
 
             'attack' => ['nullable', 'integer', 'min:0'],

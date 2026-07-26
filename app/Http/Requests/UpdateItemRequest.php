@@ -16,6 +16,8 @@ class UpdateItemRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'kana' => ['nullable', 'string', 'max:255'],
+            'name_kana' => ['nullable', 'string', 'max:255'],
+            'name_en' => ['nullable', 'string', 'max:255'],
             'slot' => ['nullable', 'string', 'max:255'],
             'category' => ['nullable', 'string', 'max:255'],
             'rarity' => ['nullable', 'integer'],

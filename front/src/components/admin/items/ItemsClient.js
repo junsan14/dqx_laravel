@@ -2,10 +2,13 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  buildItemPayload,
+  createEmptyItemForm,
   createItem,
   deleteItem,
   fetchItem,
   fetchItems,
+  normalizeItemForm,
   updateItem,
   updateMaterialPrices,
 } from "@/lib/items";
@@ -18,73 +21,6 @@ import EditorHeader from "@/components/admin/shared/editor/EditorHeader";
 import useEditorLayout from "@/components/admin/shared/editor/useEditorLayout";
 import FloatingToast from "@/components/admin/shared/editor/FloatingToast";
 import useFloatingToast from "@/components/admin/shared/editor/useFloatingToast";
-
-function createEmptyItem() {
-  return {
-    id: null,
-    name: "",
-    name_en: "",
-    buy_price: "",
-    sell_price: "",
-    category: "",
-    drop_monsters: [],
-  };
-}
-
-function normalizeItem(row) {
-  return {
-    id: row?.id ?? null,
-    name: row?.name ?? "",
-    name_en: row?.name_en ?? row?.nameEn ?? "",
-    buy_price:
-      row?.buy_price === null || row?.buy_price === undefined
-        ? ""
-        : row.buy_price,
-    sell_price:
-      row?.sell_price === null || row?.sell_price === undefined
-        ? ""
-        : row.sell_price,
-    category: row?.category ?? "",
-    drop_monsters: Array.isArray(row?.drop_monsters)
-      ? row.drop_monsters.map((r, index) => ({
-          id: r.id ?? null,
-          monster_id: r.monster_id,
-          drop_type: r.drop_type || "normal",
-          sort_order: r.sort_order || index + 1,
-          monster: r.monster
-            ? {
-                ...r.monster,
-                name_en: r.monster?.name_en ?? "",
-              }
-            : null,
-        }))
-      : [],
-  };
-}
-
-function buildItemPayload(form) {
-  return {
-    name: (form.name ?? "").trim(),
-    name_en: (form.name_en ?? "").trim() || null,
-    buy_price:
-      form.buy_price === "" || form.buy_price === null
-        ? null
-        : Number(form.buy_price),
-    sell_price:
-      form.sell_price === "" || form.sell_price === null
-        ? null
-        : Number(form.sell_price),
-    category: (form.category ?? "").trim() || null,
-    drop_monsters: Array.isArray(form.drop_monsters)
-      ? form.drop_monsters.map((row, index) => ({
-          id: row.id ?? null,
-          monster_id: row.monster_id,
-          drop_type: row.drop_type === "rare" ? "rare" : "normal",
-          sort_order: index + 1,
-        }))
-      : [],
-  };
-}
 
 function getProgressLabel(progress) {
   if (progress >= 100) return "更新完了";
@@ -119,7 +55,9 @@ export default function ItemsClient() {
   const [loading, setLoading] = useState(false);
 
   const [selectedId, setSelectedId] = useState(null);
-  const [selectedItem, setSelectedItem] = useState(createEmptyItem());
+  const [selectedItem, setSelectedItem] = useState(() =>
+    createEmptyItemForm()
+  );
   const [detailLoading, setDetailLoading] = useState(false);
   const [hideSearchList, setHideSearchList] = useState(false);
 
@@ -203,7 +141,7 @@ export default function ItemsClient() {
 
   async function loadItemDetail(id) {
     if (!id) {
-      setSelectedItem(createEmptyItem());
+      setSelectedItem(createEmptyItemForm());
       return;
     }
 
@@ -211,7 +149,7 @@ export default function ItemsClient() {
 
     try {
       const item = await fetchItem(id);
-      setSelectedItem(normalizeItem(item));
+      setSelectedItem(normalizeItemForm(item));
     } catch (error) {
       console.error(error);
       showToast(error.message || "アイテム詳細取得失敗", "error");
@@ -235,7 +173,7 @@ export default function ItemsClient() {
 
   useEffect(() => {
     if (!selectedId) {
-      setSelectedItem(createEmptyItem());
+      setSelectedItem(createEmptyItemForm());
       return;
     }
 
@@ -280,7 +218,7 @@ export default function ItemsClient() {
 
     if (selectedId === deletedId) {
       setSelectedId(null);
-      setSelectedItem(createEmptyItem());
+      setSelectedItem(createEmptyItemForm());
     }
 
     if (isMobile) {
@@ -293,7 +231,7 @@ export default function ItemsClient() {
 
   function handleClickNew() {
     setSelectedId(null);
-    setSelectedItem(createEmptyItem());
+    setSelectedItem(createEmptyItemForm());
     setFormErrors({});
     setMessage("");
     setHideSearchList(false);

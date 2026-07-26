@@ -23,6 +23,7 @@ class Equipment extends Model
 
         'item_id',
         'item_name',
+        'item_name_kana',
         'item_name_en',
 
         'equipment_type_id',

@@ -338,7 +338,7 @@ function AccessoriesSidebarSection({
       createLabel="新規追加"
       loading={loading}
       title="アクセサリ編集"
-      searchPlaceholder="名前 / 種別 / 部位 / 伝承元で検索"
+      searchPlaceholder="名前 / 読み / 英語名 / 種別 / 部位 / 伝承元で検索"
     >
       {!hideSearchList ? (
         <AccessoryList

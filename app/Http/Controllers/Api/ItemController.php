@@ -41,6 +41,7 @@ class ItemController extends Controller
 
             $query->where(function ($sub) use ($q) {
                 $sub->where('name', 'like', "%{$q}%")
+                    ->orWhere('name_kana', 'like', "%{$q}%")
                     ->orWhere('name_en', 'like', "%{$q}%");
             });
         }
@@ -72,6 +73,8 @@ class ItemController extends Controller
         $item = DB::transaction(function () use ($validated) {
             $item = Item::create([
                 'name' => $validated['name'],
+                'name_kana' => $validated['name_kana'] ?? null,
+
                 'name_en' => $validated['name_en'] ?? null,
                 'buy_price' => $validated['buy_price'] ?? null,
                 'sell_price' => $validated['sell_price'] ?? null,
@@ -102,6 +105,8 @@ class ItemController extends Controller
         DB::transaction(function () use ($item, $validated) {
             $item->update([
                 'name' => $validated['name'],
+                'name_kana' => $validated['name_kana'] ?? null,
+
                 'name_en' => $validated['name_en'] ?? null,
                 'buy_price' => $validated['buy_price'] ?? null,
                 'sell_price' => $validated['sell_price'] ?? null,
@@ -155,6 +160,7 @@ class ItemController extends Controller
         return [
             'id' => $item->id,
             'name' => $item->name,
+            'name_kana' => $item->name_kana,
             'name_en' => $item->name_en,
             'buy_price' => $item->buy_price,
             'sell_price' => $item->sell_price,

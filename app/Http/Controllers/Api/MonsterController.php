@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 
+use App\Http\Controllers\Controller;
 use App\Models\Monster;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -28,6 +29,7 @@ class MonsterController extends Controller
                     monsters.display_order as monster_no,
                     monsters.display_order,
                     monsters.name,
+                    monsters.name_kana,
                     monsters.name_en,
                     monsters.system_type,
                     monsters.system_type_en,
@@ -38,15 +40,25 @@ class MonsterController extends Controller
                     monsters.is_reincarnated,
                     monsters.reincarnation_parent_id,
                     parents.name as reincarnation_parent_name,
+                    parents.name_kana as reincarnation_parent_name_kana,
                     parents.name_en as reincarnation_parent_name_en
                 ')
                 ->when($keyword !== '', function ($query) use ($keyword) {
-                    $escapedKeyword = addcslashes($keyword, '\\%_');
+                    $searchTerms = $this->buildSearchTerms($keyword);
                     $numericKeyword = ctype_digit($keyword) ? (int) $keyword : null;
 
-                    $query->where(function ($q) use ($escapedKeyword, $numericKeyword) {
-                        $q->where('monsters.name', 'like', '%' . $escapedKeyword . '%')
-                            ->orWhere('monsters.name_en', 'like', '%' . $escapedKeyword . '%');
+                    $query->where(function ($q) use ($searchTerms, $numericKeyword) {
+                        foreach ($searchTerms as $index => $term) {
+                            $escaped = addcslashes($term, '\\%_');
+                            $method = $index === 0 ? 'where' : 'orWhere';
+
+                            $q->{$method}(function ($termQuery) use ($escaped) {
+                                $termQuery
+                                    ->where('monsters.name', 'like', '%' . $escaped . '%')
+                                    ->orWhere('monsters.name_kana', 'like', '%' . $escaped . '%')
+                                    ->orWhere('monsters.name_en', 'like', '%' . $escaped . '%');
+                            });
+                        }
 
                         if ($numericKeyword !== null) {
                             $q->orWhere('monsters.id', $numericKeyword)
@@ -54,15 +66,21 @@ class MonsterController extends Controller
                         }
                     });
 
+                    $hiraganaKeyword = mb_convert_kana($keyword, 'c', 'UTF-8');
+                    $escapedKeyword = addcslashes($keyword, '\\%_');
+                    $escapedHiraganaKeyword = addcslashes($hiraganaKeyword, '\\%_');
+
                     $query->orderByRaw(
                         "
                         CASE
                             WHEN monsters.id = ? THEN 0
                             WHEN monsters.display_order = ? THEN 0
-                            WHEN monsters.name = ? THEN 1
-                            WHEN monsters.name_en = ? THEN 1
-                            WHEN monsters.name LIKE ? THEN 2
-                            WHEN monsters.name_en LIKE ? THEN 2
+                            WHEN monsters.name = ?
+                                OR monsters.name_kana = ?
+                                OR monsters.name_en = ? THEN 1
+                            WHEN monsters.name LIKE ?
+                                OR monsters.name_kana LIKE ?
+                                OR monsters.name_en LIKE ? THEN 2
                             ELSE 3
                         END
                         ",
@@ -70,8 +88,10 @@ class MonsterController extends Controller
                             $numericKeyword ?? 0,
                             $numericKeyword ?? 0,
                             $keyword,
+                            $hiraganaKeyword,
                             $keyword,
                             $escapedKeyword . '%',
+                            $escapedHiraganaKeyword . '%',
                             $escapedKeyword . '%',
                         ]
                     )
@@ -98,6 +118,7 @@ class MonsterController extends Controller
                     monsters.display_order as monster_no,
                     monsters.display_order,
                     monsters.name,
+                    monsters.name_kana,
                     monsters.name_en,
                     monsters.system_type,
                     monsters.system_type_en,
@@ -108,8 +129,10 @@ class MonsterController extends Controller
                     monsters.is_reincarnated,
                     monsters.reincarnation_parent_id,
                     parents.name as reincarnation_parent_name,
+                    parents.name_kana as reincarnation_parent_name_kana,
                     parents.name_en as reincarnation_parent_name_en,
                     items.name as matched_name,
+                    items.name_kana as matched_name_kana,
                     items.name_en as matched_name_en
                 ')
                 ->join('monster_drops', function ($join) {
@@ -118,23 +141,44 @@ class MonsterController extends Controller
                 })
                 ->join('items', 'items.id', '=', 'monster_drops.drop_target_id')
                 ->when($keyword !== '', function ($query) use ($keyword) {
+                    $searchTerms = $this->buildSearchTerms($keyword);
+                    $hiraganaKeyword = mb_convert_kana($keyword, 'c', 'UTF-8');
                     $escapedKeyword = addcslashes($keyword, '\\%_');
+                    $escapedHiraganaKeyword = addcslashes($hiraganaKeyword, '\\%_');
 
-                    $query->where(function ($q) use ($escapedKeyword) {
-                        $q->where('items.name', 'like', '%' . $escapedKeyword . '%')
-                          ->orWhere('items.name_en', 'like', '%' . $escapedKeyword . '%');
+                    $query->where(function ($q) use ($searchTerms) {
+                        foreach ($searchTerms as $index => $term) {
+                            $escaped = addcslashes($term, '\\%_');
+                            $method = $index === 0 ? 'where' : 'orWhere';
+
+                            $q->{$method}(function ($termQuery) use ($escaped) {
+                                $termQuery
+                                    ->where('items.name', 'like', '%' . $escaped . '%')
+                                    ->orWhere('items.name_kana', 'like', '%' . $escaped . '%')
+                                    ->orWhere('items.name_en', 'like', '%' . $escaped . '%');
+                            });
+                        }
                     })
                     ->orderByRaw(
                         "
                         CASE
-                            WHEN items.name = ? THEN 0
-                            WHEN items.name_en = ? THEN 0
-                            WHEN items.name LIKE ? THEN 1
-                            WHEN items.name_en LIKE ? THEN 1
+                            WHEN items.name = ?
+                                OR items.name_kana = ?
+                                OR items.name_en = ? THEN 0
+                            WHEN items.name LIKE ?
+                                OR items.name_kana LIKE ?
+                                OR items.name_en LIKE ? THEN 1
                             ELSE 2
                         END
                         ",
-                        [$keyword, $keyword, $escapedKeyword . '%', $escapedKeyword . '%']
+                        [
+                            $keyword,
+                            $hiraganaKeyword,
+                            $keyword,
+                            $escapedKeyword . '%',
+                            $escapedHiraganaKeyword . '%',
+                            $escapedKeyword . '%',
+                        ]
                     )
                     ->orderByRaw('LENGTH(COALESCE(items.name_en, items.name)) ASC')
                     ->orderBy('items.name')
@@ -160,6 +204,7 @@ class MonsterController extends Controller
                     monsters.display_order as monster_no,
                     monsters.display_order,
                     monsters.name,
+                    monsters.name_kana,
                     monsters.name_en,
                     monsters.system_type,
                     monsters.system_type_en,
@@ -170,8 +215,10 @@ class MonsterController extends Controller
                     monsters.is_reincarnated,
                     monsters.reincarnation_parent_id,
                     parents.name as reincarnation_parent_name,
+                    parents.name_kana as reincarnation_parent_name_kana,
                     parents.name_en as reincarnation_parent_name_en,
                     orbs.name as matched_name,
+                    orbs.name_kana as matched_name_kana,
                     orbs.name_en as matched_name_en,
                     orbs.color as matched_color
                 ')
@@ -181,23 +228,44 @@ class MonsterController extends Controller
                 })
                 ->join('orbs', 'orbs.id', '=', 'monster_drops.drop_target_id')
                 ->when($keyword !== '', function ($query) use ($keyword) {
+                    $searchTerms = $this->buildSearchTerms($keyword);
+                    $hiraganaKeyword = mb_convert_kana($keyword, 'c', 'UTF-8');
                     $escapedKeyword = addcslashes($keyword, '\\%_');
+                    $escapedHiraganaKeyword = addcslashes($hiraganaKeyword, '\\%_');
 
-                    $query->where(function ($q) use ($escapedKeyword) {
-                        $q->where('orbs.name', 'like', '%' . $escapedKeyword . '%')
-                          ->orWhere('orbs.name_en', 'like', '%' . $escapedKeyword . '%');
+                    $query->where(function ($q) use ($searchTerms) {
+                        foreach ($searchTerms as $index => $term) {
+                            $escaped = addcslashes($term, '\\%_');
+                            $method = $index === 0 ? 'where' : 'orWhere';
+
+                            $q->{$method}(function ($termQuery) use ($escaped) {
+                                $termQuery
+                                    ->where('orbs.name', 'like', '%' . $escaped . '%')
+                                    ->orWhere('orbs.name_kana', 'like', '%' . $escaped . '%')
+                                    ->orWhere('orbs.name_en', 'like', '%' . $escaped . '%');
+                            });
+                        }
                     })
                     ->orderByRaw(
                         "
                         CASE
-                            WHEN orbs.name = ? THEN 0
-                            WHEN orbs.name_en = ? THEN 0
-                            WHEN orbs.name LIKE ? THEN 1
-                            WHEN orbs.name_en LIKE ? THEN 1
+                            WHEN orbs.name = ?
+                                OR orbs.name_kana = ?
+                                OR orbs.name_en = ? THEN 0
+                            WHEN orbs.name LIKE ?
+                                OR orbs.name_kana LIKE ?
+                                OR orbs.name_en LIKE ? THEN 1
                             ELSE 2
                         END
                         ",
-                        [$keyword, $keyword, $escapedKeyword . '%', $escapedKeyword . '%']
+                        [
+                            $keyword,
+                            $hiraganaKeyword,
+                            $keyword,
+                            $escapedKeyword . '%',
+                            $escapedHiraganaKeyword . '%',
+                            $escapedKeyword . '%',
+                        ]
                     )
                     ->orderByRaw('LENGTH(COALESCE(orbs.name_en, orbs.name)) ASC')
                     ->orderBy('orbs.name')
@@ -223,6 +291,7 @@ if ($searchType === 'equipment') {
             monsters.display_order as monster_no,
             monsters.display_order,
             monsters.name,
+            monsters.name_kana,
             monsters.name_en,
             monsters.system_type,
             monsters.system_type_en,
@@ -233,8 +302,10 @@ if ($searchType === 'equipment') {
             monsters.is_reincarnated,
             monsters.reincarnation_parent_id,
             parents.name as reincarnation_parent_name,
+            parents.name_kana as reincarnation_parent_name_kana,
             parents.name_en as reincarnation_parent_name_en,
             MIN(equipments.item_name) as matched_name,
+            MIN(equipments.item_name_kana) as matched_name_kana,
             MIN(equipments.item_name_en) as matched_name_en
         ')
         ->join('monster_drops', function ($join) {
@@ -243,25 +314,46 @@ if ($searchType === 'equipment') {
         })
         ->join('equipments', 'equipments.id', '=', 'monster_drops.drop_target_id')
         ->when($keyword !== '', function ($query) use ($keyword) {
+            $searchTerms = $this->buildSearchTerms($keyword);
+            $hiraganaKeyword = mb_convert_kana($keyword, 'c', 'UTF-8');
             $escapedKeyword = addcslashes($keyword, '\\%_');
+            $escapedHiraganaKeyword = addcslashes($hiraganaKeyword, '\\%_');
 
-            $query->where(function ($q) use ($escapedKeyword) {
-                $q->where('equipments.item_name', 'like', '%' . $escapedKeyword . '%')
-                  ->orWhere('equipments.item_name_en', 'like', '%' . $escapedKeyword . '%');
+            $query->where(function ($q) use ($searchTerms) {
+                foreach ($searchTerms as $index => $term) {
+                    $escaped = addcslashes($term, '\\%_');
+                    $method = $index === 0 ? 'where' : 'orWhere';
+
+                    $q->{$method}(function ($termQuery) use ($escaped) {
+                        $termQuery
+                            ->where('equipments.item_name', 'like', '%' . $escaped . '%')
+                            ->orWhere('equipments.item_name_kana', 'like', '%' . $escaped . '%')
+                            ->orWhere('equipments.item_name_en', 'like', '%' . $escaped . '%');
+                    });
+                }
             })
             ->orderByRaw(
                 "
                 MIN(
                     CASE
-                        WHEN equipments.item_name = ? THEN 0
-                        WHEN equipments.item_name_en = ? THEN 0
-                        WHEN equipments.item_name LIKE ? THEN 1
-                        WHEN equipments.item_name_en LIKE ? THEN 1
+                        WHEN equipments.item_name = ?
+                            OR equipments.item_name_kana = ?
+                            OR equipments.item_name_en = ? THEN 0
+                        WHEN equipments.item_name LIKE ?
+                            OR equipments.item_name_kana LIKE ?
+                            OR equipments.item_name_en LIKE ? THEN 1
                         ELSE 2
                     END
                 ) ASC
                 ",
-                [$keyword, $keyword, $escapedKeyword . '%', $escapedKeyword . '%']
+                [
+                    $keyword,
+                    $hiraganaKeyword,
+                    $keyword,
+                    $escapedKeyword . '%',
+                    $escapedHiraganaKeyword . '%',
+                    $escapedKeyword . '%',
+                ]
             )
             ->orderByRaw('MIN(LENGTH(COALESCE(equipments.item_name_en, equipments.item_name))) ASC')
             ->orderBy('monsters.display_order');
@@ -272,6 +364,7 @@ if ($searchType === 'equipment') {
             'monsters.id',
             'monsters.display_order',
             'monsters.name',
+            'monsters.name_kana',
             'monsters.name_en',
             'monsters.system_type',
             'monsters.system_type_en',
@@ -282,6 +375,7 @@ if ($searchType === 'equipment') {
             'monsters.is_reincarnated',
             'monsters.reincarnation_parent_id',
             'parents.name',
+            'parents.name_kana',
             'parents.name_en'
         )
         ->limit(500)
@@ -301,6 +395,7 @@ if ($searchType === 'equipment') {
                     monsters.display_order as monster_no,
                     monsters.display_order,
                     monsters.name,
+                    monsters.name_kana,
                     monsters.name_en,
                     monsters.system_type,
                     monsters.system_type_en,
@@ -311,8 +406,10 @@ if ($searchType === 'equipment') {
                     monsters.is_reincarnated,
                     monsters.reincarnation_parent_id,
                     parents.name as reincarnation_parent_name,
+                    parents.name_kana as reincarnation_parent_name_kana,
                     parents.name_en as reincarnation_parent_name_en,
                     accessories.name as matched_name,
+                    accessories.name_kana as matched_name_kana,
                     accessories.name_en as matched_name_en
                 ')
                 ->join('monster_drops', function ($join) {
@@ -321,23 +418,44 @@ if ($searchType === 'equipment') {
                 })
                 ->join('accessories', 'accessories.id', '=', 'monster_drops.drop_target_id')
                 ->when($keyword !== '', function ($query) use ($keyword) {
+                    $searchTerms = $this->buildSearchTerms($keyword);
+                    $hiraganaKeyword = mb_convert_kana($keyword, 'c', 'UTF-8');
                     $escapedKeyword = addcslashes($keyword, '\\%_');
+                    $escapedHiraganaKeyword = addcslashes($hiraganaKeyword, '\\%_');
 
-                    $query->where(function ($q) use ($escapedKeyword) {
-                        $q->where('accessories.name', 'like', '%' . $escapedKeyword . '%')
-                          ->orWhere('accessories.name_en', 'like', '%' . $escapedKeyword . '%');
+                    $query->where(function ($q) use ($searchTerms) {
+                        foreach ($searchTerms as $index => $term) {
+                            $escaped = addcslashes($term, '\\%_');
+                            $method = $index === 0 ? 'where' : 'orWhere';
+
+                            $q->{$method}(function ($termQuery) use ($escaped) {
+                                $termQuery
+                                    ->where('accessories.name', 'like', '%' . $escaped . '%')
+                                    ->orWhere('accessories.name_kana', 'like', '%' . $escaped . '%')
+                                    ->orWhere('accessories.name_en', 'like', '%' . $escaped . '%');
+                            });
+                        }
                     })
                     ->orderByRaw(
                         "
                         CASE
-                            WHEN accessories.name = ? THEN 0
-                            WHEN accessories.name_en = ? THEN 0
-                            WHEN accessories.name LIKE ? THEN 1
-                            WHEN accessories.name_en LIKE ? THEN 1
+                            WHEN accessories.name = ?
+                                OR accessories.name_kana = ?
+                                OR accessories.name_en = ? THEN 0
+                            WHEN accessories.name LIKE ?
+                                OR accessories.name_kana LIKE ?
+                                OR accessories.name_en LIKE ? THEN 1
                             ELSE 2
                         END
                         ",
-                        [$keyword, $keyword, $escapedKeyword . '%', $escapedKeyword . '%']
+                        [
+                            $keyword,
+                            $hiraganaKeyword,
+                            $keyword,
+                            $escapedKeyword . '%',
+                            $escapedHiraganaKeyword . '%',
+                            $escapedKeyword . '%',
+                        ]
                     )
                     ->orderByRaw('LENGTH(COALESCE(accessories.name_en, accessories.name)) ASC')
                     ->orderBy('accessories.name')
@@ -367,6 +485,7 @@ if ($searchType === 'equipment') {
                 monsters.display_order as monster_no,
                 monsters.display_order,
                 monsters.name,
+                monsters.name_kana,
                 monsters.name_en,
                 monsters.system_type,
                 monsters.system_type_en,
@@ -377,6 +496,7 @@ if ($searchType === 'equipment') {
                 monsters.is_reincarnated,
                 monsters.reincarnation_parent_id,
                 parents.name as reincarnation_parent_name,
+                parents.name_kana as reincarnation_parent_name_kana,
                 parents.name_en as reincarnation_parent_name_en,
                 monsters.created_at,
                 monsters.updated_at
@@ -425,38 +545,45 @@ if ($searchType === 'equipment') {
                 'monster_drops.sort_order',
 
                 'items.name as item_name',
+                'items.name_kana as item_name_kana',
                 'items.name_en as item_name_en',
                 'items.category as item_category',
 
                 'orbs.name as orb_name',
+                'orbs.name_kana as orb_name_kana',
                 'orbs.name_en as orb_name_en',
                 'orbs.color as orb_color',
                 'orbs.effect as orb_effect',
 
                 'equipments.item_name as equipment_name',
+                'equipments.item_name_kana as equipment_name_kana',
                 'equipments.item_name_en as equipment_name_en',
                 'equipments.slot as equipment_slot',
                 'equipment_types.name as equipment_type_name',
 
                 'accessories.name as accessory_name',
+                'accessories.name_kana as accessory_name_kana',
                 'accessories.name_en as accessory_name_en',
                 'accessories.slot as accessory_slot',
                 'accessories.accessory_type as accessory_type',
             ])
             ->map(function ($drop) {
                 $name = null;
+                $nameKana = null;
                 $nameEn = null;
                 $category = null;
                 $extra = [];
 
                 if ($drop->drop_target_type === 'item') {
                     $name = $drop->item_name;
+                    $nameKana = $drop->item_name_kana;
                     $nameEn = $drop->item_name_en;
                     $category = $drop->item_category;
                 }
 
                 if ($drop->drop_target_type === 'orb') {
                     $name = $drop->orb_name;
+                    $nameKana = $drop->orb_name_kana;
                     $nameEn = $drop->orb_name_en;
                     $category = 'orb';
                     $extra = [
@@ -467,6 +594,7 @@ if ($searchType === 'equipment') {
 
                 if ($drop->drop_target_type === 'equipment') {
                     $name = $drop->equipment_name;
+                    $nameKana = $drop->equipment_name_kana;
                     $nameEn = $drop->equipment_name_en;
                     $category = 'equipment';
                     $extra = [
@@ -477,6 +605,7 @@ if ($searchType === 'equipment') {
 
                 if ($drop->drop_target_type === 'accessory') {
                     $name = $drop->accessory_name;
+                    $nameKana = $drop->accessory_name_kana;
                     $nameEn = $drop->accessory_name_en;
                     $category = 'accessory';
                     $extra = [
@@ -494,8 +623,10 @@ if ($searchType === 'equipment') {
                     'drop_type_label' => $this->dropTypeLabel($drop->drop_type, $drop->drop_target_type),
                     'sort_order' => $drop->sort_order,
                     'name' => $name,
+                    'name_kana' => $nameKana,
                     'name_en' => $nameEn,
                     'target_name' => $name,
+                    'target_name_kana' => $nameKana,
                     'target_name_en' => $nameEn,
                     'category' => $category,
                     ...$extra,
@@ -604,6 +735,7 @@ if ($searchType === 'equipment') {
             'monster_no' => $monster->monster_no,
             'display_order' => $monster->display_order,
             'name' => $monster->name,
+            'name_kana' => $monster->name_kana,
             'name_en' => $monster->name_en,
             'system_type' => $monster->system_type,
             'system_type_en' => $monster->system_type_en,
@@ -614,6 +746,7 @@ if ($searchType === 'equipment') {
             'is_reincarnated' => (bool) $monster->is_reincarnated,
             'reincarnation_parent_id' => $monster->reincarnation_parent_id ? (int) $monster->reincarnation_parent_id : null,
             'reincarnation_parent_name' => $monster->reincarnation_parent_name,
+            'reincarnation_parent_name_kana' => $monster->reincarnation_parent_name_kana,
             'reincarnation_parent_name_en' => $monster->reincarnation_parent_name_en,
             'created_at' => $monster->created_at,
             'updated_at' => $monster->updated_at,
@@ -658,6 +791,11 @@ if ($searchType === 'equipment') {
                 'reincarnation_parent_id' => $parentId,
                 'image_path' => null,
             ]);
+
+            if (array_key_exists('name_kana', $validated)) {
+                $monster->name_kana = $validated['name_kana'];
+                $monster->save();
+            }
 
             if ($request->hasFile('image_file')) {
                 $imagePath = $this->storeMonsterImage($monster->id, $request);
@@ -716,6 +854,11 @@ if ($searchType === 'equipment') {
             }
 
             $monster->update($payload);
+
+            if (array_key_exists('name_kana', $validated)) {
+                $monster->name_kana = $validated['name_kana'];
+                $monster->save();
+            }
 
             if ($request->hasFile('image_file')) {
                 $imagePath = $this->storeMonsterImage($monster->id, $request);
@@ -785,6 +928,7 @@ if ($searchType === 'equipment') {
                 'id',
                 'display_order',
                 'name',
+                'name_kana',
                 'name_en',
                 'system_type',
                 'system_type_en',
@@ -821,6 +965,7 @@ if ($searchType === 'equipment') {
                 monsters.display_order as monster_no,
                 monsters.display_order,
                 monsters.name,
+                monsters.name_kana,
                 monsters.name_en,
                 monsters.system_type,
                 monsters.system_type_en,
@@ -831,12 +976,13 @@ if ($searchType === 'equipment') {
                 monsters.is_reincarnated,
                 monsters.reincarnation_parent_id,
                 parents.name as reincarnation_parent_name,
+                parents.name_kana as reincarnation_parent_name_kana,
                 parents.name_en as reincarnation_parent_name_en
             ');
 
         if ($sort === 'kana') {
             $query
-                ->orderBy('monsters.name')
+                ->orderByRaw('COALESCE(monsters.name_kana, monsters.name)')
                 ->orderBy('monsters.id');
         } else {
             $query
@@ -852,6 +998,7 @@ if ($searchType === 'equipment') {
                 'monster_no' => $monster->monster_no,
                 'display_order' => $monster->display_order ?? $monster->monster_no,
                 'name' => $monster->name,
+                'name_kana' => $monster->name_kana,
                 'name_en' => $monster->name_en,
                 'system_type' => $monster->system_type,
                 'system_type_en' => $monster->system_type_en,
@@ -864,6 +1011,7 @@ if ($searchType === 'equipment') {
                     ? (int) $monster->reincarnation_parent_id
                     : null,
                 'reincarnation_parent_name' => $monster->reincarnation_parent_name ?? null,
+                'reincarnation_parent_name_kana' => $monster->reincarnation_parent_name_kana ?? null,
                 'reincarnation_parent_name_en' => $monster->reincarnation_parent_name_en ?? null,
             ];
         })->values();
@@ -882,6 +1030,7 @@ if ($searchType === 'equipment') {
         return $request->validate([
             'display_order' => ['required', 'integer', 'min:0'],
             'name' => ['required', 'string', 'max:255'],
+            'name_kana' => ['nullable', 'string', 'max:255'],
             'name_en' => ['nullable', 'string', 'max:255'],
             'system_type' => ['nullable', 'string', 'max:255'],
             'system_type_en' => ['nullable', 'string', 'max:255'],
@@ -998,13 +1147,17 @@ if ($searchType === 'equipment') {
                 'monster_drops.drop_target_type',
                 'monster_drops.drop_type',
                 'items.name as item_name',
+                'items.name_kana as item_name_kana',
                 'items.name_en as item_name_en',
                 'orbs.name as orb_name',
+                'orbs.name_kana as orb_name_kana',
                 'orbs.name_en as orb_name_en',
                 'orbs.color as orb_color',
                 'equipments.item_name as equipment_name',
+                'equipments.item_name_kana as equipment_name_kana',
                 'equipments.item_name_en as equipment_name_en',
                 'accessories.name as accessory_name',
+                'accessories.name_kana as accessory_name_kana',
                 'accessories.name_en as accessory_name_en',
             ])
             ->groupBy('monster_id');
@@ -1017,6 +1170,7 @@ if ($searchType === 'equipment') {
                 ->where('drop_type', 'normal')
                 ->map(fn ($row) => [
                     'name' => $row->item_name,
+                    'name_kana' => $row->item_name_kana,
                     'name_en' => $row->item_name_en,
                 ])
                 ->unique(fn ($row) => ($row['name'] ?? '') . '|' . ($row['name_en'] ?? ''))
@@ -1027,6 +1181,7 @@ if ($searchType === 'equipment') {
                 ->where('drop_type', 'rare')
                 ->map(fn ($row) => [
                     'name' => $row->item_name,
+                    'name_kana' => $row->item_name_kana,
                     'name_en' => $row->item_name_en,
                 ])
                 ->unique(fn ($row) => ($row['name'] ?? '') . '|' . ($row['name_en'] ?? ''))
@@ -1036,6 +1191,7 @@ if ($searchType === 'equipment') {
                 ->where('drop_target_type', 'orb')
                 ->map(fn ($row) => [
                     'name' => $row->orb_name,
+                    'name_kana' => $row->orb_name_kana,
                     'name_en' => $row->orb_name_en,
                     'color' => $row->orb_color,
                 ])
@@ -1046,6 +1202,7 @@ if ($searchType === 'equipment') {
                 ->where('drop_target_type', 'equipment')
                 ->map(fn ($row) => [
                     'name' => $row->equipment_name,
+                    'name_kana' => $row->equipment_name_kana,
                     'name_en' => $row->equipment_name_en,
                 ])
                 ->unique(fn ($row) => ($row['name'] ?? '') . '|' . ($row['name_en'] ?? ''))
@@ -1055,6 +1212,7 @@ if ($searchType === 'equipment') {
                 ->where('drop_target_type', 'accessory')
                 ->map(fn ($row) => [
                     'name' => $row->accessory_name,
+                    'name_kana' => $row->accessory_name_kana,
                     'name_en' => $row->accessory_name_en,
                 ])
                 ->unique(fn ($row) => ($row['name'] ?? '') . '|' . ($row['name_en'] ?? ''))
@@ -1065,6 +1223,7 @@ if ($searchType === 'equipment') {
                 'monster_no' => $monster->monster_no,
                 'display_order' => $monster->display_order,
                 'name' => $monster->name,
+                'name_kana' => $monster->name_kana,
                 'name_en' => $monster->name_en,
                 'system_type' => $monster->system_type,
                 'system_type_en' => $monster->system_type_en,
@@ -1077,8 +1236,10 @@ if ($searchType === 'equipment') {
                     ? (int) $monster->reincarnation_parent_id
                     : null,
                 'reincarnation_parent_name' => $monster->reincarnation_parent_name ?? null,
+                'reincarnation_parent_name_kana' => $monster->reincarnation_parent_name_kana ?? null,
                 'reincarnation_parent_name_en' => $monster->reincarnation_parent_name_en ?? null,
                 'matched_name' => $monster->matched_name ?? null,
+                'matched_name_kana' => $monster->matched_name_kana ?? null,
                 'matched_name_en' => $monster->matched_name_en ?? null,
                 'matched_color' => $monster->matched_color ?? null,
                 'normal_drops' => $normalDrops,
@@ -1088,6 +1249,21 @@ if ($searchType === 'equipment') {
                 'accessory_drops' => $accessoryDrops,
             ];
         })->values();
+    }
+
+    private function buildSearchTerms(string $keyword): array
+    {
+        $keyword = trim($keyword);
+
+        if ($keyword === '') {
+            return [];
+        }
+
+        return array_values(array_unique([
+            $keyword,
+            mb_convert_kana($keyword, 'c', 'UTF-8'),
+            mb_convert_kana($keyword, 'C', 'UTF-8'),
+        ]));
     }
 
     private function dropTypeLabel(?string $dropType, ?string $targetType = null): string

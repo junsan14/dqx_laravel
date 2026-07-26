@@ -36,6 +36,9 @@ function buildMonsterFormData(payload = {}) {
 
   appendIfPresent(formData, "display_order", payload.display_order ?? 0);
   appendIfPresent(formData, "name", payload.name ?? "");
+  if (Object.prototype.hasOwnProperty.call(payload, "name_kana")) {
+    appendIfPresent(formData, "name_kana", payload.name_kana ?? "");
+  }
   appendIfPresent(formData, "name_en", payload.name_en ?? "");
   appendIfPresent(formData, "system_type", payload.system_type ?? "");
   appendIfPresent(formData, "system_type_en", payload.system_type_en ?? "");
@@ -105,6 +108,8 @@ function normalizeDrop(row = {}, locale = "ja") {
   return {
     ...row,
     nameJa: row?.name ?? "",
+    nameKana: row?.name_kana ?? "",
+    name_kana: row?.name_kana ?? "",
     nameEn: row?.name_en ?? "",
     name: pickLocalizedValue(row, "name", "name_en", locale),
 
@@ -114,6 +119,7 @@ function normalizeDrop(row = {}, locale = "ja") {
       "target_name_en",
       locale
     ),
+    target_name_kana: row?.target_name_kana ?? row?.name_kana ?? "",
 
     colorJa: row?.color ?? "",
     colorEn: row?.color_en ?? "",
@@ -194,6 +200,8 @@ function normalizeMonster(row = {}, locale = "ja") {
     ...row,
 
     nameJa: row?.name ?? "",
+    nameKana: row?.name_kana ?? "",
+    name_kana: row?.name_kana ?? "",
     nameEn: row?.name_en ?? "",
     name_en: row?.name_en ?? "",
 
@@ -208,6 +216,8 @@ function normalizeMonster(row = {}, locale = "ja") {
     system_type_en: row?.system_type_en ?? "",
 
     matchedNameJa: row?.matched_name ?? "",
+    matchedNameKana: row?.matched_name_kana ?? "",
+    matched_name_kana: row?.matched_name_kana ?? "",
     matchedNameEn: row?.matched_name_en ?? "",
     matched_name_en: row?.matched_name_en ?? "",
 
@@ -216,6 +226,9 @@ function normalizeMonster(row = {}, locale = "ja") {
     matched_color_en: row?.matched_color_en ?? "",
 
     reincarnationParentNameJa: row?.reincarnation_parent_name ?? "",
+    reincarnationParentNameKana: row?.reincarnation_parent_name_kana ?? "",
+    reincarnation_parent_name_kana:
+      row?.reincarnation_parent_name_kana ?? "",
     reincarnationParentNameEn: row?.reincarnation_parent_name_en ?? "",
     reincarnation_parent_name_en: row?.reincarnation_parent_name_en ?? "",
   };

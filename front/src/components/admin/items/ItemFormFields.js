@@ -44,7 +44,30 @@ export default function ItemFormFields({
             />
             {errors.name ? <span style={errorStyle}>{errors.name}</span> : null}
           </label>
-
+          <label style={labelStyle}>
+            <span style={labelTextStyle}>名前（読み）</span>
+            <input
+              value={form.name_kana ?? ""}
+              onChange={(e) => updateField("name_kana", e.target.value)}
+              style={inputStyle}
+              placeholder="ひらがなで入力"
+            />
+            {errors.name_kana ? (
+              <span style={errorStyle}>{errors.name_kana}</span>
+            ) : null}
+          </label>
+          <label style={labelStyle}>
+            <span style={labelTextStyle}>名前（英語）</span>
+            <input
+              value={form.name_en ?? ""}
+              onChange={(e) => updateField("name_en", e.target.value)}
+              style={inputStyle}
+              placeholder="English item name"
+            />
+            {errors.name_en ? (
+              <span style={errorStyle}>{errors.name_en}</span>
+            ) : null}
+          </label>
           <label style={labelStyle}>
             <span style={labelTextStyle}>カテゴリ</span>
             <input

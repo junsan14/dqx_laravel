@@ -109,6 +109,8 @@ export function createEmptyEquipmentRow() {
 
     itemId: "",
     itemName: "",
+    itemNameKana: "",
+
     itemNameEn: "",
 
     equipmentTypeId: "",
@@ -339,6 +341,8 @@ export function normalizeEquipmentRow(row = {}) {
 
     itemId: str(row?.item_id ?? row?.itemId),
     itemName: str(row?.item_name ?? row?.itemName),
+    itemNameKana: str(row?.item_name_kana ?? row?.itemNameKana),
+
     itemNameEn: str(row?.item_name_en ?? row?.itemNameEn),
 
     equipmentTypeId:
@@ -435,6 +439,8 @@ export function buildEquipmentPayload(row = {}) {
 
     item_id: str(row.itemId).trim() || null,
     item_name: str(row.itemName).trim(),
+    item_name_kana: str(row.itemNameKana).trim() || null,
+
     item_name_en: str(row.itemNameEn).trim() || null,
 
     equipment_type_id:

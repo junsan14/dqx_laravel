@@ -4,10 +4,13 @@ import { useEffect, useMemo, useState } from "react";
 import OrbList from "./OrbList";
 import OrbFormFields from "./OrbFormFields";
 import {
+  buildOrbPayload,
   createOrb,
+  createEmptyOrbForm,
   deleteOrb,
   fetchOrb,
   fetchOrbs,
+  normalizeOrbForm,
   updateOrb,
 } from "@/lib/orbs";
 
@@ -18,57 +21,13 @@ import useEditorLayout from "@/components/admin/shared/editor/useEditorLayout";
 import FloatingToast from "@/components/admin/shared/editor/FloatingToast";
 import useFloatingToast from "@/components/admin/shared/editor/useFloatingToast";
 
-function createEmptyOrb() {
-  return {
-    id: null,
-    name: "",
-    color: "",
-    effect: "",
-    drop_monsters: [],
-  };
-}
-
-function normalizeOrb(row) {
-  return {
-    id: row?.id ?? null,
-    name: row?.name ?? "",
-    color: row?.color ?? "",
-    effect: row?.effect ?? "",
-    drop_monsters: Array.isArray(row?.drop_monsters)
-      ? row.drop_monsters.map((item, index) => ({
-          id: item.id ?? null,
-          monster_id: item.monster_id,
-          drop_type: "orb",
-          sort_order: item.sort_order || index + 1,
-          monster: item.monster || null,
-        }))
-      : [],
-  };
-}
-
-function buildOrbPayload(form) {
-  return {
-    name: (form.name ?? "").trim(),
-    color: (form.color ?? "").trim() || null,
-    effect: (form.effect ?? "").trim() || null,
-    drop_monsters: Array.isArray(form.drop_monsters)
-      ? form.drop_monsters.map((row, index) => ({
-          id: row.id ?? null,
-          monster_id: row.monster_id,
-          drop_type: "orb",
-          sort_order: index + 1,
-        }))
-      : [],
-  };
-}
-
 export default function OrbsClient() {
   const [orbs, setOrbs] = useState([]);
   const [keyword, setKeyword] = useState("");
   const [loadingList, setLoadingList] = useState(false);
 
   const [selectedId, setSelectedId] = useState(null);
-  const [selectedOrb, setSelectedOrb] = useState(createEmptyOrb());
+  const [selectedOrb, setSelectedOrb] = useState(createEmptyOrbForm());
   const [loadingDetail, setLoadingDetail] = useState(false);
   const [hideSearchList, setHideSearchList] = useState(false);
 
@@ -114,7 +73,7 @@ export default function OrbsClient() {
 
   async function loadOrbDetail(id) {
     if (!id) {
-      setSelectedOrb(createEmptyOrb());
+      setSelectedOrb(createEmptyOrbForm());
       return;
     }
 
@@ -123,7 +82,7 @@ export default function OrbsClient() {
 
     try {
       const orb = await fetchOrb(id);
-      setSelectedOrb(normalizeOrb(orb));
+      setSelectedOrb(normalizeOrbForm(orb));
     } catch (error) {
       console.error(error);
       setMessage(error.message || "宝珠取得失敗");
@@ -148,7 +107,7 @@ export default function OrbsClient() {
 
   useEffect(() => {
     if (!selectedId) {
-      setSelectedOrb(createEmptyOrb());
+      setSelectedOrb(createEmptyOrbForm());
       return;
     }
 
@@ -163,7 +122,7 @@ export default function OrbsClient() {
 
   function handleNew() {
     setSelectedId(null);
-    setSelectedOrb(createEmptyOrb());
+    setSelectedOrb(createEmptyOrbForm());
     setErrors({});
     setMessage("");
     setHideSearchList(false);
@@ -216,7 +175,7 @@ export default function OrbsClient() {
 
     if (selectedId === deletedId) {
       setSelectedId(null);
-      setSelectedOrb(createEmptyOrb());
+      setSelectedOrb(createEmptyOrbForm());
     }
 
     if (isMobile) {
@@ -303,7 +262,7 @@ export default function OrbsClient() {
             createLabel="新規追加"
             loading={loadingList}
             title="宝珠編集"
-            searchPlaceholder="名前・色で検索"
+            searchPlaceholder="名前・読み・英語名・色で検索"
           >
             {!hideSearchList ? (
               <div style={styles.listWrap}>

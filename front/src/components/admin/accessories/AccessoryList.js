@@ -36,6 +36,9 @@ export default function AccessoryList({
             }}
           >
             <div style={titleStyle}>{accessory.name || "名称未設定"}</div>
+            {accessory.name_kana ? (
+              <div style={readingStyle}>{accessory.name_kana}</div>
+            ) : null}
 
             <div style={metaStyle}>
               {accessory.slot || "-"} / {accessory.accessory_type || "-"}
@@ -103,6 +106,13 @@ const titleStyle = {
   marginBottom: 4,
   wordBreak: "break-word",
   color: "var(--text-main)",
+};
+
+const readingStyle = {
+  marginBottom: 4,
+  fontSize: 12,
+  color: "var(--text-sub)",
+  wordBreak: "break-word",
 };
 
 const metaStyle = {

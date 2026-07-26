@@ -86,33 +86,39 @@ export default function CraftProfitHeaderCard({
                 getOptionLabel={(option) => option.name}
                 getOptionDescription={() => ""}
                 getOptionSearchText={(option) => {
-                  const itemNames = Array.isArray(option.items)
-                    ? option.items
-                        .map((item) => item?.name)
-                        .filter(Boolean)
-                    : [];
+                const itemNames = Array.isArray(option.items)
+                  ? option.items
+                      .map((item) => item?.name)
+                      .filter(Boolean)
+                  : [];
 
-                  const itemEquipLevels = Array.isArray(option.items)
-                    ? option.items
-                        .map((item) => item?.equipLevel)
-                        .filter(
-                          (level) =>
-                            level != null && level !== ""
-                        )
-                    : [];
+                const itemNameKanas = Array.isArray(option.items)
+                  ? option.items
+                      .map((item) => item?.nameKana)
+                      .filter(Boolean)
+                  : [];
 
-                  return [
-                    option.name,
-                    ...itemNames,
-                    option.equipLevel,
-                    ...itemEquipLevels,
-                  ]
-                    .filter(
-                      (value) =>
-                        value != null && value !== ""
-                    )
-                    .join(" ");
-                }}
+                const itemEquipLevels = Array.isArray(option.items)
+                  ? option.items
+                      .map((item) => item?.equipLevel)
+                      .filter(
+                        (level) => level != null && level !== ""
+                      )
+                  : [];
+
+                return [
+                  option.name,
+                  option.nameKana, // 追加
+                  ...itemNames,
+                  ...itemNameKanas, // 追加
+                  option.equipLevel,
+                  ...itemEquipLevels,
+                ]
+                  .filter(
+                    (value) => value != null && value !== ""
+                  )
+                  .join(" ");
+              }}
               />
             </div>
           </div>

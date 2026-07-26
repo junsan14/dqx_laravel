@@ -50,6 +50,38 @@ export default function OrbFormFields({
         </div>
 
         <div style={fieldStyle}>
+          <label htmlFor="name_kana" style={labelStyle()}>名前（読み）</label>
+          <input
+            id="name_kana"
+            name="name_kana"
+            value={form.name_kana ?? ""}
+            onChange={onChange}
+            style={inputStyle()}
+            placeholder="例: ほのおのほうじゅ"
+            className="orb-form-input"
+          />
+          {errors.name_kana ? (
+            <div style={errorStyle()}>{errors.name_kana}</div>
+          ) : null}
+        </div>
+
+        <div style={fieldStyle}>
+          <label htmlFor="name_en" style={labelStyle()}>名前（英語）</label>
+          <input
+            id="name_en"
+            name="name_en"
+            value={form.name_en ?? ""}
+            onChange={onChange}
+            style={inputStyle()}
+            placeholder="English name"
+            className="orb-form-input"
+          />
+          {errors.name_en ? (
+            <div style={errorStyle()}>{errors.name_en}</div>
+          ) : null}
+        </div>
+
+        <div style={fieldStyle}>
           <label htmlFor="color" style={labelStyle()}>色</label>
           <select
             id="color"

@@ -10,6 +10,7 @@ class Item extends Model
 
     protected $fillable = [
         'name',
+        'name_kana',
         'name_en',
         'buy_price',
         'sell_price',

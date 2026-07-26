@@ -132,6 +132,7 @@ export default function AccessoryForm({
             id: selected.id,
             item_id: selected.item_id ?? "",
             name: selected.name ?? "",
+            name_kana: selected.name_kana ?? "",
             name_en: selected.name_en ?? "",
             slot: selected.slot ?? "",
             accessory_type: selected.accessory_type ?? "",
@@ -223,6 +224,15 @@ export default function AccessoryForm({
               value={form.name}
               onChange={(e) => updateField("name", e.target.value)}
               style={inputStyle}
+            />
+          </Field>
+
+          <Field label="名前（読み）">
+            <input
+              value={form.name_kana ?? ""}
+              onChange={(e) => updateField("name_kana", e.target.value)}
+              style={inputStyle}
+              placeholder="例：きんのろざりお"
             />
           </Field>
 
@@ -505,6 +515,7 @@ function AccessoryInheritancePicker({
       .filter((item) => {
         const text = [
           item.name,
+          item.name_kana,
           item.name_en,
           item.item_id,
           item.slot,

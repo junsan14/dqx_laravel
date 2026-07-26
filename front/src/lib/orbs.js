@@ -17,6 +17,81 @@ const api = axios.create({
 
 export const ORB_COLORS = ["炎", "水", "風", "光", "闇"];
 
+function normalizeDropMonsters(rows) {
+  if (!Array.isArray(rows)) return [];
+
+  return rows.map((item, index) => ({
+    id: item?.id ?? null,
+    monster_id: item?.monster_id ?? null,
+    drop_type: "orb",
+    sort_order: item?.sort_order || index + 1,
+    monster: item?.monster ?? null,
+  }));
+}
+
+export function createEmptyOrbForm() {
+  return {
+    id: null,
+    name: "",
+    name_kana: "",
+    name_en: "",
+    color: "",
+    effect: "",
+    drop_monsters: [],
+  };
+}
+
+export function normalizeOrb(row = {}) {
+  const dropMonsters = normalizeDropMonsters(
+    row?.drop_monsters ?? row?.dropMonsters
+  );
+
+  return {
+    id: row?.id ?? null,
+    name: row?.name ?? "",
+    name_kana: row?.name_kana ?? row?.nameKana ?? "",
+    name_en: row?.name_en ?? row?.nameEn ?? "",
+    color: row?.color ?? "",
+    effect: row?.effect ?? "",
+    created_at: row?.created_at ?? row?.createdAt ?? null,
+    updated_at: row?.updated_at ?? row?.updatedAt ?? null,
+    drop_monsters: dropMonsters,
+  };
+}
+
+export function normalizeOrbForm(row = {}) {
+  const orb = normalizeOrb(row);
+
+  return {
+    ...createEmptyOrbForm(),
+    id: orb.id,
+    name: orb.name,
+    name_kana: orb.name_kana,
+    name_en: orb.name_en,
+    color: orb.color,
+    effect: orb.effect,
+    drop_monsters: orb.drop_monsters,
+  };
+}
+
+export function buildOrbPayload(form = {}) {
+  return {
+    name: String(form?.name ?? "").trim(),
+    name_kana: String(form?.name_kana ?? "").trim() || null,
+    name_en: String(form?.name_en ?? "").trim() || null,
+    color: String(form?.color ?? "").trim() || null,
+    effect: String(form?.effect ?? "").trim() || null,
+    drop_monsters: normalizeDropMonsters(form?.drop_monsters).map(
+      (row, index) => ({
+        id: row.id,
+        monster_id: row.monster_id,
+        drop_type: "orb",
+        sort_order: index + 1,
+      })
+    ),
+  };
+}
+
 /*
 --------------------------------
 オーブ一覧
@@ -33,10 +108,15 @@ export async function fetchOrbs(q = "", color = "") {
 
     const json = res.data;
 
-    if (Array.isArray(json?.data)) return json.data;
-    if (Array.isArray(json?.data?.data)) return json.data.data;
+    const rows = Array.isArray(json)
+      ? json
+      : Array.isArray(json?.data)
+        ? json.data
+        : Array.isArray(json?.data?.data)
+          ? json.data.data
+          : [];
 
-    return [];
+    return rows.map(normalizeOrb);
   } catch (error) {
     console.error(error);
     throw new Error("オーブ一覧取得失敗");
@@ -51,7 +131,7 @@ export async function fetchOrbs(q = "", color = "") {
 export async function fetchOrb(id) {
   try {
     const res = await api.get(`/api/orbs/${id}`);
-    return res.data.data;
+    return normalizeOrb(res.data.data);
   } catch (error) {
     console.error(error);
     throw new Error("オーブ取得失敗");
@@ -66,7 +146,7 @@ export async function fetchOrb(id) {
 export async function createOrb(data) {
   try {
     const res = await api.post("/api/orbs", data);
-    return res.data.data;
+    return normalizeOrb(res.data.data);
   } catch (error) {
     console.error(error);
 
@@ -84,10 +164,9 @@ export async function createOrb(data) {
 --------------------------------
 */
 export async function updateOrb(id, data) {
-    console.log(data)
   try {
     const res = await api.put(`/api/orbs/${id}`, data);
-    return res.data.data;
+    return normalizeOrb(res.data.data);
   } catch (error) {
     console.error(error);
 

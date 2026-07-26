@@ -1,19 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  createEmptyItemForm,
+  normalizeItemForm,
+} from "@/lib/items";
 import ItemFormFields from "./ItemFormFields";
-
-function createEmptyForm() {
-  return {
-    id: null,
-    name: "",
-    name_en: "",
-    buy_price: "",
-    sell_price: "",
-    category: "",
-    drop_monsters: [],
-  };
-}
 
 export default function ItemForm({
   item,
@@ -22,35 +14,10 @@ export default function ItemForm({
   message = "",
   onChange,
 }) {
-  const [form, setForm] = useState(createEmptyForm());
+  const [form, setForm] = useState(() => createEmptyItemForm());
 
   useEffect(() => {
-    setForm({
-      id: item?.id ?? null,
-      name: item?.name ?? "",
-      name_en: item?.name_en ?? item?.nameEn ?? "",
-      buy_price:
-        item?.buy_price === null || item?.buy_price === undefined
-          ? ""
-          : item.buy_price,
-      sell_price:
-        item?.sell_price === null || item?.sell_price === undefined
-          ? ""
-          : item.sell_price,
-      category: item?.category ?? "",
-      drop_monsters: (item?.drop_monsters ?? []).map((row, index) => ({
-        id: row.id ?? null,
-        monster_id: row.monster_id,
-        drop_type: row.drop_type || "normal",
-        sort_order: row.sort_order || index + 1,
-        monster: row.monster
-          ? {
-              ...row.monster,
-              name_en: row.monster?.name_en ?? "",
-            }
-          : null,
-      })),
-    });
+    setForm(normalizeItemForm(item));
   }, [item]);
 
   function updateForm(nextForm) {

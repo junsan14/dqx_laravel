@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAccessoryRequest;
 use App\Http\Requests\UpdateAccessoryRequest;
 use App\Models\Accessory;
@@ -31,33 +32,58 @@ class AccessoryController extends Controller
         $query = Accessory::query();
 
         if ($q !== '') {
-            $escaped = addcslashes($q, '\\%_');
+            $searchTerms = $this->buildSearchTerms($q);
 
-            $query->where(function ($sub) use ($escaped, $inheritanceRelatedIds) {
-                $sub->where('item_id', 'like', "%{$escaped}%")
-                    ->orWhere('name', 'like', "%{$escaped}%")
-                    ->orWhere('slot', 'like', "%{$escaped}%")
-                    ->orWhere('accessory_type', 'like', "%{$escaped}%")
-                    ->orWhere('description', 'like', "%{$escaped}%")
-                    ->orWhere('inheritance_type', 'like', "%{$escaped}%")
-                    ->orWhere('inheritance_note', 'like', "%{$escaped}%")
-                    ->orWhereHas('inheritanceFrom', function ($inheritanceQuery) use ($escaped) {
-                        $inheritanceQuery->where('name', 'like', "%{$escaped}%");
+            $query->where(function ($sub) use ($searchTerms, $inheritanceRelatedIds) {
+                foreach ($searchTerms as $index => $term) {
+                    $escaped = addcslashes($term, '\\%_');
+                    $method = $index === 0 ? 'where' : 'orWhere';
+
+                    $sub->{$method}(function ($termQuery) use ($escaped) {
+                        $termQuery->where('item_id', 'like', "%{$escaped}%")
+                            ->orWhere('name', 'like', "%{$escaped}%")
+                            ->orWhere('name_kana', 'like', "%{$escaped}%")
+                            ->orWhere('name_en', 'like', "%{$escaped}%")
+                            ->orWhere('slot', 'like', "%{$escaped}%")
+                            ->orWhere('accessory_type', 'like', "%{$escaped}%")
+                            ->orWhere('description', 'like', "%{$escaped}%")
+                            ->orWhere('inheritance_type', 'like', "%{$escaped}%")
+                            ->orWhere('inheritance_note', 'like', "%{$escaped}%")
+                            ->orWhereHas('inheritanceFrom', function ($inheritanceQuery) use ($escaped) {
+                                $inheritanceQuery
+                                    ->where('name', 'like', "%{$escaped}%")
+                                    ->orWhere('name_kana', 'like', "%{$escaped}%")
+                                    ->orWhere('name_en', 'like', "%{$escaped}%");
+                            });
                     });
+                }
 
                 if (!empty($inheritanceRelatedIds)) {
                     $sub->orWhereIn('id', $inheritanceRelatedIds);
                 }
-            })
+            });
+
+            $hiraganaQ = mb_convert_kana($q, 'c', 'UTF-8');
+            $escapedQ = addcslashes($q, '\\%_');
+            $escapedHiraganaQ = addcslashes($hiraganaQ, '\\%_');
+
+            $query
                 ->orderByRaw(
                     "
                     CASE
-                        WHEN name = ? THEN 0
-                        WHEN name LIKE ? THEN 1
+                        WHEN name = ? OR name_kana = ? OR name_en = ? THEN 0
+                        WHEN name LIKE ? OR name_kana LIKE ? OR name_en LIKE ? THEN 1
                         ELSE 2
                     END
                     ",
-                    [$q, $escaped . '%']
+                    [
+                        $q,
+                        $hiraganaQ,
+                        $q,
+                        $escapedQ . '%',
+                        $escapedHiraganaQ . '%',
+                        $escapedQ . '%',
+                    ]
                 )
                 ->orderByRaw('LENGTH(name) ASC')
                 ->orderBy('name');
@@ -81,7 +107,10 @@ class AccessoryController extends Controller
 
     public function store(StoreAccessoryRequest $request): JsonResponse
     {
-        $validated = $request->validated();
+        $validated = array_merge(
+            $request->validated(),
+            $this->validateNameKana($request)
+        );
 
         logger()->info('accessory store validated', $validated);
 
@@ -120,6 +149,9 @@ class AccessoryController extends Controller
                 'detail_url' => $validated['detail_url'] ?? null,
             ]);
 
+            $accessory->name_kana = $validated['name_kana'] ?? null;
+            $accessory->save();
+
             $this->monsterDropSyncService->sync(
                 'accessory',
                 $accessory->id,
@@ -137,7 +169,10 @@ class AccessoryController extends Controller
 
     public function update(UpdateAccessoryRequest $request, Accessory $accessory): JsonResponse
     {
-        $validated = $request->validated();
+        $validated = array_merge(
+            $request->validated(),
+            $this->validateNameKana($request)
+        );
 
         logger()->info('accessory update validated', $validated);
 
@@ -175,6 +210,9 @@ class AccessoryController extends Controller
                 'source_url' => $validated['source_url'] ?? null,
                 'detail_url' => $validated['detail_url'] ?? null,
             ]);
+
+            $accessory->name_kana = $validated['name_kana'] ?? null;
+            $accessory->save();
 
             $this->monsterDropSyncService->sync(
                 'accessory',
@@ -267,6 +305,7 @@ class AccessoryController extends Controller
                     'id',
                     'item_id',
                     'name',
+                    'name_kana',
                     'name_en',
                     'slot',
                     'accessory_type',
@@ -281,6 +320,7 @@ class AccessoryController extends Controller
             'id' => $accessory->id,
             'item_id' => $accessory->item_id,
             'name' => $accessory->name,
+            'name_kana' => $accessory->name_kana,
             'name_en' => $accessory->name_en,
             'item_kind' => $accessory->item_kind,
             'slot' => $accessory->slot,
@@ -294,6 +334,7 @@ class AccessoryController extends Controller
                 'id' => $inheritanceFrom->id,
                 'item_id' => $inheritanceFrom->item_id,
                 'name' => $inheritanceFrom->name,
+                'name_kana' => $inheritanceFrom->name_kana,
                 'name_en' => $inheritanceFrom->name_en,
                 'slot' => $inheritanceFrom->slot,
                 'accessory_type' => $inheritanceFrom->accessory_type,
@@ -364,6 +405,7 @@ class AccessoryController extends Controller
                 'id' => $current->id,
                 'item_id' => $current->item_id,
                 'name' => $current->name,
+                'name_kana' => $current->name_kana,
                 'name_en' => $current->name_en,
                 'slot' => $current->slot,
                 'accessory_type' => $current->accessory_type,
@@ -377,6 +419,7 @@ class AccessoryController extends Controller
                     'id',
                     'item_id',
                     'name',
+                    'name_kana',
                     'name_en',
                     'slot',
                     'accessory_type',
@@ -407,83 +450,92 @@ class AccessoryController extends Controller
         return $chain;
     }
     private function findInheritanceRelatedAccessoryIds(string $keyword): array
-{
-    $keyword = trim($keyword);
+    {
+        $searchTerms = $this->buildSearchTerms($keyword);
 
-    if ($keyword === '') {
-        return [];
-    }
-
-    $escaped = addcslashes($keyword, '\\%_');
-
-    $allAccessories = Accessory::query()
-        ->select([
-            'id',
-            'item_id',
-            'name',
-            'name_en',
-            'slot',
-            'accessory_type',
-            'inheritance_from_accessory_id',
-            'inheritance_type',
-            'inheritance_note',
-            'description',
-        ])
-        ->get();
-
-    $childrenByParentId = [];
-
-    foreach ($allAccessories as $accessory) {
-        if (!$accessory->inheritance_from_accessory_id) {
-            continue;
+        if (empty($searchTerms)) {
+            return [];
         }
 
-        $parentId = (int) $accessory->inheritance_from_accessory_id;
+        $allAccessories = Accessory::query()
+            ->select([
+                'id',
+                'item_id',
+                'name',
+                'name_kana',
+                'name_en',
+                'slot',
+                'accessory_type',
+                'inheritance_from_accessory_id',
+                'inheritance_type',
+                'inheritance_note',
+                'description',
+            ])
+            ->get();
 
-        if (!isset($childrenByParentId[$parentId])) {
-            $childrenByParentId[$parentId] = [];
+        $childrenByParentId = [];
+
+        foreach ($allAccessories as $accessory) {
+            if (!$accessory->inheritance_from_accessory_id) {
+                continue;
+            }
+
+            $parentId = (int) $accessory->inheritance_from_accessory_id;
+
+            if (!isset($childrenByParentId[$parentId])) {
+                $childrenByParentId[$parentId] = [];
+            }
+
+            $childrenByParentId[$parentId][] = $accessory;
         }
 
-        $childrenByParentId[$parentId][] = $accessory;
-    }
+        $matchedIds = Accessory::query()
+            ->where(function ($query) use ($searchTerms) {
+                foreach ($searchTerms as $index => $term) {
+                    $escaped = addcslashes($term, '\\%_');
+                    $method = $index === 0 ? 'where' : 'orWhere';
 
-    $matchedIds = Accessory::query()
-        ->where('item_id', 'like', "%{$escaped}%")
-        ->orWhere('name', 'like', "%{$escaped}%")
-        ->orWhere('name_en', 'like', "%{$escaped}%")
-        ->orWhere('slot', 'like', "%{$escaped}%")
-        ->orWhere('accessory_type', 'like', "%{$escaped}%")
-        ->orWhere('description', 'like', "%{$escaped}%")
-        ->orWhere('inheritance_type', 'like', "%{$escaped}%")
-        ->orWhere('inheritance_note', 'like', "%{$escaped}%")
-        ->pluck('id')
-        ->map(fn ($id) => (int) $id)
-        ->values()
-        ->all();
+                    $query->{$method}(function ($termQuery) use ($escaped) {
+                        $termQuery->where('item_id', 'like', "%{$escaped}%")
+                            ->orWhere('name', 'like', "%{$escaped}%")
+                            ->orWhere('name_kana', 'like', "%{$escaped}%")
+                            ->orWhere('name_en', 'like', "%{$escaped}%")
+                            ->orWhere('slot', 'like', "%{$escaped}%")
+                            ->orWhere('accessory_type', 'like', "%{$escaped}%")
+                            ->orWhere('description', 'like', "%{$escaped}%")
+                            ->orWhere('inheritance_type', 'like', "%{$escaped}%")
+                            ->orWhere('inheritance_note', 'like', "%{$escaped}%");
+                    });
+                }
+            })
+            ->pluck('id')
+            ->map(fn ($id) => (int) $id)
+            ->values()
+            ->all();
 
-    $relatedIds = [];
+        $relatedIds = [];
 
-    foreach ($matchedIds as $matchedId) {
-        $matchedAccessory = $allAccessories->firstWhere('id', $matchedId);
+        foreach ($matchedIds as $matchedId) {
+            $matchedAccessory = $allAccessories->firstWhere('id', $matchedId);
 
-        if (!$matchedAccessory) {
-            continue;
+            if (!$matchedAccessory) {
+                continue;
+            }
+
+            $root = $this->findInheritanceRootFromCollection(
+                $matchedAccessory,
+                $allAccessories
+            );
+
+            $this->collectInheritanceDescendantIds(
+                $root,
+                $childrenByParentId,
+                $relatedIds
+            );
         }
 
-        $root = $this->findInheritanceRootFromCollection(
-            $matchedAccessory,
-            $allAccessories
-        );
-
-        $this->collectInheritanceDescendantIds(
-            $root,
-            $childrenByParentId,
-            $relatedIds
-        );
+        return array_values(array_unique($relatedIds));
     }
-
-    return array_values(array_unique($relatedIds));
-}
 
 private function findInheritanceRootFromCollection($accessory, $allAccessories)
 {
@@ -554,6 +606,7 @@ private function findInheritanceRoot(Accessory $accessory): Accessory
                 'id',
                 'item_id',
                 'name',
+                'name_kana',
                 'name_en',
                 'slot',
                 'accessory_type',
@@ -572,6 +625,28 @@ private function findInheritanceRoot(Accessory $accessory): Accessory
 
     return $current;
 }
+
+    private function buildSearchTerms(string $keyword): array
+    {
+        $keyword = trim($keyword);
+
+        if ($keyword === '') {
+            return [];
+        }
+
+        return array_values(array_unique([
+            $keyword,
+            mb_convert_kana($keyword, 'c', 'UTF-8'),
+            mb_convert_kana($keyword, 'C', 'UTF-8'),
+        ]));
+    }
+
+    private function validateNameKana(Request $request): array
+    {
+        return $request->validate([
+            'name_kana' => ['nullable', 'string', 'max:255'],
+        ]);
+    }
 
     private function normalizeJsonOutput($value): array
     {

@@ -19,7 +19,7 @@ const JOB_OVERRIDE_MODE_LABELS = {
 const GROUP_KIND_OPTIONS = [
   { value: "armor_set", label: "鎧(防具鍛冶系)" },
   { value: "tailoring_set", label: "ローブ(裁縫系)" },
-  { value: "craft_tool_set", label: "職人道具" },
+  { value: "craft_tool_set", label: "その他" },
 ];
 
 const FABRIC_TYPE_OPTIONS = ["通常布", "再生布", "虹布","ピンク布"];
@@ -487,6 +487,15 @@ export default function EquipmentEditorPanel({
                 style={styles.input}
                 value={row.itemName ?? ""}
                 onChange={(e) => patch("itemName", e.target.value)}
+              />
+            </LabeledField>
+
+            <LabeledField label="装備名（ふりがな）">
+              <input
+                style={styles.input}
+                value={row.itemNameKana ?? ""}
+                placeholder="ひらがな・カタカナどちらでもOK"
+                onChange={(e) => patch("itemNameKana", e.target.value)}
               />
             </LabeledField>
 

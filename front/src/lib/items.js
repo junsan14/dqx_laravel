@@ -32,6 +32,60 @@ function normalizeDropMonsters(rows = []) {
   return rows.map((row, index) => normalizeDropMonster(row, index));
 }
 
+export function createEmptyItemForm() {
+  return {
+    id: null,
+    name: "",
+    name_kana: "",
+    name_en: "",
+    buy_price: "",
+    sell_price: "",
+    category: "",
+    drop_monsters: [],
+  };
+}
+
+export function normalizeItemForm(row = {}) {
+  const item = normalizeItem(row);
+
+  return {
+    ...createEmptyItemForm(),
+    id: item.id,
+    name: item.name,
+    name_kana: item.name_kana,
+    name_en: item.name_en,
+    buy_price: item.buy_price == null ? "" : item.buy_price,
+    sell_price: item.sell_price == null ? "" : item.sell_price,
+    category: item.category,
+    drop_monsters: item.drop_monsters,
+  };
+}
+
+export function buildItemPayload(form = {}) {
+  return {
+    name: String(form.name ?? "").trim(),
+    name_kana: String(form.name_kana ?? "").trim() || null,
+    name_en: String(form.name_en ?? "").trim() || null,
+    buy_price:
+      form.buy_price === "" || form.buy_price == null
+        ? null
+        : Number(form.buy_price),
+    sell_price:
+      form.sell_price === "" || form.sell_price == null
+        ? null
+        : Number(form.sell_price),
+    category: String(form.category ?? "").trim() || null,
+    drop_monsters: Array.isArray(form.drop_monsters)
+      ? form.drop_monsters.map((row, index) => ({
+          id: row.id ?? null,
+          monster_id: row.monster_id,
+          drop_type: row.drop_type === "rare" ? "rare" : "normal",
+          sort_order: index + 1,
+        }))
+      : [],
+  };
+}
+
 function normalizeItem(row = {}) {
   const dropMonsters = normalizeDropMonsters(
     row?.drop_monsters ??
@@ -45,8 +99,10 @@ function normalizeItem(row = {}) {
     id: row?.id ?? null,
 
     name: row?.name ?? "",
-    nameEn: row?.name_en ?? "",
-    name_en: row?.name_en ?? "",
+    nameKana: row?.name_kana ?? row?.nameKana ?? "",
+    name_kana: row?.name_kana ?? row?.nameKana ?? "",
+    nameEn: row?.name_en ?? row?.nameEn ?? "",
+    name_en: row?.name_en ?? row?.nameEn ?? "",
 
     buy_price: row?.buy_price ?? row?.buyPrice ?? null,
     buyPrice: row?.buyPrice ?? row?.buy_price ?? null,

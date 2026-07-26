@@ -235,6 +235,8 @@ function toItemSummary(item) {
   return {
     id: item.id,
     name: item.name,
+    nameKana: item.nameKana, // 追加
+
     slot: item.slot,
     slotKey: item.slotKey,
 
@@ -334,6 +336,8 @@ export function normalizeEquipmentRow(row, itemMap = new Map(), locale = "ja") {
       "",
 
     name: row?.itemName ?? row?.item_name ?? row?.name ?? "",
+    nameKana: row?.itemNameKana ?? row?.item_name_kana ?? "", // 追加
+
     slotKey: normalizeSlotKey(row?.slot ?? "other"),
     slot: normalizeSlotName(row?.slot ?? "other", locale),
 

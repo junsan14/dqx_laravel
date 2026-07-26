@@ -47,6 +47,9 @@ export default function OrbList({
               }}
             >
               <div style={nameStyle()}>{orb.name}</div>
+              {orb.name_kana ? (
+                <div style={readingStyle()}>{orb.name_kana}</div>
+              ) : null}
               <div style={metaStyle()}>
                 {orb.color || "色なし"} / ID: {orb.id}
               </div>
@@ -92,6 +95,12 @@ const nameStyle = () => ({
   fontWeight: 700,
   wordBreak: "break-word",
   color: "var(--text-main)",
+});
+
+const readingStyle = () => ({
+  fontSize: 12,
+  color: "var(--text-sub)",
+  wordBreak: "break-word",
 });
 
 const metaStyle = () => ({

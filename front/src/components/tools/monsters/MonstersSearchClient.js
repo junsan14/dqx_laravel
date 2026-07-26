@@ -282,6 +282,14 @@ export default function MonstersSearchClient() {
     return monster.name;
   };
 
+  const formatSuggestionKana = (monster) => {
+    if (searchType === "monster") {
+      return monster.name_kana || "";
+    }
+
+    return monster.matched_name_kana || monster.name_kana || "";
+  };
+
   const buildUniqueSuggestions = (list) => {
     const map = new Map();
 
@@ -290,9 +298,14 @@ export default function MonstersSearchClient() {
       if (!suggestionName) continue;
 
       if (!map.has(suggestionName)) {
+        const suggestionKana = formatSuggestionKana(monster)?.trim();
+
         map.set(suggestionName, {
           id: monster.id,
           label: suggestionName,
+          searchText: [suggestionName, suggestionKana]
+            .filter(Boolean)
+            .join(" "),
         });
       }
     }
@@ -588,7 +601,9 @@ export default function MonstersSearchClient() {
             emptyText={loading ? t("loading") : "候補がありません"}
             getOptionValue={(option) => option.label}
             getOptionLabel={(option) => option.label}
-            getOptionSearchText={(option) => option.label}
+            getOptionSearchText={(option) =>
+              option.searchText || option.label
+            }
             maxResults={8}
             allowCustomValue
             selectOnFocus

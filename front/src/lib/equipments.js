@@ -512,6 +512,42 @@ export async function fetchEquipments(params = {}) {
   }
 }
 
+export async function searchEquipments(query, limit = 60) {
+  const q = str(query).trim();
+
+  if (q.length < 2) {
+    return [];
+  }
+
+  return fetchEquipments({
+    q,
+    summary: 1,
+    limit,
+  });
+}
+
+export async function fetchEquipmentSelection({
+  groupId = "",
+  itemId = "",
+} = {}) {
+  const normalizedGroupId = str(groupId).trim();
+  const normalizedItemId = str(itemId).trim();
+
+  if (normalizedGroupId) {
+    return fetchEquipments({
+      group_id: normalizedGroupId,
+    });
+  }
+
+  if (normalizedItemId) {
+    return fetchEquipments({
+      item_id: normalizedItemId,
+    });
+  }
+
+  return [];
+}
+
 export async function fetchCraftTools() {
   try {
     return await fetchEquipments({

@@ -10,89 +10,140 @@ use Illuminate\Validation\Rule;
 class EquipmentController extends Controller
 {
     public function index(Request $request): JsonResponse
-{
-    $query = Equipment::query()
-        ->with([
-            'equipmentType.craftType:id,name',
-            'equipmentType.equipableTypes.gameJob:id,name,key',
-            'jobOverrides.gameJob:id,name,key',
-        ])
-        ->whereNotNull('item_name');
+    {
+        $summary = $request->boolean('summary');
 
-    if ($request->filled('q')) {
-        $q = trim((string) $request->q);
-        $escaped = addcslashes($q, '\\%_');
+        $query = Equipment::query()
+            ->whereNotNull('item_name');
 
-        $query->where(function ($sub) use ($escaped) {
-            $sub->where('item_name', 'like', "%{$escaped}%")
-                ->orWhere('item_name_en', 'like', "%{$escaped}%")
-                ->orWhere('item_id', 'like', "%{$escaped}%")
-                ->orWhere('group_name', 'like', "%{$escaped}%")
-                ->orWhere('recipe_book', 'like', "%{$escaped}%");
-        })
-            ->orderByRaw(
-                "
-                CASE
-                    WHEN item_name = ? THEN 0
-                    WHEN item_name_en = ? THEN 0
-                    WHEN item_name LIKE ? THEN 1
-                    WHEN item_name_en LIKE ? THEN 1
-                    ELSE 2
-                END
-                ",
-                [$q, $q, $escaped . '%', $escaped . '%']
-            )
-            ->orderByRaw('LENGTH(COALESCE(item_name_en, item_name)) ASC');
+        if ($summary) {
+            // 検索候補では大きなJSON列や職業情報を返さない。
+            $query
+                ->select([
+                    'id',
+                    'item_id',
+                    'item_name',
+                    'item_name_en',
+                    'group_id',
+                    'group_name',
+                    'group_kind',
+                    'equipment_type_id',
+                    'craft_level',
+                    'equip_level',
+                    'slot',
+                ])
+                ->with([
+                    'equipmentType.craftType:id,name',
+                ]);
+        } else {
+            $query->with([
+                'equipmentType.craftType:id,name',
+                'equipmentType.equipableTypes.gameJob:id,name,key',
+                'jobOverrides.gameJob:id,name,key',
+            ]);
+        }
+
+        // summary=1 の誤呼び出しで全件返すことを防ぐ。
+        if ($summary && !$request->filled('q')) {
+            return response()->json([
+                'data' => [],
+            ]);
+        }
+
+        if ($request->filled('q')) {
+            $q = trim((string) $request->q);
+            $escaped = addcslashes($q, '\\%_');
+            $searchWords = array_values(array_unique([
+                $q,
+                mb_convert_kana($q, 'C', 'UTF-8'),
+                mb_convert_kana($q, 'c', 'UTF-8'),
+            ]));
+
+            $query->where(function ($sub) use ($searchWords) {
+                foreach ($searchWords as $index => $searchWord) {
+                    $escapedWord = addcslashes($searchWord, '\\%_');
+                    $method = $index === 0 ? 'where' : 'orWhere';
+
+                    $sub->{$method}(function ($wordQuery) use ($escapedWord) {
+                        $wordQuery->where('item_name', 'like', "%{$escapedWord}%")
+                            ->orWhere('item_name_en', 'like', "%{$escapedWord}%")
+                            ->orWhere('item_id', 'like', "%{$escapedWord}%")
+                            ->orWhere('group_name', 'like', "%{$escapedWord}%")
+                            ->orWhere('recipe_book', 'like', "%{$escapedWord}%");
+                    });
+                }
+            })
+                ->orderByRaw(
+                    "
+                    CASE
+                        WHEN item_name = ? THEN 0
+                        WHEN item_name_en = ? THEN 0
+                        WHEN item_name LIKE ? THEN 1
+                        WHEN item_name_en LIKE ? THEN 1
+                        ELSE 2
+                    END
+                    ",
+                    [$q, $q, $escaped . '%', $escaped . '%']
+                )
+                ->orderByRaw('LENGTH(COALESCE(item_name_en, item_name)) ASC');
+        }
+
+        if ($request->filled('item_id')) {
+            $query->where('item_id', $request->item_id);
+        }
+
+        if ($request->filled('equipment_type_id')) {
+            $query->where('equipment_type_id', $request->equipment_type_id);
+        }
+
+        if ($request->filled('craft_level')) {
+            $query->where('craft_level', $request->craft_level);
+        }
+
+        if ($request->filled('equip_level')) {
+            $query->where('equip_level', $request->equip_level);
+        }
+
+        if ($request->filled('group_id')) {
+            $query->where('group_id', $request->group_id);
+        }
+
+        if ($request->filled('group_kind')) {
+            $query->where('group_kind', $request->group_kind);
+        }
+
+        if ($request->filled('slot')) {
+            $query->where('slot', $request->slot);
+        }
+
+        if ($request->boolean('has_slot_grid')) {
+            $query->whereNotNull('slot_grid_json')
+                ->where('slot_grid_json', '!=', '[]');
+        }
+
+        if ($request->filled('craft_type')) {
+            $craftType = trim((string) $request->craft_type);
+
+            $query->whereHas('equipmentType.craftType', function ($sub) use ($craftType) {
+                $sub->where('name', $craftType);
+            });
+        }
+
+        $query
+            ->orderBy('craft_level')
+            ->orderBy('equip_level')
+            ->orderBy('group_name')
+            ->orderBy('item_name');
+
+        if ($request->filled('limit')) {
+            $limit = min(max((int) $request->input('limit'), 1), 100);
+            $query->limit($limit);
+        }
+
+        return response()->json([
+            'data' => $query->get(),
+        ]);
     }
-
-    if ($request->filled('equipment_type_id')) {
-        $query->where('equipment_type_id', $request->equipment_type_id);
-    }
-
-    if ($request->filled('craft_level')) {
-        $query->where('craft_level', $request->craft_level);
-    }
-
-    if ($request->filled('equip_level')) {
-        $query->where('equip_level', $request->equip_level);
-    }
-
-    if ($request->filled('group_id')) {
-        $query->where('group_id', $request->group_id);
-    }
-
-    if ($request->filled('group_kind')) {
-        $query->where('group_kind', $request->group_kind);
-    }
-
-    if ($request->filled('slot')) {
-        $query->where('slot', $request->slot);
-    }
-
-    if ($request->boolean('has_slot_grid')) {
-        $query->whereNotNull('slot_grid_json')
-            ->where('slot_grid_json', '!=', '[]');
-    }
-
-    if ($request->filled('craft_type')) {
-        $craftType = trim((string) $request->craft_type);
-
-        $query->whereHas('equipmentType.craftType', function ($sub) use ($craftType) {
-            $sub->where('name', $craftType);
-        });
-    }
-
-    $rows = $query
-        ->orderBy('craft_level')
-        ->orderBy('equip_level')
-        ->orderBy('group_name')
-        ->orderBy('item_name')
-        ->get();
-
-    return response()->json([
-        'data' => $rows,
-    ]);
-}
 
     public function show($id): JsonResponse
     {

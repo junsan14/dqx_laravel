@@ -1,10 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocale } from "next-intl";
 import { clamp0 } from "@/lib/money";
 import { fetchItemsByIds } from "@/lib/items";
-import { fetchCraftTools, fetchEquipments } from "@/lib/equipments";
+import {
+  fetchCraftTools,
+  fetchEquipmentSelection,
+  fetchEquipments,
+  searchEquipments,
+} from "@/lib/equipments";
 import { fetchCrystalRules } from "@/lib/crystalRules";
 import CraftProfitHeaderCard from "./CraftProfitHeaderCard";
 import CraftProfitMaterialsCard from "./CraftProfitMaterialsCard";
@@ -29,6 +34,8 @@ import {
 import styles from "./CraftProfitClient.module.css";
 
 const TOOL_USES = 30;
+const MIN_SEARCH_LENGTH = 2;
+const SEARCH_DEBOUNCE_MS = 300;
 
 function extractEquipmentRows(payload) {
   if (Array.isArray(payload?.data)) return payload.data;
@@ -119,14 +126,19 @@ function normalizeSearchText(value) {
 
 export default function CraftProfitClient() {
   const locale = useLocale();
+  const selectionRequestRef = useRef(0);
+  const selectingNameRef = useRef("");
 
   const [sets, setSets] = useState([]);
+  const [selectedSet, setSelectedSet] = useState(null);
   const [craftTools, setCraftTools] = useState([]);
   const [crystalRules, setCrystalRules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [selectionLoading, setSelectionLoading] = useState(false);
+  const [searchError, setSearchError] = useState("");
 
-  const [setId, setSetId] = useState("");
   const [setQuery, setSetQuery] = useState("");
   const [openSetList, setOpenSetList] = useState(false);
 
@@ -144,56 +156,24 @@ export default function CraftProfitClient() {
       try {
         setLoading(true);
         setLoadError("");
+        setSets([]);
+        setSelectedSet(null);
+        setSetQuery("");
+        setCraftTools([]);
+        selectionRequestRef.current += 1;
+        selectingNameRef.current = "";
 
-        const [equipments, tools, crystalRulesResponse] = await Promise.all([
-          fetchEquipments(),
-          fetchCraftTools(),
-          fetchCrystalRules(),
-        ]);
-
-        const equipmentRows = localizeEquipmentRows(
-          extractEquipmentRows(equipments),
-          locale
-        );
-
-        const toolRows = localizeEquipmentRows(
-          extractEquipmentRows(tools).filter(
-            (row) =>
-              String(row?.groupKind ?? row?.group_kind ?? "") ===
-              "craft_tool_set"
-          ),
-          locale
-        );
-
-        const materialIds = extractMaterialIds(equipmentRows);
-        const items = materialIds.length
-          ? await fetchItemsByIds(materialIds, locale)
-          : [];
-
-        const itemMap = new Map(
-          (Array.isArray(items) ? items : []).map((item) => [
-            Number(item.id),
-            item,
-          ])
-        );
-
-        const nextSets = buildSetsFromEquipments(
-          equipmentRows,
-          itemMap,
-          locale
-        );
+        const crystalRulesResponse = await fetchCrystalRules();
 
         if (cancelled) return;
 
-        setSets(Array.isArray(nextSets) ? nextSets : []);
-        setCraftTools(Array.isArray(toolRows) ? toolRows : []);
         setCrystalRules(
           Array.isArray(crystalRulesResponse) ? crystalRulesResponse : []
         );
       } catch (error) {
         if (cancelled) return;
         console.error("CraftProfit load error:", error);
-        setLoadError("装備データの取得に失敗した");
+        setLoadError("初期データの取得に失敗した");
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -206,10 +186,64 @@ export default function CraftProfitClient() {
     };
   }, [locale]);
 
-  const selectedSet = useMemo(
-    () => sets.find((set) => String(set.id) === String(setId)) || null,
-    [sets, setId]
-  );
+  useEffect(() => {
+    const query = setQuery.trim();
+    const normalizedQuery = normalizeSearchText(query);
+    const normalizedSelectedName = normalizeSearchText(selectedSet?.name);
+    const normalizedSelectingName = normalizeSearchText(
+      selectingNameRef.current
+    );
+
+    if (
+      normalizedQuery.length < MIN_SEARCH_LENGTH ||
+      (normalizedSelectedName && normalizedQuery === normalizedSelectedName) ||
+      (normalizedSelectingName && normalizedQuery === normalizedSelectingName)
+    ) {
+      setSets([]);
+      setSearchLoading(false);
+      setSearchError("");
+      return;
+    }
+
+    let cancelled = false;
+
+    const timer = window.setTimeout(async () => {
+      try {
+        setSearchLoading(true);
+        setSearchError("");
+
+        const response = await searchEquipments(query);
+        const equipmentRows = localizeEquipmentRows(
+          extractEquipmentRows(response),
+          locale
+        );
+        const nextSets = buildSetsFromEquipments(
+          equipmentRows,
+          new Map(),
+          locale
+        );
+
+        if (cancelled) return;
+        setSets(Array.isArray(nextSets) ? nextSets : []);
+      } catch (error) {
+        if (cancelled) return;
+        console.error("Equipment search error:", error);
+        setSets([]);
+        setSearchError(
+          locale === "en"
+            ? "Failed to search equipment"
+            : "装備の検索に失敗しました"
+        );
+      } finally {
+        if (!cancelled) setSearchLoading(false);
+      }
+    }, SEARCH_DEBOUNCE_MS);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [setQuery, locale, selectedSet?.id, selectedSet?.name]);
 
   useEffect(() => {
     if (selectedSet?.name) {
@@ -221,37 +255,15 @@ export default function CraftProfitClient() {
   }, [selectedSet, locale]);
 
   const filteredSets = useMemo(() => {
-    const query = normalizeSearchText(setQuery);
-    if (!query) return sets;
-
     const groupedMatches = [];
     const singleMatches = [];
 
     for (const set of sets) {
-      const top = normalizeSearchText(set.name || "");
-      const itemNames = Array.isArray(set.items)
-        ? normalizeSearchText(
-            set.items.map((item) => String(item.name || "")).join(" ")
-          )
-        : "";
-      const equipLevelText = normalizeSearchText(set.equipLevel ?? "");
-      const itemEquipLevels = Array.isArray(set.items)
-        ? normalizeSearchText(
-            set.items
-              .map((item) => String(item.equipLevel ?? ""))
-              .join(" ")
-          )
-        : "";
+      const isGrouped =
+        String(set?.groupKind ?? "").endsWith("_set") ||
+        (Array.isArray(set?.items) && set.items.length > 1);
 
-      const matched =
-        top.includes(query) ||
-        itemNames.includes(query) ||
-        equipLevelText.includes(query) ||
-        itemEquipLevels.includes(query);
-
-      if (!matched) continue;
-
-      if (Array.isArray(set.items) && set.items.length > 1) {
+      if (isGrouped) {
         groupedMatches.push(set);
       } else {
         singleMatches.push(set);
@@ -259,10 +271,44 @@ export default function CraftProfitClient() {
     }
 
     return [...groupedMatches, ...singleMatches];
-  }, [setQuery, sets]);
+  }, [sets]);
 
   const craftType = selectedSet?.craftType;
   const feeRate = useMemo(() => clamp0(feeRatePct) / 100, [feeRatePct]);
+
+  useEffect(() => {
+    if (!craftType || craftTools.length) return;
+
+    let cancelled = false;
+
+    async function loadCraftTools() {
+      try {
+        const response = await fetchCraftTools();
+        const toolRows = localizeEquipmentRows(
+          extractEquipmentRows(response).filter(
+            (row) =>
+              String(row?.groupKind ?? row?.group_kind ?? "") ===
+              "craft_tool_set"
+          ),
+          locale
+        );
+
+        if (!cancelled) {
+          setCraftTools(Array.isArray(toolRows) ? toolRows : []);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Craft tool load error:", error);
+        }
+      }
+    }
+
+    loadCraftTools();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [craftType, craftTools.length, locale]);
 
   const toolOptions = useMemo(() => {
     const base = [
@@ -384,9 +430,7 @@ export default function CraftProfitClient() {
     }
   }, [slots, activeSlot]);
 
-  const onChangeSet = (nextId) => {
-    setSetId(nextId);
-
+  const onChangeSet = async (nextId) => {
     const nextSet =
       sets.find((set) => String(set.id) === String(nextId)) || null;
 
@@ -395,7 +439,92 @@ export default function CraftProfitClient() {
       return;
     }
 
+    const requestId = selectionRequestRef.current + 1;
+    selectionRequestRef.current = requestId;
+    selectingNameRef.current = nextSet.name;
+
     setSetQuery(nextSet.name);
+    setSets([]);
+    setSelectionLoading(true);
+    setSearchError("");
+
+    try {
+      const isGrouped =
+        String(nextSet?.groupKind ?? "").endsWith("_set") ||
+        (Array.isArray(nextSet?.items) && nextSet.items.length > 1);
+
+      let response = await fetchEquipmentSelection(
+        isGrouped
+          ? { groupId: nextSet.id }
+          : { itemId: nextSet.id }
+      );
+
+      let equipmentRows = localizeEquipmentRows(
+        extractEquipmentRows(response),
+        locale
+      );
+
+      // 古いデータで group_id / item_id が空の場合の保険。
+      if (!equipmentRows.length) {
+        response = await fetchEquipments({
+          q: nextSet.name,
+          limit: 100,
+        });
+        equipmentRows = localizeEquipmentRows(
+          extractEquipmentRows(response),
+          locale
+        );
+      }
+
+      if (!equipmentRows.length) {
+        throw new Error("Equipment detail was not found");
+      }
+
+      const materialIds = extractMaterialIds(equipmentRows);
+      const items = materialIds.length
+        ? await fetchItemsByIds(materialIds, locale)
+        : [];
+
+      const itemMap = new Map(
+        (Array.isArray(items) ? items : []).map((item) => [
+          Number(item.id),
+          item,
+        ])
+      );
+
+      const detailSets = buildSetsFromEquipments(
+        equipmentRows,
+        itemMap,
+        locale
+      );
+      const resolvedSet =
+        detailSets.find(
+          (set) => String(set.id) === String(nextSet.id)
+        ) ||
+        detailSets.find((set) => set.name === nextSet.name) ||
+        detailSets[0] ||
+        null;
+
+      if (!resolvedSet) {
+        throw new Error("Equipment detail could not be built");
+      }
+
+      if (selectionRequestRef.current !== requestId) return;
+      setSelectedSet(resolvedSet);
+    } catch (error) {
+      if (selectionRequestRef.current !== requestId) return;
+      console.error("Equipment detail load error:", error);
+      setSearchError(
+        locale === "en"
+          ? "Failed to load equipment details"
+          : "装備詳細の取得に失敗しました"
+      );
+    } finally {
+      if (selectionRequestRef.current === requestId) {
+        selectingNameRef.current = "";
+        setSelectionLoading(false);
+      }
+    }
   };
 
   const updateUnitCost = (materialKey, value) => {
@@ -577,6 +706,9 @@ export default function CraftProfitClient() {
               setOpenSetList={setOpenSetList}
               filteredSets={filteredSets}
               onChangeSet={onChangeSet}
+              searchLoading={searchLoading}
+              selectionLoading={selectionLoading}
+              searchError={searchError}
               craftType={craftType}
               selectedSet={selectedSet}
               toolId={toolId}

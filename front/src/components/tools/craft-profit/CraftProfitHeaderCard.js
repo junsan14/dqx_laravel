@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import DropdownSelect from "@/components/common/DropdownSelect";
 import SearchableSelect from "@/components/common/SearchableSelect";
 import styles from "./CraftProfitHeaderCard.module.css";
@@ -10,6 +10,9 @@ export default function CraftProfitHeaderCard({
   setSetQuery,
   filteredSets,
   onChangeSet,
+  searchLoading,
+  selectionLoading,
+  searchError,
   craftType,
   selectedSet,
   toolId,
@@ -19,9 +22,22 @@ export default function CraftProfitHeaderCard({
   setToolPriceOverride,
 }) {
   const t = useTranslations("CraftProfit");
+  const locale = useLocale();
 
   const hasToolOptions =
     Array.isArray(toolOptions) && toolOptions.length > 1;
+  const queryLength = String(setQuery ?? "").trim().length;
+  const searchEmptyText = searchError
+    ? searchError
+    : searchLoading
+    ? locale === "en"
+      ? "Searching..."
+      : "検索中..."
+    : queryLength < 2
+    ? locale === "en"
+      ? "Enter at least 2 characters"
+      : "2文字以上入力してください"
+    : t("common.noResults");
 
   return (
     <section className={styles.card}>
@@ -39,7 +55,11 @@ export default function CraftProfitHeaderCard({
                 </span>
 
                 <span className={styles.requiredLevel}>
-                  必要LV{selectedSet?.craftLevel ?? "—"}
+                  {selectionLoading
+                    ? locale === "en"
+                      ? "Loading..."
+                      : "読み込み中..."
+                    : `必要LV${selectedSet?.craftLevel ?? "—"}`}
                 </span>
               </div>
             </div>
@@ -56,7 +76,7 @@ export default function CraftProfitHeaderCard({
                 }}
                 options={filteredSets}
                 placeholder={t("header.searchPlaceholder")}
-                emptyText={t("common.noResults")}
+                emptyText={searchEmptyText}
                 maxResults={30}
                 allowCustomValue
                 selectOnFocus

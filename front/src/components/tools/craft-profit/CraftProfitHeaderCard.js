@@ -51,7 +51,14 @@ export default function CraftProfitHeaderCard({
 
               <div className={styles.equipmentMeta}>
                 <span className={styles.craftTypeName}>
-                  {craftType || "—"}
+                  {selectionLoading ? (
+                    <span
+                      className={styles.metaSkeleton}
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    craftType || "—"
+                  )}
                 </span>
 
                 <span className={styles.requiredLevel}>
@@ -124,7 +131,15 @@ export default function CraftProfitHeaderCard({
           </div>
         </div>
 
-        {hasToolOptions && (
+        {selectionLoading ? (
+          <div className={styles.field} aria-hidden="true">
+            <span className={styles.labelSkeleton} />
+            <div className={styles.toolControls}>
+              <span className={styles.controlSkeleton} />
+              <span className={styles.controlSkeleton} />
+            </div>
+          </div>
+        ) : hasToolOptions ? (
           <div className={styles.field}>
             <label className={styles.label}>
               {t("header.toolUsage")}
@@ -158,7 +173,7 @@ export default function CraftProfitHeaderCard({
               />
             </div>
           </div>
-        )}
+        ) : null}
       </div>
     </section>
   );

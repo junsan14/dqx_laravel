@@ -124,6 +124,92 @@ function normalizeSearchText(value) {
     .trim();
 }
 
+function SkeletonLine({ width = "100%", height = "0.875rem" }) {
+  return (
+    <span
+      className={styles.skeletonLine}
+      style={{ width, height }}
+      aria-hidden="true"
+    />
+  );
+}
+
+function EquipmentInfoSkeleton() {
+  return (
+    <section className={styles.skeletonCard} aria-hidden="true">
+      <div className={styles.skeletonHeadingRow}>
+        <SkeletonLine width="7.5rem" height="1.15rem" />
+        <SkeletonLine width="5.5rem" />
+      </div>
+
+      <div className={styles.skeletonTagRow}>
+        <SkeletonLine width="4.5rem" height="1.75rem" />
+        <SkeletonLine width="5.75rem" height="1.75rem" />
+        <SkeletonLine width="4rem" height="1.75rem" />
+      </div>
+    </section>
+  );
+}
+
+function EquipmentDetailsSkeleton() {
+  return (
+    <>
+      <section className={styles.skeletonCard} aria-hidden="true">
+        <div className={styles.skeletonHeadingRow}>
+          <SkeletonLine width="9rem" height="1.15rem" />
+          <SkeletonLine width="6rem" />
+        </div>
+
+        <div className={styles.skeletonTabRow}>
+          <SkeletonLine width="5rem" height="2.25rem" />
+          <SkeletonLine width="5rem" height="2.25rem" />
+          <SkeletonLine width="5rem" height="2.25rem" />
+          <SkeletonLine width="5rem" height="2.25rem" />
+        </div>
+
+        <div className={styles.skeletonMaterialGrid}>
+          <div className={styles.skeletonPanel}>
+            <SkeletonLine width="55%" />
+            <SkeletonLine height="2.75rem" />
+            <SkeletonLine width="80%" />
+            <SkeletonLine height="2.75rem" />
+          </div>
+
+          <div className={styles.skeletonPanel}>
+            <SkeletonLine width="45%" />
+            <SkeletonLine />
+            <SkeletonLine width="92%" />
+            <SkeletonLine width="86%" />
+            <SkeletonLine width="70%" />
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.skeletonCard} aria-hidden="true">
+        <div className={styles.skeletonHeadingRow}>
+          <SkeletonLine width="8rem" height="1.15rem" />
+          <SkeletonLine width="5rem" />
+        </div>
+
+        <div className={styles.skeletonPriceGrid}>
+          <div className={styles.skeletonPanel}>
+            <SkeletonLine width="55%" />
+            <SkeletonLine width="78%" height="1.5rem" />
+          </div>
+          <div className={styles.skeletonPanel}>
+            <SkeletonLine width="50%" />
+            <SkeletonLine width="70%" height="1.5rem" />
+          </div>
+          <div className={styles.skeletonPanel}>
+            <SkeletonLine width="60%" />
+            <SkeletonLine width="74%" height="1.5rem" />
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
 export default function CraftProfitClient() {
   const locale = useLocale();
   const selectionRequestRef = useRef(0);
@@ -697,7 +783,15 @@ export default function CraftProfitClient() {
       ) : loadError ? (
         <div className={styles.errorMessage}>{loadError}</div>
       ) : (
-        <div className={styles.content}>
+        <div className={styles.content} aria-busy={selectionLoading}>
+          {selectionLoading ? (
+            <span className={styles.visuallyHidden} role="status" aria-live="polite">
+              {locale === "en"
+                ? "Loading equipment details"
+                : "装備情報を読み込んでいます"}
+            </span>
+          ) : null}
+
           <div className={styles.topGrid}>
             <CraftProfitHeaderCard
               setQuery={setQuery}
@@ -719,44 +813,54 @@ export default function CraftProfitClient() {
             />
 
             <div className={styles.infoColumn}>
-              <EquipmentInfoCard
-                selectedSet={selectedSet}
-                displayJobs={displayJobs}
-                crystalByEquipLevel={crystalByEquipLevel}
-              />
+              {selectionLoading ? (
+                <EquipmentInfoSkeleton />
+              ) : (
+                <EquipmentInfoCard
+                  selectedSet={selectedSet}
+                  displayJobs={displayJobs}
+                  crystalByEquipLevel={crystalByEquipLevel}
+                />
+              )}
             </div>
           </div>
 
-          <CraftProfitMaterialsCard
-            slots={slots}
-            rows={rows}
-            slotGrids={slotGrids}
-            slotGridMeta={slotGridMeta}
-            selectedSet={selectedSet}
-            activeSlot={activeSlot}
-            setActiveSlot={setActiveSlot}
-            unitCostMap={unitCostMap}
-            updateUnitCost={updateUnitCost}
-            mobileToolRow={mobileToolRow}
-            toolEnabled={toolEnabled}
-            selectedTool={selectedTool}
-            toolPrice={toolPrice}
-            setToolPriceOverride={setToolPriceOverride}
-            toolCostPerCraft={toolCostPerCraft}
-            slotTotalsWithTool={slotTotalsWithTool}
-            avgMaterialCostPerPart={avgMaterialCostPerPart}
-            costPerItem={costPerItem}
-            slotPricing={slotPricing}
-          />
+          {selectionLoading ? (
+            <EquipmentDetailsSkeleton />
+          ) : (
+            <>
+              <CraftProfitMaterialsCard
+                slots={slots}
+                rows={rows}
+                slotGrids={slotGrids}
+                slotGridMeta={slotGridMeta}
+                selectedSet={selectedSet}
+                activeSlot={activeSlot}
+                setActiveSlot={setActiveSlot}
+                unitCostMap={unitCostMap}
+                updateUnitCost={updateUnitCost}
+                mobileToolRow={mobileToolRow}
+                toolEnabled={toolEnabled}
+                selectedTool={selectedTool}
+                toolPrice={toolPrice}
+                setToolPriceOverride={setToolPriceOverride}
+                toolCostPerCraft={toolCostPerCraft}
+                slotTotalsWithTool={slotTotalsWithTool}
+                avgMaterialCostPerPart={avgMaterialCostPerPart}
+                costPerItem={costPerItem}
+                slotPricing={slotPricing}
+              />
 
-          <SalePriceCard
-            feeRatePct={feeRatePct}
-            setFeeRatePct={setFeeRatePct}
-            minRates={minRates}
-            recommend={recommend}
-            recommendRate={recommendRate}
-            crystalEquipmentLabel={crystalEquipmentLabel}
-          />
+              <SalePriceCard
+                feeRatePct={feeRatePct}
+                setFeeRatePct={setFeeRatePct}
+                minRates={minRates}
+                recommend={recommend}
+                recommendRate={recommendRate}
+                crystalEquipmentLabel={crystalEquipmentLabel}
+              />
+            </>
+          )}
         </div>
       )}
     </main>

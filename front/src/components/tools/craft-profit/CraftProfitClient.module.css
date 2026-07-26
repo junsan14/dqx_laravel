@@ -35,10 +35,121 @@
   margin-top: 1.25rem;
 }
 
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skeletonCard {
+  padding: 1.25rem;
+  border: 1px solid var(--card-border);
+  border-radius: 1rem;
+  background: var(--card-bg);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+}
+
+.skeletonHeadingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.skeletonLine {
+  position: relative;
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: var(--soft-bg);
+}
+
+.skeletonLine::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.45),
+    transparent
+  );
+  content: "";
+  transform: translateX(-100%);
+  animation: skeletonShimmer 1.35s ease-in-out infinite;
+}
+
+.skeletonTagRow,
+.skeletonTabRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.skeletonMaterialGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.skeletonPriceGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.skeletonPanel {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--card-border);
+  border-radius: 0.875rem;
+  background: var(--soft-bg);
+}
+
+.skeletonPanel > .skeletonLine {
+  background: var(--card-bg);
+}
+
+.skeletonPanel > * + * {
+  margin-top: 0.85rem;
+}
+
+@keyframes skeletonShimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (max-width: 767px) {
+  .skeletonCard {
+    padding: 1rem;
+  }
+
+  .skeletonMaterialGrid,
+  .skeletonPriceGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 @media (min-width: 640px) {
   .page > * + *,
   .content > * + * {
     margin-top: 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonLine::after {
+    animation: none;
   }
 }
 

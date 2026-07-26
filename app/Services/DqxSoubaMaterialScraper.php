@@ -199,8 +199,8 @@ class DqxSoubaMaterialScraper
             if ($name === '' || $price <= 0) {
                 continue;
             }
-
-            $result[$this->normalizeName($name)] = $price;
+            //1.5倍で更新
+            $result[$this->normalizeName($name)] = (int) ceil($price * 1.5);
         }
 
         return $result;

@@ -781,6 +781,7 @@ if ($searchType === 'equipment') {
             $monster = Monster::create([
                 'display_order' => $newOrder,
                 'name' => $validated['name'],
+                'name_kana' => $validated['name_kana'] ?? null,
                 'name_en' => $validated['name_en'] ?? null,
                 'system_type' => $validated['system_type'] ?? null,
                 'system_type_en' => $validated['system_type_en'] ?? null,
@@ -791,11 +792,6 @@ if ($searchType === 'equipment') {
                 'reincarnation_parent_id' => $parentId,
                 'image_path' => null,
             ]);
-
-            if (array_key_exists('name_kana', $validated)) {
-                $monster->name_kana = $validated['name_kana'];
-                $monster->save();
-            }
 
             if ($request->hasFile('image_file')) {
                 $imagePath = $this->storeMonsterImage($monster->id, $request);
@@ -838,6 +834,7 @@ if ($searchType === 'equipment') {
             $payload = [
                 'display_order' => $newOrder,
                 'name' => $validated['name'],
+                'name_kana' => $validated['name_kana'] ?? null,
                 'name_en' => $validated['name_en'] ?? null,
                 'system_type' => $validated['system_type'] ?? null,
                 'system_type_en' => $validated['system_type_en'] ?? null,
@@ -854,11 +851,6 @@ if ($searchType === 'equipment') {
             }
 
             $monster->update($payload);
-
-            if (array_key_exists('name_kana', $validated)) {
-                $monster->name_kana = $validated['name_kana'];
-                $monster->save();
-            }
 
             if ($request->hasFile('image_file')) {
                 $imagePath = $this->storeMonsterImage($monster->id, $request);

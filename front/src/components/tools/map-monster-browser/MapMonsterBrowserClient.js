@@ -12,16 +12,154 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import { fetchMaps, fetchMapOptions } from "@/lib/maps";
 import { fetchMonsterMapSpawns } from "@/lib/monsterMapSpawns";
-import { fetchMonsterDetail } from "@/lib/monsters";
+import { fetchMonsterDetail, searchMonsters } from "@/lib/monsters";
 import MonsterMapOverlay from "./MonsterMapOverlay";
 import styles from "./MapMonsterBrowser.module.css";
 import PageHeroTitle from "@/components/PageHeroTitle";
 import MapMonsterBrowserSkeleton from "@/components/ui/MapMonsterBrowserSkeleton";
+import ContentReportArea from "@/components/common/ContentReportArea";
 import {
   MdOutlineSwipe,
   MdOutlineSwipeLeft,
   MdOutlineSwipeRight,
 } from "react-icons/md";
+
+const MAP_LAYER_REPORT_FIELDS = [
+  { value: "map_name", label: "地名" },
+  { value: "continent_name", label: "大陸・地域" },
+  { value: "layer_name", label: "階層名・フロア名" },
+  { value: "floor_no", label: "階層順・フロア番号" },
+  { value: "image", label: "マップ画像" },
+  { value: "other", label: "その他" },
+];
+
+const DROP_SEARCH_MIN_LENGTH = 2;
+const DROP_SEARCH_DEBOUNCE_MS = 180;
+
+const mapOptionsRequestCache = new Map();
+const mapDataRequestCache = new Map();
+const monsterIndexRequestCache = new Map();
+
+function getCachedRequest(cache, key, loader) {
+  if (cache.has(key)) {
+    return cache.get(key);
+  }
+
+  const request = Promise.resolve()
+    .then(loader)
+    .catch((error) => {
+      cache.delete(key);
+      throw error;
+    });
+
+  cache.set(key, request);
+  return request;
+}
+
+function fetchMapOptionsCached(locale) {
+  return getCachedRequest(mapOptionsRequestCache, locale, () =>
+    fetchMapOptions(locale)
+  );
+}
+
+function fetchMapDataCached(locale) {
+  return getCachedRequest(mapDataRequestCache, locale, () =>
+    Promise.all([
+      fetchMaps("", locale),
+      fetchMonsterMapSpawns(undefined, locale),
+    ])
+  );
+}
+
+function fetchMonsterIndexCached(locale) {
+  return getCachedRequest(monsterIndexRequestCache, locale, () =>
+    searchMonsters("", "monster", locale)
+  );
+}
+
+function mergeMonsterRows(previous = {}, rows = []) {
+  const next = { ...previous };
+
+  for (const row of Array.isArray(rows) ? rows : []) {
+    const id = Number(row?.id ?? row?.monster_id);
+    if (!id) continue;
+
+    const existing = next[id] ?? {};
+    const monsterName =
+      normalizeText(row?.monster_name) ||
+      normalizeText(row?.name) ||
+      normalizeText(existing?.monster_name) ||
+      normalizeText(existing?.name);
+
+    next[id] = {
+      ...existing,
+      ...row,
+      id,
+      name: monsterName,
+      monster_name: monsterName,
+    };
+  }
+
+  return next;
+}
+
+function buildMonsterSeedsFromSpawns(spawns = []) {
+  const rows = [];
+  const seen = new Set();
+
+  for (const spawn of Array.isArray(spawns) ? spawns : []) {
+    const id = Number(spawn?.monster_id);
+    if (!id || seen.has(id)) continue;
+
+    seen.add(id);
+    rows.push({
+      id,
+      name: spawn?.monster_name ?? "",
+      monster_name: spawn?.monster_name ?? "",
+      system_type: spawn?.system_type ?? "",
+      system_type_en: spawn?.system_type_en ?? "",
+      display_order: spawn?.monster_display_order ?? 999999,
+      is_reincarnated: Boolean(spawn?.is_reincarnated),
+      reincarnation_parent_id: spawn?.reincarnation_parent_id ?? null,
+    });
+  }
+
+  return rows;
+}
+
+function getMatchedDropName(monster = {}) {
+  const matchedName = normalizeText(monster?.matched_name);
+  if (matchedName) return matchedName;
+
+  const matchText = normalizeText(monster?.match_text);
+  if (matchText.includes(":")) {
+    return normalizeText(matchText.split(":").slice(1).join(":"));
+  }
+
+  return matchText || normalizeText(monster?.name);
+}
+
+function buildDropSuggestions(monsters = []) {
+  const unique = new Map();
+
+  for (const monster of Array.isArray(monsters) ? monsters : []) {
+    const label = getMatchedDropName(monster);
+    if (!label || unique.has(label)) continue;
+
+    unique.set(label, {
+      label,
+      searchText: [
+        label,
+        normalizeText(monster?.matched_name_kana),
+        normalizeText(monster?.name_kana),
+      ]
+        .filter(Boolean)
+        .join(" "),
+    });
+  }
+
+  return Array.from(unique.values()).slice(0, 12);
+}
 
 function uniqBy(array, keyGetter) {
   const map = new Map();
@@ -449,8 +587,36 @@ function MapWithCards({
   selectedSystemType,
   isMobile,
   backHref,
+  mapLabel,
+  continentLabel,
   t,
 }) {
+  const layerId = Number(layer?.id);
+  const canReportLayer = Number.isSafeInteger(layerId) && layerId > 0;
+  const layerLabel =
+    getDisplayValue(layer, ["map_layer_name", "layer_name", "name"]) ||
+    `マップ階層 #${layer?.id ?? ""}`;
+  const reportTargetLabel = [mapLabel, layerLabel].filter(Boolean).join(" / ");
+
+  const layerReport = canReportLayer ? (
+    <ContentReportArea
+      reportableType="map_layer"
+      reportableId={layerId}
+      targetLabel={reportTargetLabel || layerLabel}
+      fieldOptions={MAP_LAYER_REPORT_FIELDS}
+      context={{
+        page: "map-monster-browser",
+        map_id: layer?.map_id ?? null,
+        map_name: mapLabel || null,
+        continent_name: continentLabel || null,
+        map_layer_id: layerId,
+        layer_name: layerLabel,
+        floor_no: layer?.floor_no ?? null,
+      }}
+      description="地名・大陸・階層名・フロア番号・マップ画像の間違いを送ってください。"
+    />
+  ) : null;
+
   if (isMobile) {
     return (
       <div className="grid gap-4">
@@ -462,6 +628,8 @@ function MapWithCards({
             showMonsterNameInBubble
           />
         </div>
+
+        {layerReport}
 
         <MonsterSpawnCarousel
           spawns={spawns}
@@ -477,13 +645,17 @@ function MapWithCards({
 
   return (
     <div className={styles.mapAndCardsDesktop}>
-      <div className={styles.mapDesktopBox}>
-        <MonsterMapOverlay
-          imagePath={layer?.image_path || layer?.image_url || ""}
-          spawns={spawns}
-          monstersById={monstersById}
-          showMonsterNameInBubble
-        />
+      <div className="grid min-w-0 gap-3">
+        <div className={styles.mapDesktopBox}>
+          <MonsterMapOverlay
+            imagePath={layer?.image_path || layer?.image_url || ""}
+            spawns={spawns}
+            monstersById={monstersById}
+            showMonsterNameInBubble
+          />
+        </div>
+
+        {layerReport}
       </div>
 
       <MonsterSpawnCarousel
@@ -506,6 +678,8 @@ function LayerSection({
   relatedSelectedMonsterIds,
   isMobile,
   backHref,
+  mapLabel,
+  continentLabel,
   t,
 }) {
   const filteredLayerSpawns = useMemo(() => {
@@ -564,6 +738,8 @@ function LayerSection({
           selectedSystemType={selectedSystemType}
           isMobile={isMobile}
           backHref={backHref}
+          mapLabel={mapLabel}
+          continentLabel={continentLabel}
           t={t}
         />
       </div>
@@ -577,6 +753,8 @@ function LayerCarousel({
   selectedSystemType,
   isMobile,
   backHref,
+  mapLabel,
+  continentLabel,
   t,
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -633,6 +811,8 @@ function LayerCarousel({
             selectedSystemType={selectedSystemType}
             isMobile
             backHref={backHref}
+            mapLabel={mapLabel}
+            continentLabel={continentLabel}
             t={t}
           />
         </div>
@@ -681,6 +861,8 @@ function LayerCarousel({
           selectedSystemType={selectedSystemType}
           isMobile={false}
           backHref={backHref}
+          mapLabel={mapLabel}
+          continentLabel={continentLabel}
           t={t}
         />
       </div>
@@ -726,28 +908,45 @@ export default function MapMonsterBrowser() {
           searchMethod: "検索方法",
           searchByMap: "地名で探す",
           searchBySystem: "モンスター系統で探す",
+          searchByDrop: "ドロップ品で探す",
           systemSearch: "モンスター系統",
+          dropSearch: "ドロップ品",
           selectSystem: "系統を選択してください",
+          selectDrop: "ドロップ品を入力してください",
+          dropMinLength: "2文字以上入力してください",
           loadingSystems: "系統データを読み込み中...",
+          loadingDrops: "ドロップ品を検索中...",
           noSystems: "この大陸には系統データがありません",
+          noDrops: "該当するドロップ品がありません",
           filteredMapSearch: "該当する地名",
           selectSystemFirst: "先にモンスター系統を選択してください",
+          selectDropFirst: "先にドロップ品を入力してください",
           matchedMaps: (count) => `該当する地名 ${count}件`,
           selectedSystem: (systemType) => `「${systemType}」が出現する地名だけを表示中`,
+          selectedDrop: (dropName) => `「${dropName}」を落とすモンスターだけを表示中`,
         }
       : {
           searchMethod: "Search method",
           searchByMap: "Search by map",
           searchBySystem: "Search by monster family",
+          searchByDrop: "Search by drop",
           systemSearch: "Monster family",
+          dropSearch: "Drop item",
           selectSystem: "Select a monster family",
+          selectDrop: "Enter a drop item",
+          dropMinLength: "Enter at least 2 characters",
           loadingSystems: "Loading monster families...",
+          loadingDrops: "Searching drops...",
           noSystems: "No monster family data is available for this continent",
+          noDrops: "No matching drops",
           filteredMapSearch: "Matching maps",
           selectSystemFirst: "Select a monster family first",
+          selectDropFirst: "Enter a drop item first",
           matchedMaps: (count) => `${count} matching maps`,
           selectedSystem: (systemType) =>
             `Showing only maps where “${systemType}” appears`,
+          selectedDrop: (dropName) =>
+            `Showing only monsters that drop “${dropName}”`,
         };
   }, [locale]);
 
@@ -760,6 +959,8 @@ export default function MapMonsterBrowser() {
     () => new Set()
   );
   const [loading, setLoading] = useState(true);
+  const [loadingContinents, setLoadingContinents] = useState(true);
+  const [loadingMonsterIndex, setLoadingMonsterIndex] = useState(true);
   const [loadingMonsterMaster, setLoadingMonsterMaster] = useState(false);
   const [error, setError] = useState("");
 
@@ -769,6 +970,15 @@ export default function MapMonsterBrowser() {
   const [selectedLayerId, setSelectedLayerId] = useState("all");
   const [selectedMonsterId, setSelectedMonsterId] = useState("");
   const [selectedSystemType, setSelectedSystemType] = useState("");
+  const [dropKeyword, setDropKeyword] = useState("");
+  const [dropSearchResults, setDropSearchResults] = useState([]);
+  const [dropSuggestions, setDropSuggestions] = useState([]);
+  const [dropSearchLoading, setDropSearchLoading] = useState(false);
+  const [dropSearchError, setDropSearchError] = useState("");
+  const [dropSearchCompletedQuery, setDropSearchCompletedQuery] = useState("");
+
+  const dropSearchTimerRef = useRef(null);
+  const dropSearchCacheRef = useRef(new Map());
 
   function syncUrl({
     continentId = selectedContinentId,
@@ -776,6 +986,7 @@ export default function MapMonsterBrowser() {
     layerId = selectedLayerId,
     mode = searchMode,
     systemType = selectedSystemType,
+    dropName = dropKeyword,
   } = {}) {
     const params = new URLSearchParams(searchParams?.toString() || "");
 
@@ -788,11 +999,20 @@ export default function MapMonsterBrowser() {
     if (layerId && layerId !== "all") params.set("layerId", String(layerId));
     else params.delete("layerId");
 
-    if (mode === "system") params.set("searchMode", "system");
-    else params.delete("searchMode");
+    if (mode === "system" || mode === "drop") {
+      params.set("searchMode", mode);
+    } else {
+      params.delete("searchMode");
+    }
 
     if (systemType) params.set("systemType", systemType);
     else params.delete("systemType");
+
+    if (mode === "drop" && normalizeText(dropName)) {
+      params.set("dropName", normalizeText(dropName));
+    } else {
+      params.delete("dropName");
+    }
 
     const query = params.toString();
     router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
@@ -802,9 +1022,13 @@ export default function MapMonsterBrowser() {
     const nextContinentId = searchParams?.get("continentId") ?? "";
     const nextMapId = searchParams?.get("mapId") ?? "";
     const nextLayerId = searchParams?.get("layerId") ?? "all";
+    const rawSearchMode = searchParams?.get("searchMode");
     const nextSearchMode =
-      searchParams?.get("searchMode") === "system" ? "system" : "map";
+      rawSearchMode === "system" || rawSearchMode === "drop"
+        ? rawSearchMode
+        : "map";
     const nextSystemType = searchParams?.get("systemType") ?? "";
+    const nextDropName = searchParams?.get("dropName") ?? "";
 
     setSelectedContinentId((previous) =>
       previous === nextContinentId ? previous : nextContinentId
@@ -821,30 +1045,37 @@ export default function MapMonsterBrowser() {
     setSelectedSystemType((previous) =>
       previous === nextSystemType ? previous : nextSystemType
     );
+    setDropKeyword((previous) =>
+      previous === nextDropName ? previous : nextDropName
+    );
   }, [searchParams]);
 
   useEffect(() => {
     let ignore = false;
 
-    async function bootstrap() {
-      setLoading(true);
-      setError("");
+    setLoading(true);
+    setLoadingContinents(true);
+    setLoadingMonsterIndex(true);
+    setLoadingMonsterMaster(false);
+    setError("");
+    setMonsterMaster({});
+    setResolvedMonsterIds(new Set());
+    setMonsterMasterLocale(locale);
 
-      try {
-        const [mapOptions, mapRows, spawnRows] = await Promise.all([
-          fetchMapOptions(locale),
-          fetchMaps("", locale),
-          fetchMonsterMapSpawns(undefined, locale),
-        ]);
-
+    fetchMapOptionsCached(locale)
+      .then((mapOptions) => {
         if (ignore) return;
 
         const nextContinents = Array.isArray(mapOptions?.continents)
           ? [...mapOptions.continents]
               .filter((row) => row && row.id != null)
               .sort((a, b) => {
-                const aOrder = Number(a?.display_id ?? 0);
-                const bOrder = Number(b?.display_id ?? 0);
+                const aOrder = Number(
+                  a?.display_order ?? a?.display_id ?? 0
+                );
+                const bOrder = Number(
+                  b?.display_order ?? b?.display_id ?? 0
+                );
                 if (aOrder !== bOrder) return aOrder - bOrder;
 
                 return sortJa(
@@ -854,27 +1085,153 @@ export default function MapMonsterBrowser() {
               })
           : [];
 
+        setContinents(nextContinents);
+      })
+      .catch((optionsError) => {
+        console.error(optionsError);
+        if (!ignore) {
+          setError(optionsError?.message || t("loadFailed"));
+        }
+      })
+      .finally(() => {
+        if (!ignore) setLoadingContinents(false);
+      });
+
+    fetchMapDataCached(locale)
+      .then(([mapRows, spawnRows]) => {
+        if (ignore) return;
+
         const nextMaps = Array.isArray(mapRows)
           ? mapRows.filter((row) => isBrowsableMapType(row?.map_type))
           : [];
+        const nextSpawns = Array.isArray(spawnRows) ? spawnRows : [];
 
         setMaps(nextMaps);
-        setAllSpawns(Array.isArray(spawnRows) ? spawnRows : []);
-        setContinents(nextContinents);
-      } catch (bootstrapError) {
-        console.error(bootstrapError);
-        if (!ignore) setError(bootstrapError?.message || t("loadFailed"));
-      } finally {
+        setAllSpawns(nextSpawns);
+        setMonsterMaster((previous) =>
+          mergeMonsterRows(previous, buildMonsterSeedsFromSpawns(nextSpawns))
+        );
+      })
+      .catch((mapDataError) => {
+        console.error(mapDataError);
+        if (!ignore) {
+          setError(mapDataError?.message || t("loadFailed"));
+        }
+      })
+      .finally(() => {
         if (!ignore) setLoading(false);
-      }
-    }
+      });
 
-    bootstrap();
+    fetchMonsterIndexCached(locale)
+      .then((monsterRows) => {
+        if (ignore) return;
+
+        const safeRows = Array.isArray(monsterRows) ? monsterRows : [];
+
+        setMonsterMaster((previous) =>
+          mergeMonsterRows(previous, safeRows)
+        );
+        setResolvedMonsterIds(
+          new Set(
+            safeRows
+              .map((row) => Number(row?.id))
+              .filter(Boolean)
+          )
+        );
+        setMonsterMasterLocale(locale);
+      })
+      .catch((monsterIndexError) => {
+        console.error("Failed to preload monster index", monsterIndexError);
+      })
+      .finally(() => {
+        if (!ignore) setLoadingMonsterIndex(false);
+      });
 
     return () => {
       ignore = true;
     };
   }, [locale, t]);
+
+  useEffect(() => {
+    let ignore = false;
+
+    if (dropSearchTimerRef.current) {
+      window.clearTimeout(dropSearchTimerRef.current);
+      dropSearchTimerRef.current = null;
+    }
+
+    if (searchMode !== "drop") {
+      setDropSearchLoading(false);
+      setDropSearchError("");
+      return undefined;
+    }
+
+    const query = normalizeText(dropKeyword);
+
+    if (query.length < DROP_SEARCH_MIN_LENGTH) {
+      setDropSearchResults([]);
+      setDropSuggestions([]);
+      setDropSearchLoading(false);
+      setDropSearchError("");
+      setDropSearchCompletedQuery("");
+      return undefined;
+    }
+
+    dropSearchTimerRef.current = window.setTimeout(async () => {
+      setDropSearchLoading(true);
+      setDropSearchError("");
+
+      try {
+        const cacheKey = `${locale}:${query.toLocaleLowerCase()}`;
+        let rows = dropSearchCacheRef.current.get(cacheKey);
+
+        if (!rows) {
+          rows = await searchMonsters(query, "item", locale);
+          dropSearchCacheRef.current.set(
+            cacheKey,
+            Array.isArray(rows) ? rows : []
+          );
+        }
+
+        if (ignore) return;
+
+        const safeRows = Array.isArray(rows) ? rows : [];
+        setDropSearchResults(safeRows);
+        setDropSuggestions(buildDropSuggestions(safeRows));
+        setDropSearchCompletedQuery(query);
+        setMonsterMaster((previous) =>
+          mergeMonsterRows(previous, safeRows)
+        );
+        setResolvedMonsterIds((previous) => {
+          const next = new Set(previous);
+          for (const row of safeRows) {
+            const id = Number(row?.id);
+            if (id) next.add(id);
+          }
+          return next;
+        });
+        setMonsterMasterLocale(locale);
+      } catch (dropError) {
+        console.error("Drop search failed", dropError);
+        if (!ignore) {
+          setDropSearchResults([]);
+          setDropSuggestions([]);
+          setDropSearchCompletedQuery(query);
+          setDropSearchError(dropError?.message || labels.noDrops);
+        }
+      } finally {
+        if (!ignore) setDropSearchLoading(false);
+      }
+    }, DROP_SEARCH_DEBOUNCE_MS);
+
+    return () => {
+      ignore = true;
+      if (dropSearchTimerRef.current) {
+        window.clearTimeout(dropSearchTimerRef.current);
+        dropSearchTimerRef.current = null;
+      }
+    };
+  }, [dropKeyword, locale, searchMode, labels.noDrops]);
 
   const selectedContinent = useMemo(() => {
     return (
@@ -951,6 +1308,11 @@ export default function MapMonsterBrowser() {
       return undefined;
     }
 
+    if (loadingMonsterIndex && !localeChanged) {
+      setLoadingMonsterMaster(true);
+      return undefined;
+    }
+
     const resolvedIds = localeChanged ? new Set() : resolvedMonsterIds;
     const missingIds = monsterIdsToLoad.filter(
       (id) => !resolvedIds.has(Number(id))
@@ -968,15 +1330,9 @@ export default function MapMonsterBrowser() {
         const results = await fetchMonsterDetailsInBatches(missingIds, locale);
         if (ignore) return;
 
-        setMonsterMaster((previous) => {
-          const next = localeChanged ? {} : { ...previous };
-
-          for (const row of results) {
-            if (row?.id) next[row.id] = row;
-          }
-
-          return next;
-        });
+        setMonsterMaster((previous) =>
+          mergeMonsterRows(localeChanged ? {} : previous, results)
+        );
         setResolvedMonsterIds((previous) => {
           const next = localeChanged ? new Set() : new Set(previous);
           for (const id of missingIds) next.add(Number(id));
@@ -998,6 +1354,7 @@ export default function MapMonsterBrowser() {
     monsterIdsToLoad,
     monsterMasterLocale,
     resolvedMonsterIds,
+    loadingMonsterIndex,
   ]);
 
   const monsterDetailsReady = useMemo(() => {
@@ -1012,6 +1369,25 @@ export default function MapMonsterBrowser() {
     monsterMasterLocale,
     resolvedMonsterIds,
   ]);
+
+  const normalizedDropQuery = useMemo(
+    () => normalizeText(dropKeyword),
+    [dropKeyword]
+  );
+
+  const dropSearchReady =
+    normalizedDropQuery.length >= DROP_SEARCH_MIN_LENGTH &&
+    normalizeText(dropSearchCompletedQuery) === normalizedDropQuery &&
+    !dropSearchLoading &&
+    !dropSearchError;
+
+  const dropMatchedMonsterIds = useMemo(() => {
+    return new Set(
+      dropSearchResults
+        .map((monster) => Number(monster?.id))
+        .filter(Boolean)
+    );
+  }, [dropSearchResults]);
 
   const systemTypesInContinent = useMemo(() => {
     return Array.from(
@@ -1040,18 +1416,47 @@ export default function MapMonsterBrowser() {
     return ids;
   }, [spawnsInContinent, monsterMaster, selectedSystemType]);
 
-  const mapsForSearch = useMemo(() => {
-    if (searchMode !== "system") return mapsInContinent;
-    if (!selectedSystemType) return [];
+  const mapIdsForSelectedDrop = useMemo(() => {
+    if (!dropSearchReady || dropMatchedMonsterIds.size === 0) {
+      return new Set();
+    }
 
-    return mapsInContinent.filter((map) =>
-      mapIdsForSelectedSystem.has(Number(map.id))
-    );
+    const ids = new Set();
+
+    for (const spawn of spawnsInContinent) {
+      if (dropMatchedMonsterIds.has(Number(spawn.monster_id))) {
+        ids.add(Number(spawn.map_id));
+      }
+    }
+
+    return ids;
+  }, [dropSearchReady, dropMatchedMonsterIds, spawnsInContinent]);
+
+  const mapsForSearch = useMemo(() => {
+    if (searchMode === "system") {
+      if (!selectedSystemType) return [];
+
+      return mapsInContinent.filter((map) =>
+        mapIdsForSelectedSystem.has(Number(map.id))
+      );
+    }
+
+    if (searchMode === "drop") {
+      if (!dropSearchReady) return [];
+
+      return mapsInContinent.filter((map) =>
+        mapIdsForSelectedDrop.has(Number(map.id))
+      );
+    }
+
+    return mapsInContinent;
   }, [
     searchMode,
     mapsInContinent,
     selectedSystemType,
     mapIdsForSelectedSystem,
+    dropSearchReady,
+    mapIdsForSelectedDrop,
   ]);
 
   useEffect(() => {
@@ -1067,19 +1472,25 @@ export default function MapMonsterBrowser() {
       setSelectedLayerId("all");
       setSelectedMonsterId("");
       setSelectedSystemType("");
+      setDropKeyword("");
+      setDropSearchResults([]);
+      setDropSuggestions([]);
       syncUrl({
         continentId: "",
         mapId: "",
         layerId: "all",
         systemType: "",
+        dropName: "",
       });
     }
   }, [continents, selectedContinentId]);
 
   useEffect(() => {
-    if (!selectedMapId) return;
+    if (!selectedMapId || loading) return;
+    if (searchMode === "system" && loadingMonsterIndex) return;
     if (searchMode === "system" && !monsterDetailsReady) return;
     if (searchMode === "system" && !selectedSystemType) return;
+    if (searchMode === "drop" && !dropSearchReady) return;
 
     const exists = mapsForSearch.some(
       (row) => Number(row.id) === Number(selectedMapId)
@@ -1097,9 +1508,13 @@ export default function MapMonsterBrowser() {
     searchMode,
     selectedSystemType,
     monsterDetailsReady,
+    dropSearchReady,
+    loading,
+    loadingMonsterIndex,
   ]);
 
   useEffect(() => {
+    if (loading) return;
     if (!selectedLayerId || selectedLayerId === "all") return;
 
     const exists = mapLayers.some(
@@ -1111,7 +1526,7 @@ export default function MapMonsterBrowser() {
       setSelectedMonsterId("");
       syncUrl({ layerId: "all" });
     }
-  }, [mapLayers, selectedLayerId]);
+  }, [mapLayers, selectedLayerId, loading]);
 
   const candidateSpawns = useMemo(() => {
     if (!selectedMapId) return [];
@@ -1139,14 +1554,28 @@ export default function MapMonsterBrowser() {
     });
   }, [candidateSpawns, monsterMaster]);
 
+  const monstersMatchingPrimarySearch = useMemo(() => {
+    if (searchMode !== "drop") return monstersOnCurrentScope;
+    if (!dropSearchReady) return [];
+
+    return monstersOnCurrentScope.filter((monster) =>
+      dropMatchedMonsterIds.has(Number(monster?.id))
+    );
+  }, [
+    monstersOnCurrentScope,
+    searchMode,
+    dropSearchReady,
+    dropMatchedMonsterIds,
+  ]);
+
   const monstersVisibleInAside = useMemo(() => {
-    if (!selectedSystemType) return monstersOnCurrentScope;
+    if (!selectedSystemType) return monstersMatchingPrimarySearch;
 
     const target = normalizeText(selectedSystemType);
-    return monstersOnCurrentScope.filter(
+    return monstersMatchingPrimarySearch.filter(
       (monster) => normalizeText(monster?.system_type) === target
     );
-  }, [monstersOnCurrentScope, selectedSystemType]);
+  }, [monstersMatchingPrimarySearch, selectedSystemType]);
 
   const relatedSelectedMonsterIds = useMemo(() => {
     if (!selectedMonsterId) return new Set();
@@ -1156,16 +1585,24 @@ export default function MapMonsterBrowser() {
   const systemTypesOnCurrentScope = useMemo(() => {
     return Array.from(
       new Set(
-        monstersOnCurrentScope
+        monstersMatchingPrimarySearch
           .map((row) => normalizeText(row.system_type))
           .filter(Boolean)
       )
     ).sort((a, b) => sortJa(a, b));
-  }, [monstersOnCurrentScope]);
+  }, [monstersMatchingPrimarySearch]);
 
   const filteredSpawns = useMemo(() => {
     return candidateSpawns.filter((spawn) => {
       const monster = monsterMaster[spawn.monster_id];
+
+      if (
+        searchMode === "drop" &&
+        (!dropSearchReady ||
+          !dropMatchedMonsterIds.has(Number(spawn.monster_id)))
+      ) {
+        return false;
+      }
 
       if (
         selectedMonsterId &&
@@ -1189,6 +1626,9 @@ export default function MapMonsterBrowser() {
     selectedMonsterId,
     selectedSystemType,
     relatedSelectedMonsterIds,
+    searchMode,
+    dropSearchReady,
+    dropMatchedMonsterIds,
   ]);
 
   const layerSections = useMemo(() => {
@@ -1226,7 +1666,13 @@ export default function MapMonsterBrowser() {
   }, [candidateSpawns, selectedMonsterId, relatedSelectedMonsterIds]);
 
   useEffect(() => {
-    if (!selectedSystemType || searchMode === "system" || loadingMonsterMaster) {
+    if (
+      !selectedSystemType ||
+      searchMode === "system" ||
+      loading ||
+      loadingMonsterIndex ||
+      loadingMonsterMaster
+    ) {
       return;
     }
 
@@ -1243,6 +1689,8 @@ export default function MapMonsterBrowser() {
     systemTypesOnCurrentScope,
     selectedSystemType,
     searchMode,
+    loading,
+    loadingMonsterIndex,
     loadingMonsterMaster,
   ]);
 
@@ -1252,17 +1700,23 @@ export default function MapMonsterBrowser() {
     setSelectedLayerId("all");
     setSelectedMonsterId("");
     setSelectedSystemType("");
+    setDropKeyword("");
+    setDropSearchResults([]);
+    setDropSuggestions([]);
+    setDropSearchCompletedQuery("");
 
     syncUrl({
       continentId: value,
       mapId: "",
       layerId: "all",
       systemType: "",
+      dropName: "",
     });
   }
 
   function handleSearchModeChange(nextMode) {
-    const normalizedMode = nextMode === "system" ? "system" : "map";
+    const normalizedMode =
+      nextMode === "system" || nextMode === "drop" ? nextMode : "map";
 
     setSearchMode(normalizedMode);
     setSelectedMapId("");
@@ -1270,11 +1724,19 @@ export default function MapMonsterBrowser() {
     setSelectedMonsterId("");
     setSelectedSystemType("");
 
+    if (normalizedMode !== "drop") {
+      setDropKeyword("");
+      setDropSearchResults([]);
+      setDropSuggestions([]);
+      setDropSearchCompletedQuery("");
+    }
+
     syncUrl({
       mode: normalizedMode,
       mapId: "",
       layerId: "all",
       systemType: "",
+      dropName: normalizedMode === "drop" ? dropKeyword : "",
     });
   }
 
@@ -1289,7 +1751,34 @@ export default function MapMonsterBrowser() {
       layerId: "all",
       mode: "system",
       systemType,
+      dropName: "",
     });
+  }
+
+  function handleDropKeywordChange(nextValue, option) {
+    const nextKeyword = String(nextValue ?? "");
+
+    setDropKeyword(nextKeyword);
+    setSelectedMapId("");
+    setSelectedLayerId("all");
+    setSelectedMonsterId("");
+    setSelectedSystemType("");
+
+    if (!normalizeText(nextKeyword)) {
+      setDropSearchResults([]);
+      setDropSuggestions([]);
+      setDropSearchCompletedQuery("");
+    }
+
+    if (option || !normalizeText(nextKeyword)) {
+      syncUrl({
+        mapId: "",
+        layerId: "all",
+        mode: "drop",
+        systemType: "",
+        dropName: nextKeyword,
+      });
+    }
   }
 
   function handleMapChange(value) {
@@ -1304,6 +1793,7 @@ export default function MapMonsterBrowser() {
       mapId: value,
       layerId: "all",
       systemType: nextSystemType,
+      dropName: searchMode === "drop" ? dropKeyword : "",
     });
   }
 
@@ -1358,17 +1848,35 @@ export default function MapMonsterBrowser() {
   const mapLabel = getDisplayValue(selectedMap, ["map_name", "name"], "");
 
   const mapSearchDisabled =
+    loading ||
     !selectedContinentId ||
     (searchMode === "system" &&
-      (!selectedSystemType || !monsterDetailsReady));
+      (!selectedSystemType || !monsterDetailsReady)) ||
+    (searchMode === "drop" && !dropSearchReady);
 
   const mapPlaceholder = !selectedContinentId
     ? t("selectContinentFirst")
-    : searchMode === "system" && !monsterDetailsReady
-      ? labels.loadingSystems
-      : searchMode === "system" && !selectedSystemType
-        ? labels.selectSystemFirst
-        : t("mapPlaceholder");
+    : loading
+      ? t("loadingContinentData")
+      : searchMode === "system" &&
+          (loadingMonsterIndex || !monsterDetailsReady)
+        ? labels.loadingSystems
+        : searchMode === "system" && !selectedSystemType
+          ? labels.selectSystemFirst
+          : searchMode === "drop" &&
+              normalizedDropQuery.length < DROP_SEARCH_MIN_LENGTH
+            ? labels.selectDropFirst
+            : searchMode === "drop" && dropSearchLoading
+              ? labels.loadingDrops
+              : t("mapPlaceholder");
+
+  const dropEmptyText = dropSearchError
+    ? dropSearchError
+    : dropSearchLoading
+      ? labels.loadingDrops
+      : normalizedDropQuery.length < DROP_SEARCH_MIN_LENGTH
+        ? labels.dropMinLength
+        : labels.noDrops;
 
   return (
     <main className={styles.page}>
@@ -1378,13 +1886,15 @@ export default function MapMonsterBrowser() {
         <div className={styles.filterField}>
           <span className={styles.labelText}>{t("continent")}</span>
           <SearchableSelect
-            disabled={loading}
-            value={loading ? "" : selectedContinentId}
+            disabled={loadingContinents}
+            value={selectedContinentId}
             onChange={handleContinentChange}
             options={continents}
             selectOnFocus
             placeholder={
-              loading ? t("loadingContinentData") : t("continentPlaceholder")
+              loadingContinents
+                ? t("loadingContinentData")
+                : t("continentPlaceholder")
             }
             emptyText={t("noCandidates")}
             ariaLabel={t("continent")}
@@ -1423,6 +1933,7 @@ export default function MapMonsterBrowser() {
             options={[
               { value: "map", label: labels.searchByMap },
               { value: "system", label: labels.searchBySystem },
+              { value: "drop", label: labels.searchByDrop },
             ]}
           />
         </div>
@@ -1433,14 +1944,19 @@ export default function MapMonsterBrowser() {
             <DropdownSelect
               value={selectedSystemType}
               onChange={handleSearchSystemChange}
-              disabled={!selectedContinentId || !monsterDetailsReady}
+              disabled={
+                !selectedContinentId ||
+                loading ||
+                loadingMonsterIndex ||
+                !monsterDetailsReady
+              }
               ariaLabel={labels.systemSearch}
               options={[
                 {
                   value: "",
                   label: !selectedContinentId
                     ? labels.selectSystem
-                    : !monsterDetailsReady
+                    : loading || loadingMonsterIndex || !monsterDetailsReady
                       ? labels.loadingSystems
                       : systemTypesInContinent.length === 0
                         ? labels.noSystems
@@ -1455,6 +1971,32 @@ export default function MapMonsterBrowser() {
           </div>
         ) : null}
 
+        {searchMode === "drop" ? (
+          <div className={styles.filterField}>
+            <span className={styles.labelText}>{labels.dropSearch}</span>
+            <SearchableSelect
+              value={dropKeyword}
+              onChange={handleDropKeywordChange}
+              options={dropSuggestions}
+              disabled={!selectedContinentId}
+              placeholder={
+                selectedContinentId ? labels.selectDrop : t("selectContinentFirst")
+              }
+              emptyText={dropEmptyText}
+              maxResults={12}
+              allowCustomValue
+              selectOnFocus
+              selectSingleOnEnter
+              ariaLabel={labels.dropSearch}
+              getOptionValue={(option) => option?.label ?? ""}
+              getOptionLabel={(option) => option?.label ?? ""}
+              getOptionSearchText={(option) =>
+                option?.searchText || option?.label || ""
+              }
+            />
+          </div>
+        ) : null}
+
         <div
           className={cn(
             styles.filterField,
@@ -1463,7 +2005,9 @@ export default function MapMonsterBrowser() {
           )}
         >
           <span className={styles.labelText}>
-            {searchMode === "system" ? labels.filteredMapSearch : t("mapSearch")}
+            {searchMode === "system" || searchMode === "drop"
+              ? labels.filteredMapSearch
+              : t("mapSearch")}
           </span>
           <SearchableSelect
             disabled={mapSearchDisabled}
@@ -1474,7 +2018,9 @@ export default function MapMonsterBrowser() {
             selectOnFocus
             emptyText={t("noCandidates")}
             ariaLabel={
-              searchMode === "system" ? labels.filteredMapSearch : t("mapSearch")
+              searchMode === "system" || searchMode === "drop"
+                ? labels.filteredMapSearch
+                : t("mapSearch")
             }
             getOptionValue={(option) => option?.id}
             getOptionLabel={(option) =>
@@ -1495,7 +2041,15 @@ export default function MapMonsterBrowser() {
               )
             }
           />
-          {searchMode === "system" && selectedSystemType && monsterDetailsReady ? (
+          {searchMode === "system" &&
+          selectedSystemType &&
+          monsterDetailsReady ? (
+            <div className={styles.searchInfo}>
+              {labels.matchedMaps(mapsForSearch.length)}
+            </div>
+          ) : null}
+
+          {searchMode === "drop" && dropSearchReady ? (
             <div className={styles.searchInfo}>
               {labels.matchedMaps(mapsForSearch.length)}
             </div>
@@ -1525,6 +2079,12 @@ export default function MapMonsterBrowser() {
       {searchMode === "system" && selectedSystemType ? (
         <div className={styles.searchInfo}>
           {labels.selectedSystem(selectedSystemType)}
+        </div>
+      ) : null}
+
+      {searchMode === "drop" && dropSearchReady ? (
+        <div className={styles.searchInfo}>
+          {labels.selectedDrop(normalizedDropQuery)}
         </div>
       ) : null}
 
@@ -1702,6 +2262,8 @@ export default function MapMonsterBrowser() {
                 relatedSelectedMonsterIds={relatedSelectedMonsterIds}
                 isMobile={isMobile}
                 backHref={backHref}
+                mapLabel={mapLabel}
+                continentLabel={continentLabel}
                 t={t}
               />
             ) : shouldUseCarousel ? (
@@ -1711,6 +2273,8 @@ export default function MapMonsterBrowser() {
                 selectedSystemType={selectedSystemType}
                 isMobile={isMobile}
                 backHref={backHref}
+                mapLabel={mapLabel}
+                continentLabel={continentLabel}
                 t={t}
               />
             ) : layerSections.length > 0 ? (
@@ -1726,6 +2290,8 @@ export default function MapMonsterBrowser() {
                     relatedSelectedMonsterIds={relatedSelectedMonsterIds}
                     isMobile={isMobile}
                     backHref={backHref}
+                    mapLabel={mapLabel}
+                    continentLabel={continentLabel}
                     t={t}
                   />
                 ))}

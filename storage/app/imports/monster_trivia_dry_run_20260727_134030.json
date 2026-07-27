@@ -1,0 +1,59 @@
+{
+    "executed_at": "2026-07-27T13:40:30+00:00",
+    "source_url": "https://dragon-quest.jp/ten/monster/zukan/",
+    "dry_run": true,
+    "force": false,
+    "all_link_count": 930,
+    "processed_count": 5,
+    "summary": {
+        "updated": 3,
+        "skipped_completed": 2,
+        "not_found": 0,
+        "no_trivia": 0,
+        "failed": 0
+    },
+    "updated_monsters": [
+        {
+            "result": "would_update",
+            "monster_id": 2,
+            "name": "スライムベス",
+            "detail_name": "スライムベス",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "あざやかな身体が自慢の色違いのスライム。スライムより ちょっぴり強くさわると 少しあたたかい。",
+            "trivia_2": "じつは スライムのメスというウワサもあるようだが学会のえらい人でも真相は わからないらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/sura/02.php"
+        },
+        {
+            "result": "would_update",
+            "monster_id": 3,
+            "name": "いたずらもぐら",
+            "detail_name": "いたずらもぐら",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "スコップを持ったいたずら好きのモンスター。チカラをためてきたら気をつけよう！",
+            "trivia_2": "かつては落とし穴を掘って旅人をはめようとしていたが仲間同士で穴に落ちまくりそれ以来自重している。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/02.php"
+        },
+        {
+            "result": "would_update",
+            "monster_id": 4,
+            "name": "ビッグハット",
+            "detail_name": "ビッグハット",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "大きな帽子を深くかぶったイノシシ魔物のルーキー。戦いになるとおびえてしまい帽子にくるまって身を守る。",
+            "trivia_2": "魔物たちについ最近までペットとして飼われていたが戦力になると見込まれ魔物の一員として戦っている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/01.php"
+        }
+    ],
+    "not_found_monsters": [],
+    "no_trivia_monsters": [],
+    "failed_pages": []
+}

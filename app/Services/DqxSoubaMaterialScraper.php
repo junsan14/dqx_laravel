@@ -200,7 +200,7 @@ class DqxSoubaMaterialScraper
                 continue;
             }
             //1.5倍で更新
-            $result[$this->normalizeName($name)] = (int) ceil($price * 1.5);
+            $result[$this->normalizeName($name)] = (int) ceil($price * 1.21);
         }
 
         return $result;

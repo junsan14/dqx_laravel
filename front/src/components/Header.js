@@ -151,6 +151,11 @@ const ADMIN_MENUS = [
     localized: false,
   },
   {
+    href: "/admin/tool-editor/content-reports",
+    label: "レポート",
+    localized: false,
+  },
+  {
     href: "/admin/kishoju",
     label: "輝晶獣",
     localized: false,

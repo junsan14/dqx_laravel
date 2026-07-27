@@ -1,0 +1,19 @@
+{
+    "executed_at": "2026-07-27T15:20:44+00:00",
+    "source_url": "https://dragon-quest.jp/ten/monster/zukan/",
+    "dry_run": false,
+    "force": true,
+    "all_link_count": 930,
+    "processed_count": 5,
+    "summary": {
+        "updated": 0,
+        "skipped_completed": 5,
+        "not_found": 0,
+        "no_trivia": 0,
+        "failed": 0
+    },
+    "updated_monsters": [],
+    "not_found_monsters": [],
+    "no_trivia_monsters": [],
+    "failed_pages": []
+}

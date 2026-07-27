@@ -17,6 +17,7 @@ import CraftProfitSkeleton from "@/components/ui/CraftProfitSkeleton";
 import EquipmentInfoCard from "./EquipmentInfoCard";
 import SalePriceCard from "./SalePriceCard";
 import PageHeroTitle from "@/components/PageHeroTitle";
+import ContentReportArea from "@/components/common/ContentReportArea";
 import {
   DEFAULT_FEE_RATE,
   buildInitialUnitCostMap,
@@ -29,6 +30,7 @@ import {
   getCrystalInfo,
   getDisplayJobs,
   isCrystalEquipment,
+  normalizeSlotKey,
   recommendFromP3,
 } from "./craftProfitHelpers";
 import styles from "./CraftProfitClient.module.css";
@@ -36,6 +38,18 @@ import styles from "./CraftProfitClient.module.css";
 const TOOL_USES = 30;
 const MIN_SEARCH_LENGTH = 2;
 const SEARCH_DEBOUNCE_MS = 300;
+const ALL_SLOT = "__all__";
+
+const EQUIPMENT_REPORT_FIELDS = [
+  { value: "basic_info", label: "装備名・装備レベル・部位" },
+  { value: "stats_effects", label: "基礎数値・効果" },
+  { value: "craft_info", label: "職人・必要レベル" },
+  { value: "materials", label: "必要素材・個数" },
+  { value: "slot_grid", label: "数値・マス配置" },
+  { value: "set_effects", label: "セット効果" },
+  { value: "price", label: "価格情報" },
+  { value: "other", label: "その他" },
+];
 
 function extractEquipmentRows(payload) {
   if (Array.isArray(payload?.data)) return payload.data;
@@ -217,6 +231,9 @@ export default function CraftProfitClient() {
 
   const [sets, setSets] = useState([]);
   const [selectedSet, setSelectedSet] = useState(null);
+  // buildSetsFromEquipments() の変換前データ。
+  // content_reports.reportable_id には equipments.id が必要なので保持する。
+  const [selectedEquipmentRows, setSelectedEquipmentRows] = useState([]);
   const [craftTools, setCraftTools] = useState([]);
   const [crystalRules, setCrystalRules] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -234,6 +251,7 @@ export default function CraftProfitClient() {
   const [toolPriceOverride, setToolPriceOverride] = useState(null);
   const [unitCostMap, setUnitCostMap] = useState({});
   const [activeSlot, setActiveSlot] = useState("その他");
+  const [reportSelectedSlot, setReportSelectedSlot] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -244,6 +262,7 @@ export default function CraftProfitClient() {
         setLoadError("");
         setSets([]);
         setSelectedSet(null);
+        setSelectedEquipmentRows([]);
         setSetQuery("");
         setCraftTools([]);
         selectionRequestRef.current += 1;
@@ -531,6 +550,7 @@ export default function CraftProfitClient() {
 
     setSetQuery(nextSet.name);
     setSets([]);
+    setSelectedEquipmentRows([]);
     setSelectionLoading(true);
     setSearchError("");
 
@@ -596,6 +616,7 @@ export default function CraftProfitClient() {
       }
 
       if (selectionRequestRef.current !== requestId) return;
+      setSelectedEquipmentRows(equipmentRows);
       setSelectedSet(resolvedSet);
     } catch (error) {
       if (selectionRequestRef.current !== requestId) return;
@@ -769,6 +790,116 @@ export default function CraftProfitClient() {
     [selectedSet]
   );
 
+  const equipmentReportTarget = useMemo(() => {
+    if (!selectedSet || selectedEquipmentRows.length === 0) return null;
+
+    const cleanText = (value) => String(value ?? "").trim();
+    const isAllSelected = reportSelectedSlot === ALL_SLOT;
+    const reportSlot = isAllSelected ? activeSlot : reportSelectedSlot || activeSlot;
+    const currentSlotKey = normalizeSlotKey(reportSlot);
+
+    // 大成功基準値で選択中の部位と、APIの装備行を同じ正規化ルールで照合する。
+    // 「腕」「ウデ」「arms」のように表記が違っても同じ部位として扱う。
+    const activeRow =
+      selectedEquipmentRows.find((row) =>
+        [
+          row?.slot,
+          row?.part,
+          row?.equipmentSlot,
+          row?.equipment_slot,
+          row?.slot_name,
+        ]
+          .filter((value) => cleanText(value))
+          .some((value) => normalizeSlotKey(value) === currentSlotKey)
+      ) || selectedEquipmentRows[0];
+
+    const reportableId = Number(activeRow?.id);
+
+    if (!Number.isSafeInteger(reportableId) || reportableId <= 0) {
+      console.warn("Equipment report target id was not found", {
+        activeSlot: reportSlot,
+        reportSelectedSlot,
+        activeRow,
+        selectedEquipmentRows,
+      });
+      return null;
+    }
+
+    const itemName = cleanText(
+      activeRow?.itemName ??
+        activeRow?.item_name ??
+        activeRow?.name ??
+        selectedSet?.name ??
+        ""
+    );
+
+    const rowSlot = cleanText(
+      activeRow?.slot ??
+        activeRow?.part ??
+        activeRow?.equipmentSlot ??
+        activeRow?.equipment_slot
+    );
+
+    // 画面のタブ表示名を優先するため、
+    // 「アンテイクグローブ（腕）」のように現在選択中の部位が表示される。
+    const activeSlotLabel = cleanText(
+      slotGridMeta?.[reportSlot]?.label ??
+        slotGridMeta?.[reportSlot]?.itemName ??
+        reportSlot ??
+        rowSlot
+    );
+
+    const displaySlot =
+      activeSlotLabel && activeSlotLabel !== "その他"
+        ? activeSlotLabel
+        : rowSlot && rowSlot !== "その他"
+          ? rowSlot
+          : "";
+
+    const setName = cleanText(
+      selectedSet?.name ??
+        activeRow?.groupName ??
+        activeRow?.group_name ??
+        itemName
+    );
+
+    return {
+      id: reportableId,
+      label: isAllSelected
+        ? setName
+        : displaySlot && itemName
+          ? `${itemName}（${displaySlot}）`
+          : itemName,
+      context: {
+        page: "craft-profit",
+        equipment_id: reportableId,
+        item_id: activeRow?.itemId ?? activeRow?.item_id ?? null,
+        group_id:
+          activeRow?.groupId ??
+          activeRow?.group_id ??
+          selectedSet?.groupId ??
+          selectedSet?.group_id ??
+          selectedSet?.id ??
+          null,
+        group_name:
+          activeRow?.groupName ??
+          activeRow?.group_name ??
+          selectedSet?.name ??
+          null,
+        active_slot: isAllSelected ? null : displaySlot || null,
+        report_scope: isAllSelected ? "all" : "part",
+        raw_slot: rowSlot || null,
+        craft_type: selectedSet?.craftType ?? null,
+      },
+    };
+  }, [
+    selectedSet,
+    selectedEquipmentRows,
+    activeSlot,
+    reportSelectedSlot,
+    slotGridMeta,
+  ]);
+
   return (
     <main className={styles.page}>
       <PageHeroTitle
@@ -837,6 +968,7 @@ export default function CraftProfitClient() {
                 selectedSet={selectedSet}
                 activeSlot={activeSlot}
                 setActiveSlot={setActiveSlot}
+                onSelectedTabChange={setReportSelectedSlot}
                 unitCostMap={unitCostMap}
                 updateUnitCost={updateUnitCost}
                 mobileToolRow={mobileToolRow}
@@ -859,6 +991,21 @@ export default function CraftProfitClient() {
                 recommendRate={recommendRate}
                 crystalEquipmentLabel={crystalEquipmentLabel}
               />
+
+              {equipmentReportTarget ? (
+                <ContentReportArea
+                  reportableType="equipment"
+                  reportableId={equipmentReportTarget.id}
+                  targetLabel={equipmentReportTarget.label}
+                  fieldOptions={EQUIPMENT_REPORT_FIELDS}
+                  context={equipmentReportTarget.context}
+                  description={
+                    locale === "en"
+                      ? "Report an incorrect equipment name, level, material, effect, crafting value, or price."
+                      : "装備名・レベル・素材・効果・職人数値・価格などの間違いを送ってください。"
+                  }
+                />
+              ) : null}
             </>
           )}
         </div>

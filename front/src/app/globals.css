@@ -565,6 +565,7 @@ main {
   max-width: 1180px;
   min-width: 0;
   margin: 0 auto;
+  margin-bottom: 50px;
   box-sizing: border-box;
 }
 

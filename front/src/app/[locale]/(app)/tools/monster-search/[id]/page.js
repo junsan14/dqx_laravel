@@ -2,10 +2,8 @@ import { Link } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
 import { fetchMonsterDetail } from "@/lib/monsters";
 import { createBaseMetadata } from "@/lib/metadata";
-import MonsterDropSection from "@/components/tools/monsters/detail/MonsterDropSection";
-import MonsterMapSection from "@/components/tools/monsters/detail/MonsterMapSection";
-import MonsterDetailPageClientShell from "@/components/tools/monsters/detail/MonsterDetailPageClientShell";
-import MonsterOverviewSection from "@/components/tools/monsters/detail/MonsterOverviewSection";
+import MonsterDetailClient from "@/components/tools/monsters/detail/MonsterDetailClient";
+import styles from "./page.module.css";
 
 export async function generateMetadata({ params }) {
   const { locale, id: monsterId } = await params;
@@ -16,7 +14,7 @@ export async function generateMetadata({ params }) {
   try {
     monster = await fetchMonsterDetail(monsterId, locale);
   } catch {
-    // metadataでは握りつぶしてfallbackを返す
+    // metadataではfallbackを返す
   }
 
   const monsterName =
@@ -45,7 +43,6 @@ export default async function MonsterDetailPage({ params, searchParams }) {
   });
 
   const page = Math.max(1, Number(resolvedSearchParams?.page) || 1);
-
   const rawBack = resolvedSearchParams?.back;
   const normalizedBack =
     typeof rawBack === "string"
@@ -54,10 +51,13 @@ export default async function MonsterDetailPage({ params, searchParams }) {
 
   const isFromMonsterSearch =
     normalizedBack.startsWith("/tools/monster-search");
+  const isFromMonsterZukan =
+    normalizedBack.startsWith("/tools/monster-zukan") ||
+    resolvedSearchParams?.from === "zukan";
 
   const safeBackHref = normalizedBack.startsWith("/tools/")
     ? normalizedBack
-    : resolvedSearchParams?.from === "zukan"
+    : isFromMonsterZukan
       ? `/tools/monster-zukan?page=${page}`
       : "/tools/monster-search";
 
@@ -73,72 +73,29 @@ export default async function MonsterDetailPage({ params, searchParams }) {
 
   if (errorText || !monster) {
     return (
-      <MonsterDetailPageClientShell>
-        <div style={styles.centerBox}>
-          <p style={styles.errorText}>{errorText || t("notFound")}</p>
-          <Link href={safeBackHref} locale={locale} style={styles.backLink}>
+      <main className={styles.page}>
+        <div className={styles.centerBox}>
+          <p className={styles.errorText}>{errorText || t("notFound")}</p>
+          <Link href={safeBackHref} locale={locale} className={styles.backLink}>
             ← {t("backToSearch")}
           </Link>
         </div>
-      </MonsterDetailPageClientShell>
+      </main>
     );
   }
 
   return (
-    <MonsterDetailPageClientShell>
-      <div style={styles.container}>
-        <div style={styles.topNav}>
-          <Link href={safeBackHref} locale={locale} style={styles.backLink}>
-            ← {t("backToSearch")}
-          </Link>
-        </div>
-
-        <MonsterOverviewSection monster={monster} />
-
-        <MonsterDropSection
-          monster={monster}
-          showMonsterImage={isFromMonsterSearch}
-          normalDrops={monster.normal_drops ?? []}
-          rareDrops={monster.rare_drops ?? []}
-          whiteBoxDrops={monster.equipment_drops ?? []}
-          orbDrops={monster.orb_drops ?? []}
-        />
-
-        <MonsterMapSection maps={monster.maps ?? []} title="生息地" />
-      </div>
-    </MonsterDetailPageClientShell>
+    <MonsterDetailClient
+      monster={monster}
+      backHref={safeBackHref}
+      backLabel={t("backToSearch")}
+      sourcePage={isFromMonsterZukan ? "monster-zukan" : "monster-detail"}
+      showMonsterImage={isFromMonsterSearch}
+      context={{
+        detail_route: true,
+        from_monster_search: isFromMonsterSearch,
+        from_monster_zukan: isFromMonsterZukan,
+      }}
+    />
   );
 }
-
-const styles = {
-  container: {
-    maxWidth: "1120px",
-    margin: "0 auto",
-    width: "100%",
-    minWidth: 0,
-    boxSizing: "border-box",
-  },
-  topNav: {
-    marginBottom: "14px",
-  },
-  backLink: {
-    color: "inherit",
-    textDecoration: "none",
-    fontSize: "13px",
-    fontWeight: 700,
-  },
-  centerBox: {
-    maxWidth: "720px",
-    margin: "80px auto",
-    borderRadius: "18px",
-    padding: "32px 20px",
-    textAlign: "center",
-    width: "100%",
-    minWidth: 0,
-    boxSizing: "border-box",
-  },
-  errorText: {
-    margin: "0 0 12px",
-    fontSize: "14px",
-  },
-};

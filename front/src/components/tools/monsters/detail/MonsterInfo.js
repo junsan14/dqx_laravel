@@ -1,7 +1,80 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import MonsterImageCard from "@/components/tools/monsters/detail/MonsterImageCard";
+import Image from "next/image";
+import { getMonsterAssetUrl } from "@/lib/monsters";
+import moduleStyles from "./MonsterInfo.module.css";
+
+function MonsterImageCard({
+  monster,
+  rounded = 5,
+  priority = false,
+  aspectRatio = "1 / 1",
+}) {
+  const [hasError, setHasError] = useState(false);
+
+  const imageUrl = useMemo(() => {
+    if (!monster?.image_path) return "";
+    return getMonsterAssetUrl(monster.image_path);
+  }, [monster?.image_path]);
+
+  const hasImage = !!imageUrl && !hasError;
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        minWidth: 0,
+      }}
+    >
+      {hasImage ? (
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            aspectRatio,
+            borderRadius: `${rounded}px`,
+            overflow: "hidden",
+            background: "transparent",
+          }}
+        >
+          <Image
+            src={imageUrl}
+            alt={monster?.name || "モンスター画像"}
+            fill
+            priority={priority}
+            unoptimized
+            sizes="(max-width: 920px) 84px, 132px"
+            onError={() => setHasError(true)}
+            style={{
+              objectFit: "contain",
+              borderRadius: `${rounded}px`,
+            }}
+          />
+        </div>
+      ) : (
+        <div
+          style={{
+            width: "100%",
+            aspectRatio,
+            borderRadius: `${rounded}px`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "var(--soft-bg)",
+            color: "var(--text-muted)",
+            fontSize: "24px",
+            userSelect: "none",
+          }}
+        >
+          👾
+        </div>
+      )}
+    </div>
+  );
+}
+
+
 
 function joinDisplayValue(value) {
   if (value == null) return "";
@@ -75,7 +148,7 @@ function useIsMobile(breakpoint = 920) {
   return isMobile;
 }
 
-const styles = {
+const fullStyles = {
   section: {
     marginBottom: "16px",
     width: "100%",
@@ -356,7 +429,7 @@ const styles = {
   },
 };
 
-export default function MonsterOverviewSection({ monster }) {
+function FullMonsterInfo({ monster }) {
   const isMobile = useIsMobile();
   const memos = useMemo(() => pickMemoValues(monster), [monster]);
 
@@ -417,25 +490,25 @@ export default function MonsterOverviewSection({ monster }) {
   }, [activeTab, memos.length]);
 
   return (
-    <section style={styles.section}>
-      <div style={styles.header}>
-        <h2 style={styles.title}>モンスター情報</h2>
+    <section className={moduleStyles.root} style={fullStyles.section}>
+      <div style={fullStyles.header}>
+        <h2 style={fullStyles.title}>モンスター情報</h2>
       </div>
 
-      <div style={styles.card}>
-        <div style={isMobile ? styles.mobileGrid : styles.desktopGrid}>
-          <div style={styles.leftCol}>
+      <div style={fullStyles.card}>
+        <div style={isMobile ? fullStyles.mobileGrid : fullStyles.desktopGrid}>
+          <div style={fullStyles.leftCol}>
             {!isMobile ? (
               <>
-                <div style={styles.desktopTitleBlock}>
-                  <div style={styles.desktopTitleRow}>
-                    <h1 style={styles.pageTitle}>{monster?.name || ""}</h1>
+                <div style={fullStyles.desktopTitleBlock}>
+                  <div style={fullStyles.desktopTitleRow}>
+                    <h1 style={fullStyles.pageTitle}>{monster?.name || ""}</h1>
 
                     {monster?.system_type ? (
                       <span
                         style={{
-                          ...styles.systemTypeTag,
-                          ...styles.desktopSystemTypeTag,
+                          ...fullStyles.systemTypeTag,
+                          ...fullStyles.desktopSystemTypeTag,
                         }}
                       >
                         {monster.system_type}
@@ -444,19 +517,19 @@ export default function MonsterOverviewSection({ monster }) {
                   </div>
 
                   {isReincarnated ? (
-                    <div style={styles.reincarnationRow}>
-                      <span style={styles.reincarnationBadge}>転生</span>
+                    <div style={fullStyles.reincarnationRow}>
+                      <span style={fullStyles.reincarnationBadge}>転生</span>
                       {parentName ? (
-                        <span style={styles.parentText}>（{parentName}）</span>
+                        <span style={fullStyles.parentText}>（{parentName}）</span>
                       ) : null}
                     </div>
                   ) : null}
                 </div>
 
                 {memos.length ? (
-                  <div style={styles.memoSectionDesktop}>
+                  <div style={fullStyles.memoSectionDesktop}>
                     {memos.map((memo, index) => (
-                      <p key={`memo-${index}`} style={styles.memoCard}>
+                      <p key={`memo-${index}`} style={fullStyles.memoCard}>
                         {memo}
                       </p>
                     ))}
@@ -464,21 +537,21 @@ export default function MonsterOverviewSection({ monster }) {
                 ) : null}
               </>
             ) : (
-              <div style={styles.mobileTitleBlock}>
-                <h1 style={styles.pageTitle}>{monster?.name || ""}</h1>
+              <div style={fullStyles.mobileTitleBlock}>
+                <h1 style={fullStyles.pageTitle}>{monster?.name || ""}</h1>
 
                 {(isReincarnated || monster?.system_type) ? (
-                  <div style={styles.reincarnationRow}>
+                  <div style={fullStyles.reincarnationRow}>
                     {isReincarnated ? (
-                      <span style={styles.reincarnationBadge}>転生</span>
+                      <span style={fullStyles.reincarnationBadge}>転生</span>
                     ) : null}
 
                     {parentName && isReincarnated ? (
-                      <span style={styles.parentText}>（{parentName}）</span>
+                      <span style={fullStyles.parentText}>（{parentName}）</span>
                     ) : null}
 
                     {monster?.system_type ? (
-                      <span style={styles.systemTypeTag}>{monster.system_type}</span>
+                      <span style={fullStyles.systemTypeTag}>{monster.system_type}</span>
                     ) : null}
                   </div>
                 ) : null}
@@ -486,9 +559,9 @@ export default function MonsterOverviewSection({ monster }) {
             )}
           </div>
 
-          <div style={isMobile ? styles.imageColMobile : styles.imageColDesktop}>
+          <div style={isMobile ? fullStyles.imageColMobile : fullStyles.imageColDesktop}>
             {!isMobile ? (
-              <div style={styles.desktopImageWrap}>
+              <div style={fullStyles.desktopImageWrap}>
                 <MonsterImageCard monster={monster} size="sm" rounded={5} />
               </div>
             ) : (
@@ -498,13 +571,13 @@ export default function MonsterOverviewSection({ monster }) {
         </div>
 
         {isMobile && memos.length ? (
-          <div style={styles.memoSectionMobile}>
-            <div style={styles.memoHeader}>
-              <h3 style={styles.memoTitle}>豆知識</h3>
+          <div style={fullStyles.memoSectionMobile}>
+            <div style={fullStyles.memoHeader}>
+              <h3 style={fullStyles.memoTitle}>豆知識</h3>
             </div>
 
             {memos.length > 1 ? (
-              <div style={styles.tabsRow}>
+              <div style={fullStyles.tabsRow}>
                 {memos.map((_, index) => {
                   const isActive = index === activeTab;
 
@@ -514,8 +587,8 @@ export default function MonsterOverviewSection({ monster }) {
                       type="button"
                       onClick={() => setActiveTab(index)}
                       style={{
-                        ...styles.tabButton,
-                        ...(isActive ? styles.tabButtonActive : {}),
+                        ...fullStyles.tabButton,
+                        ...(isActive ? fullStyles.tabButtonActive : {}),
                       }}
                     >
                       豆知識 {index + 1}
@@ -525,12 +598,12 @@ export default function MonsterOverviewSection({ monster }) {
               </div>
             ) : null}
 
-            <div style={styles.mobileContentViewport}>
-              <div ref={scrollerRef} style={styles.mobileScroller}>
+            <div style={fullStyles.mobileContentViewport}>
+              <div ref={scrollerRef} style={fullStyles.mobileScroller}>
                 {memos.map((memo, index) => (
-                  <div key={`memo-page-${index}`} style={styles.mobilePage}>
-                    <div style={styles.mobileMemoCard}>
-                      <p style={styles.mobileMemoCardText}>{memo}</p>
+                  <div key={`memo-page-${index}`} style={fullStyles.mobilePage}>
+                    <div style={fullStyles.mobileMemoCard}>
+                      <p style={fullStyles.mobileMemoCardText}>{memo}</p>
                     </div>
                   </div>
                 ))}
@@ -538,13 +611,13 @@ export default function MonsterOverviewSection({ monster }) {
             </div>
 
             {memos.length > 1 ? (
-              <div style={styles.dots}>
+              <div style={fullStyles.dots}>
                 {memos.map((_, index) => (
                   <span
                     key={`memo-dot-${index}`}
                     style={{
-                      ...styles.dot,
-                      ...(index === activeTab ? styles.dotActive : {}),
+                      ...fullStyles.dot,
+                      ...(index === activeTab ? fullStyles.dotActive : {}),
                     }}
                   />
                 ))}
@@ -555,4 +628,189 @@ export default function MonsterOverviewSection({ monster }) {
       </div>
     </section>
   );
+}
+
+const compactStyles = {
+  card: {
+    marginBottom: "16px",
+    width: "100%",
+    minWidth: 0,
+  },
+  pageTitle: {
+    margin: "0 0 12px",
+    fontSize: "clamp(26px, 5vw, 40px)",
+    lineHeight: 1.15,
+    fontWeight: 900,
+    color: "var(--text-title)",
+    letterSpacing: "-0.02em",
+    wordBreak: "break-word",
+  },
+  contentCol: {
+    minWidth: 0,
+    display: "grid",
+    gap: "12px",
+    alignContent: "start",
+    width: "100%",
+  },
+  titleBlock: {
+    display: "grid",
+    gap: "6px",
+    width: "100%",
+    minWidth: 0,
+  },
+  titleRow: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: "12px",
+    flexWrap: "wrap",
+    width: "100%",
+    minWidth: 0,
+  },
+  systemTypeTag: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "6px 10px",
+    borderRadius: "999px",
+    fontSize: "12px",
+    fontWeight: 800,
+    lineHeight: 1,
+    background: "var(--soft-bg)",
+    color: "var(--text-main)",
+    border: "1px solid var(--soft-border)",
+    whiteSpace: "nowrap",
+  },
+  reincarnationRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    flexWrap: "wrap",
+    justifyContent: "flex-start",
+    minWidth: 0,
+  },
+  reincarnationBadge: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "6px 10px",
+    borderRadius: "999px",
+    fontSize: "12px",
+    fontWeight: 800,
+    lineHeight: 1,
+    background: "var(--warning-bg, var(--soft-bg))",
+    color: "var(--warning-text, var(--text-main))",
+    border: "1px solid var(--warning-border, var(--soft-border))",
+    whiteSpace: "nowrap",
+  },
+  parentText: {
+    fontSize: "14px",
+    fontWeight: 700,
+    color: "var(--text-sub)",
+    whiteSpace: "normal",
+    wordBreak: "break-word",
+  },
+  description: {
+    margin: 0,
+    color: "var(--text-sub)",
+    fontSize: "14px",
+    lineHeight: 1.8,
+    wordBreak: "break-word",
+  },
+  metaGrid: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "10px",
+    width: "100%",
+    minWidth: 0,
+  },
+  metaItem: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "8px",
+    background: "var(--soft-bg)",
+    border: "1px solid var(--soft-border)",
+    borderRadius: "14px",
+    padding: "8px 12px",
+    minWidth: 0,
+  },
+  metaLabel: {
+    fontSize: "12px",
+    fontWeight: 800,
+    color: "var(--text-muted)",
+    letterSpacing: "0.04em",
+  },
+  metaValue: {
+    fontSize: "14px",
+    fontWeight: 900,
+    color: "var(--text-main)",
+  },
+};
+
+function CompactMonsterInfo({ monster, showName = false }) {
+  const description =
+    joinDisplayValue(monster?.description) ||
+    joinDisplayValue(monster?.note) ||
+    "";
+
+  const parentName = getReincarnationParentName(monster);
+  const isReincarnated =
+    Number(monster?.is_reincarnated) === 1 || monster?.is_reincarnated === true;
+
+  return (
+    <section className={moduleStyles.root} style={compactStyles.card}>
+      {showName ? <h1 style={compactStyles.pageTitle}>{monster?.name || ""}</h1> : null}
+
+      <div style={compactStyles.contentCol}>
+        <div style={compactStyles.titleBlock}>
+          <div style={compactStyles.titleRow}>
+            {showName && monster?.system_type ? (
+              <span style={compactStyles.systemTypeTag}>{monster.system_type}</span>
+            ) : null}
+
+            {isReincarnated ? (
+              <div style={compactStyles.reincarnationRow}>
+                <span style={compactStyles.reincarnationBadge}>転生</span>
+                {parentName ? (
+                  <span style={compactStyles.parentText}>（{parentName}）</span>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+        </div>
+
+        {description ? <p style={compactStyles.description}>{description}</p> : null}
+
+        {monster?.exp != null || monster?.gold != null ? (
+          <div style={compactStyles.metaGrid}>
+            {monster?.exp != null ? (
+              <div style={compactStyles.metaItem}>
+                <span style={compactStyles.metaLabel}>EXP</span>
+                <span style={compactStyles.metaValue}>{monster.exp}</span>
+              </div>
+            ) : null}
+
+            {monster?.gold != null ? (
+              <div style={compactStyles.metaItem}>
+                <span style={compactStyles.metaLabel}>G</span>
+                <span style={compactStyles.metaValue}>{monster.gold}</span>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
+export default function MonsterInfo({
+  monster,
+  variant = "full",
+  showName = false,
+}) {
+  if (variant === "compact") {
+    return <CompactMonsterInfo monster={monster} showName={showName} />;
+  }
+
+  return <FullMonsterInfo monster={monster} />;
 }

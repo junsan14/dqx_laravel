@@ -186,6 +186,8 @@ function getStyles() {
       border: "1px solid var(--input-border)",
       background: "var(--input-bg)",
       color: "var(--input-text)",
+      fontSize: "16px",
+      lineHeight: 1.25,
     },
     pageTotalText: {
       color: "var(--text-muted)",
@@ -349,17 +351,61 @@ function Pagination({ currentPage, lastPage, sort, styles, locale, t }) {
     setInputPage(String(safeCurrentPage));
   }, [safeCurrentPage]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    function releaseRestoredInputFocus() {
+      if (window.innerWidth >= 768) return;
+
+      const activeElement = document.activeElement;
+      if (
+        activeElement instanceof HTMLInputElement &&
+        activeElement.id === "page-input"
+      ) {
+        activeElement.blur();
+      }
+    }
+
+    const timer = window.setTimeout(releaseRestoredInputFocus, 0);
+    window.addEventListener("pageshow", releaseRestoredInputFocus);
+
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("pageshow", releaseRestoredInputFocus);
+    };
+  }, []);
+
   const pages = useMemo(
     () => buildPages(safeCurrentPage, safeLastPage),
     [safeCurrentPage, safeLastPage]
   );
 
+  function scrollPageTop() {
+    if (typeof window === "undefined") return;
+
+    const activeElement = document.activeElement;
+    if (activeElement instanceof HTMLElement) {
+      activeElement.blur();
+    }
+
+    window.requestAnimationFrame(() => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+      });
+    });
+  }
+
   const moveToPage = (page) => {
     const safePage = Math.max(1, Math.min(Number(page) || 1, safeLastPage));
+
     router.push(
       `${withLocalePath(locale, "/tools/monster-zukan")}?page=${safePage}&sort=${sort}`,
       { scroll: false }
     );
+
+    scrollPageTop();
   };
 
   const handleSubmit = (e) => {
@@ -445,11 +491,16 @@ function Pagination({ currentPage, lastPage, sort, styles, locale, t }) {
           <input
             id="page-input"
             type="number"
+            inputMode="numeric"
+            enterKeyHint="go"
+            autoComplete="off"
             min={1}
             max={safeLastPage}
             value={inputPage}
+            onFocus={(e) => e.currentTarget.select()}
+            onClick={(e) => e.currentTarget.select()}
             onChange={(e) => setInputPage(e.target.value)}
-            className="w-16 rounded-full px-3 py-2 text-sm text-center"
+            className="w-16 rounded-full px-3 py-2 text-base text-center"
             style={styles.pageInput}
           />
 

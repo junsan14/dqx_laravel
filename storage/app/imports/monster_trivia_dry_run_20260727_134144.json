@@ -1,0 +1,124 @@
+{
+    "executed_at": "2026-07-27T13:41:44+00:00",
+    "source_url": "https://dragon-quest.jp/ten/monster/zukan/",
+    "dry_run": true,
+    "force": false,
+    "all_link_count": 930,
+    "processed_count": 10,
+    "summary": {
+        "updated": 8,
+        "skipped_completed": 2,
+        "not_found": 0,
+        "no_trivia": 0,
+        "failed": 0
+    },
+    "updated_monsters": [
+        {
+            "result": "would_update",
+            "monster_id": 2,
+            "name": "スライムベス",
+            "detail_name": "スライムベス",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "あざやかな身体が自慢の色違いのスライム。スライムより ちょっぴり強くさわると 少しあたたかい。",
+            "trivia_2": "じつは スライムのメスというウワサもあるようだが学会のえらい人でも真相は わからないらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/sura/02.php"
+        },
+        {
+            "result": "would_update",
+            "monster_id": 3,
+            "name": "いたずらもぐら",
+            "detail_name": "いたずらもぐら",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "スコップを持ったいたずら好きのモンスター。チカラをためてきたら気をつけよう！",
+            "trivia_2": "かつては落とし穴を掘って旅人をはめようとしていたが仲間同士で穴に落ちまくりそれ以来自重している。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/02.php"
+        },
+        {
+            "result": "would_update",
+            "monster_id": 4,
+            "name": "ビッグハット",
+            "detail_name": "ビッグハット",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "大きな帽子を深くかぶったイノシシ魔物のルーキー。戦いになるとおびえてしまい帽子にくるまって身を守る。",
+            "trivia_2": "魔物たちについ最近までペットとして飼われていたが戦力になると見込まれ魔物の一員として戦っている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/01.php"
+        },
+        {
+            "result": "would_update",
+            "monster_id": 6,
+            "name": "おむつっこり",
+            "detail_name": "おむつっこり",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "春芽吹いたばかりの樹木から生まれた精霊。かわいらしい姿で現れて旅人たちを和ませる。",
+            "trivia_2": "おむつ卒業の時期が来ても大人になんかなりたくない！と言っておむつを脱がないじんめんじゅの赤ちゃん。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/plant/02.php"
+        },
+        {
+            "result": "would_update",
+            "monster_id": 7,
+            "name": "モーモン",
+            "detail_name": "モーモン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "人間を見ると 遊んでほしくてフワフワとついてくる",
+            "trivia_2": "かわいらしいモンスター。牛のような模様が 特徴。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/01.php"
+        },
+        {
+            "result": "would_update",
+            "monster_id": 8,
+            "name": "いっかくウサギ",
+            "detail_name": "いっかくウサギ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "悪の心と鋭いツノを持ったウサギのモンスター。チカラをためその額のツノで攻撃してくる。",
+            "trivia_2": "アグレッシブな性格だがさみしい夜は仲間同士身を寄せ合って寝ている意外とかわいらしい一面も。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/03.php"
+        },
+        {
+            "result": "would_update",
+            "monster_id": 9,
+            "name": "ファーラット",
+            "detail_name": "ファーラット",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "全身緑色の毛が生えた小型のモンスター。丸い身体を回転させながら攻撃をしかけてくる。",
+            "trivia_2": "おくびょうな性格の持ち主でいつも草木にまぎれている。道行く旅人に気づかれずうっかり踏まれることも。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/04.php"
+        },
+        {
+            "result": "would_update",
+            "monster_id": 10,
+            "name": "さそりばち",
+            "detail_name": "さそりばち",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "獲物を求めて飛びまわる巨大なハチのモンスター。さそりを思わせるしっぽの針で襲いかかる。",
+            "trivia_2": "さそりと名前に入っているが別に毒は持っていない。さそりばち本人はそれがコンプレックスのようだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/insect/01.php"
+        }
+    ],
+    "not_found_monsters": [],
+    "no_trivia_monsters": [],
+    "failed_pages": []
+}

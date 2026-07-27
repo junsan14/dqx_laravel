@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import MonsterForm from "./MonsterForm";
 import MonsterDropsEditor from "./MonsterDropsEditor";
 import MonsterSpawnsEditor from "./MonsterSpawnsEditor";
@@ -59,6 +59,7 @@ export default function MonstersClient() {
   const [maps, setMaps] = useState([]);
 
   const [parentCandidates, setParentCandidates] = useState([]);
+  const selectAllObserverRef = useRef(null);
 
   const { toast, showToast } = useFloatingToast();
 
@@ -192,6 +193,60 @@ export default function MonstersClient() {
   useEffect(() => {
     loadMonsters("");
     loadMasters();
+  }, []);
+
+  useEffect(() => {
+    function selectAll(event) {
+      const input = event.currentTarget;
+
+      window.requestAnimationFrame(() => {
+        input.select();
+      });
+    }
+
+    function attachSelectAllHandlers() {
+      const targets = document.querySelectorAll(
+        [
+          'input[placeholder="モンスター名 / IDで検索"]',
+          '[data-monster-editor-inputs] input:not([type="file"]):not([type="checkbox"]):not([type="radio"])',
+        ].join(",")
+      );
+
+      targets.forEach((input) => {
+        if (!(input instanceof HTMLInputElement)) return;
+        if (input.dataset.selectAllBound === "1") return;
+
+        input.dataset.selectAllBound = "1";
+        input.addEventListener("focus", selectAll);
+        input.addEventListener("click", selectAll);
+      });
+    }
+
+    attachSelectAllHandlers();
+
+    const observer = new MutationObserver(() => {
+      attachSelectAllHandlers();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
+    selectAllObserverRef.current = observer;
+
+    return () => {
+      observer.disconnect();
+      selectAllObserverRef.current = null;
+
+      document
+        .querySelectorAll('[data-select-all-bound="1"]')
+        .forEach((input) => {
+          input.removeEventListener("focus", selectAll);
+          input.removeEventListener("click", selectAll);
+          delete input.dataset.selectAllBound;
+        });
+    };
   }, []);
 
   useEffect(() => {
@@ -437,14 +492,14 @@ export default function MonstersClient() {
         {loadingDetail ? (
           <div style={loadingStyle()}>読み込み中...</div>
         ) : (
-          <div style={styles.content}>
+          <div style={styles.content} data-monster-editor-inputs>
             <MonsterForm
               monster={selectedMonster}
               onChange={setSelectedMonster}
               parentCandidates={parentCandidates}
               onSearchParents={searchReincarnationParents}
               disabled={!isAdmin}
-              defaultOpen={false}
+              defaultOpen
             >
               <OrderPreviewCard
                 loading={loadingAround}

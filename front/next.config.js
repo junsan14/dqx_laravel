@@ -14,7 +14,7 @@ const nextConfig = {
       },
             {
         protocol: "http",
-        hostname: "192.168.1.74",
+        hostname: "jun.local",
         port: "8000",
         pathname: "/storage/**",
       },

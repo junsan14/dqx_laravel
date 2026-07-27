@@ -576,6 +576,7 @@ export default function CraftProfitMaterialsCard({
   selectedSet,
   activeSlot,
   setActiveSlot,
+  onSelectedTabChange,
   unitCostMap,
   updateUnitCost,
   mobileToolRow,
@@ -644,6 +645,21 @@ export default function CraftProfitMaterialsCard({
       return sortedSlots[0] ?? "";
     });
   }, [selectedSet, equipmentIsSet, activeSlot, sortedSlots]);
+
+  // 選択中タブを親へ通知する。
+  // 「全て」も通知することで、レポート対象名をセット名へ切り替える。
+  useEffect(() => {
+    if (!selectedTab) return;
+    onSelectedTabChange?.(selectedTab);
+  }, [selectedTab, onSelectedTabChange]);
+
+  // 個別部位を表示しているときは、大成功基準値の部位を親へ同期する。
+  useEffect(() => {
+    if (!selectedTab || selectedTab === ALL_SLOT) return;
+    if (selectedTab === activeSlot) return;
+
+    setActiveSlot?.(selectedTab);
+  }, [selectedTab, activeSlot, setActiveSlot]);
 
   const swipeTabs = useMemo(
     () =>

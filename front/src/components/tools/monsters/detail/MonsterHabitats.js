@@ -1,10 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { FcLike } from "react-icons/fc";
+import { FaMoon } from "react-icons/fa6";
+import { IoSunnyOutline } from "react-icons/io5";
 import { getMonsterAssetUrl } from "@/lib/monsters";
+import moduleStyles from "./MonsterHabitats.module.css";
 
 const GRID_SIZE = 8;
 const ORIGINAL_IMAGE_WIDTH = 490;
@@ -57,7 +61,7 @@ const MAP_CROP = {
   offsetYPercent: (GRID_SOURCE_Y / ORIGINAL_IMAGE_HEIGHT) * 100,
 };
 
-function useIsMobile(breakpoint = 920) {
+function useOverlayIsMobile(breakpoint = 920) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -390,7 +394,7 @@ function BubbleInfoContent({ bubble, styles, t }) {
   );
 }
 
-function getStyles() {
+function getOverlayStyles() {
   return {
     mapCard: {
       width: "100%",
@@ -668,14 +672,14 @@ function getStyles() {
   };
 }
 
-export default function MonsterMapOverlay({
+function MonsterMapOverlay({
   spawns = [],
   imagePath,
   href,
 }) {
   const t = useTranslations("MonsterMapOverlay");
-  const isMobile = useIsMobile();
-  const styles = useMemo(() => getStyles(), []);
+  const isMobile = useOverlayIsMobile();
+  const styles = useMemo(() => getOverlayStyles(), []);
 
   const resolvedImageUrl = useMemo(
     () => getMonsterAssetUrl(imagePath),
@@ -886,4 +890,856 @@ export default function MonsterMapOverlay({
   }
 
   return content;
+}
+
+
+function normalizeSpawnTime(value) {
+  const v = String(value ?? "").trim().toLowerCase();
+
+  if (v.includes("night") || v.includes("夜")) return "夜";
+  if (v.includes("day") || v.includes("昼") || v.includes("日中")) return "日中";
+  if (v.includes("normal") || v.includes("always") || v.includes("いつでも")) {
+    return "いつでも";
+  }
+
+  return String(value ?? "").trim();
+}
+
+function normalizeLayerName(value) {
+  return String(value ?? "").trim();
+}
+
+
+
+function getSpawnLayerName(spawn = {}) {
+  return normalizeLayerName(spawn?.map_layer_name ?? spawn?.layer_name ?? "");
+}
+
+function getSpawnImagePath(spawn = {}, mapItem = {}) {
+  return (
+    spawn?.map_image_path ??
+    spawn?.map_image_url ??
+    mapItem?.image_path ??
+    mapItem?.image_url ??
+    ""
+  );
+}
+
+function buildLayerGroups(mapItem) {
+  const spawns = Array.isArray(mapItem?.spawns) ? mapItem.spawns : [];
+  const groups = new Map();
+
+  for (const spawn of spawns) {
+    const layerName = getSpawnLayerName(spawn);
+
+    if (!layerName || layerName === "地上") {
+      continue;
+    }
+
+    if (!groups.has(layerName)) {
+      groups.set(layerName, {
+        layerName,
+        imagePath: getSpawnImagePath(spawn, mapItem),
+        spawns: [],
+      });
+    }
+
+    const current = groups.get(layerName);
+    current.spawns.push(spawn);
+
+    if (!current.imagePath) {
+      current.imagePath = getSpawnImagePath(spawn, mapItem);
+    }
+  }
+
+  return Array.from(groups.values());
+}
+
+
+
+function useMapCardIsMobile(breakpoint = 920) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth < breakpoint);
+    }
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [breakpoint]);
+
+  return isMobile;
+}
+
+function getContinentName(mapItem = {}) {
+  return String(
+    mapItem?.continent_name ??
+      mapItem?.continent ??
+      mapItem?.continentLabel ??
+      ""
+  ).trim();
+}
+
+function hasMapCardHuntingGround(mapItem = {}, spawns = []) {
+  if (mapItem?.is_hunting_ground) return true;
+
+  const list = Array.isArray(spawns) ? spawns : [];
+  return list.some((spawn) => spawn?.is_hunting_ground);
+}
+
+function getSpawnTimeFlags(spawns = []) {
+  const list = Array.isArray(spawns) ? spawns : [];
+
+  let hasDay = false;
+  let hasNight = false;
+
+  for (const spawn of list) {
+    const normalized = normalizeSpawnTime(spawn?.spawn_time);
+
+    if (normalized === "日中") hasDay = true;
+    if (normalized === "夜") hasNight = true;
+
+    if (hasDay && hasNight) break;
+  }
+
+  return { hasDay, hasNight };
+}
+
+function getMapCardStyles() {
+  return {
+    card: {
+      width: "100%",
+      maxWidth: "100%",
+      minWidth: 0,
+      boxSizing: "border-box",
+      overflow: "hidden",
+      background: "var(--soft-bg)",
+      borderRadius: "5px",
+      padding: "16px",
+      height: "100%",
+      minHeight: "100%",
+      border: `1px solid var(--card-border)`,
+      display: "flex",
+      flexDirection: "column",
+      gap: "14px",
+    },
+    topRow: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "flex-start",
+      gap: "14px",
+    },
+    topRowMobile: {
+      flexDirection: "column",
+      alignItems: "stretch",
+    },
+    titleWrap: {
+      minWidth: 0,
+      flex: 1,
+    },
+    titleLine: {
+      display: "flex",
+      flexWrap: "wrap",
+      alignItems: "center",
+      gap: "8px 10px",
+    },
+    mapTitle: {
+      margin: 0,
+      fontSize: "18px",
+      lineHeight: 1.35,
+      fontWeight: 900,
+      color: "var(--text-title)",
+      wordBreak: "break-word",
+    },
+    titleMetaRow: {
+      display: "inline-flex",
+      alignItems: "center",
+      flexWrap: "wrap",
+      gap: "8px",
+      minWidth: 0,
+    },
+    continentText: {
+      display: "inline-flex",
+      alignItems: "center",
+      minHeight: "28px",
+      padding: "4px 10px",
+      borderRadius: "999px",
+      fontSize: "12px",
+      fontWeight: 800,
+      background: "var(--badge-bg)",
+      color: "var(--badge-text)",
+      border: `1px solid var(--tag-border)`,
+    },
+    huntingBadge: {
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      minHeight: "28px",
+      padding: "4px 10px",
+      borderRadius: "999px",
+      fontSize: "12px",
+      fontWeight: 900,
+      lineHeight: 1,
+      color: "var(--selected-text)",
+      background:
+        "color-mix(in srgb, var(--selected-border) 16%, transparent)",
+      border:
+        "1px solid color-mix(in srgb, var(--selected-border) 38%, transparent)",
+      whiteSpace: "nowrap",
+    },
+    timeIconGroup: {
+      display: "inline-flex",
+      alignItems: "center",
+      gap: "6px",
+      padding: "0 2px",
+    },
+    timeIcon: {
+      width: "18px",
+      height: "18px",
+      display: "block",
+      flexShrink: 0,
+      color: "var(--text-main)",
+    },
+    layerSwitchRow: {
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "flex-end",
+      gap: "8px",
+      flexShrink: 0,
+    },
+    layerSwitchRowMobile: {
+      justifyContent: "flex-start",
+    },
+    layerSwitchButton: {
+      appearance: "none",
+      border: `1px solid var(--panel-border)`,
+      background: "var(--secondary-bg)",
+      color: "var(--secondary-text)",
+      borderRadius: "999px",
+      padding: "8px 12px",
+      fontSize: "12px",
+      fontWeight: 800,
+      cursor: "pointer",
+    },
+    layerSwitchButtonActive: {
+      background: "var(--primary-bg)",
+      color: "var(--primary-text)",
+      border: `1px solid var(--primary-border)`,
+      boxShadow:
+        "0 10px 22px color-mix(in srgb, var(--primary-border) 16%, transparent)",
+    },
+    spawnInfoSection: {
+      display: "grid",
+      gap: "12px",
+      padding: "14px",
+      borderRadius: "16px",
+      background: "var(--panel-bg)",
+      border: `1px solid var(--panel-border)`,
+      boxShadow:
+        "0 14px 30px color-mix(in srgb, var(--page-text) 8%, transparent)",
+    },
+    spawnInfoRow: {
+      display: "flex",
+      justifyContent: "space-between",
+      gap: "12px",
+    },
+    spawnInfoLabel: {
+      minWidth: "42px",
+      paddingTop: "6px",
+      fontSize: "12px",
+      fontWeight: 900,
+      letterSpacing: "0.04em",
+      color: "var(--text-muted)",
+    },
+    spawnInfoLabelSub: {
+      minWidth: "42px",
+      paddingTop: "4px",
+      fontSize: "12px",
+      fontWeight: 900,
+      letterSpacing: "0.04em",
+      color: "var(--text-muted)",
+    },
+    spawnMetaWrap: {
+      minWidth: 0,
+      flex: 1,
+      display: "grid",
+      gap: "8px",
+    },
+    spawnMetaWrapTag: {
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "8px",
+    },
+    timeTagWrap: {
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "8px",
+    },
+    tag: {
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      minHeight: "28px",
+      padding: "4px 10px",
+      borderRadius: "999px",
+      fontSize: "12px",
+      fontWeight: 800,
+      lineHeight: 1.2,
+      border: `1px solid var(--tag-border)`,
+    },
+    tagArea: {
+      background: "var(--tag-bg)",
+      color: "var(--tag-text)",
+    },
+    tagNight: {
+      background: "var(--badge-bg)",
+      color: "var(--badge-text)",
+    },
+    tagDay: {
+      background: "var(--selected-bg)",
+      color: "var(--secondary-text)",
+      border: `1px solid var(--selected-border)`,
+    },
+    tagAnytime: {
+      background: "var(--warning-bg)",
+      color: "var(--warning-text)",
+      border: `1px solid var(--warning-border)`,
+    },
+    coordsToggleButton: {
+      appearance: "none",
+      border: `1px solid var(--input-border)`,
+      background: "var(--input-bg)",
+      color: "var(--input-text)",
+      borderRadius: "999px",
+      minHeight: "28px",
+      padding: "4px 10px",
+      fontSize: "12px",
+      fontWeight: 900,
+      cursor: "pointer",
+    },
+    coordsAccordion: {
+      display: "grid",
+      gap: "10px",
+      paddingTop: "4px",
+      borderTop: `1px dashed var(--soft-border)`,
+    },
+    coordsCloseButton: {
+      appearance: "none",
+      alignSelf: "flex-start",
+      border: `1px solid var(--panel-border)`,
+      background: "var(--panel-bg)",
+      color: "var(--text-sub)",
+      borderRadius: "999px",
+      padding: "7px 12px",
+      fontSize: "12px",
+      fontWeight: 800,
+      cursor: "pointer",
+    },
+    mapWrap: {
+      minWidth: 0,
+    },
+  };
+}
+
+function MonsterMapCard({ mapItem }) {
+  const isMobile = useMapCardIsMobile();
+  const styles = useMemo(() => getMapCardStyles(), []);
+
+  
+  const layerGroups = useMemo(() => buildLayerGroups(mapItem), [mapItem]);
+
+  const hasLayerSwitch = layerGroups.length > 0;
+
+  const [activeLayerName, setActiveLayerName] = useState(
+    layerGroups[0]?.layerName ?? ""
+  );
+
+  useEffect(() => {
+    if (!hasLayerSwitch) {
+      setActiveLayerName("");
+      return;
+    }
+
+    const exists = layerGroups.some(
+      (group) => group.layerName === activeLayerName
+    );
+    if (!exists) {
+      setActiveLayerName(layerGroups[0]?.layerName ?? "");
+    }
+  }, [activeLayerName, hasLayerSwitch, layerGroups]);
+
+  const activeLayerGroup = useMemo(() => {
+    if (!hasLayerSwitch) return null;
+    return (
+      layerGroups.find((group) => group.layerName === activeLayerName) ??
+      layerGroups[0] ??
+      null
+    );
+  }, [activeLayerName, hasLayerSwitch, layerGroups]);
+
+  const displaySpawns = hasLayerSwitch
+    ? activeLayerGroup?.spawns ?? []
+    : mapItem?.spawns ?? [];
+
+  const displayImagePath = hasLayerSwitch
+    ? activeLayerGroup?.imagePath ?? mapItem?.image_path ?? ""
+    : mapItem?.image_path ?? mapItem?.image_url ?? "";
+
+  const continentName = getContinentName(mapItem);
+  const isHuntingGround = useMemo(
+    () => hasMapCardHuntingGround(mapItem, displaySpawns),
+    [mapItem, displaySpawns]
+  );
+  const { hasDay, hasNight } = useMemo(
+    () => getSpawnTimeFlags(displaySpawns),
+    [displaySpawns]
+  );
+
+  return (
+    <article style={styles.card}>
+      <div
+        style={{
+          ...styles.topRow,
+          ...(isMobile ? styles.topRowMobile : {}),
+        }}
+      >
+        <div style={styles.titleWrap}>
+          <div style={styles.titleLine}>
+            <h3 style={styles.mapTitle}>{mapItem?.name || "マップ"}</h3>
+
+            <div style={styles.titleMetaRow}>
+              {continentName ? (
+                <span style={styles.continentText}>{continentName}</span>
+              ) : null}
+
+              {isHuntingGround ? (
+                <span style={styles.huntingBadge}>狩場</span>
+              ) : null}
+
+              {hasDay || hasNight ? (
+                <span style={styles.timeIconGroup}>
+                  {hasDay ? <IoSunnyOutline style={styles.timeIcon} /> : null}
+                  {hasNight ? <FaMoon style={styles.timeIcon} /> : null}
+                </span>
+              ) : null}
+            </div>
+          </div>
+        </div>
+
+        {hasLayerSwitch ? (
+          <div
+            style={{
+              ...styles.layerSwitchRow,
+              ...(isMobile ? styles.layerSwitchRowMobile : {}),
+            }}
+          >
+            {layerGroups.map((group) => {
+              const active = group.layerName === activeLayerName;
+
+              return (
+                <button
+                  key={group.layerName}
+                  type="button"
+                  onClick={() => setActiveLayerName(group.layerName)}
+                  style={{
+                    ...styles.layerSwitchButton,
+                    ...(active ? styles.layerSwitchButtonActive : {}),
+                  }}
+                >
+                  {group.layerName}
+                </button>
+              );
+            })}
+          </div>
+        ) : null}
+      </div>
+
+      <div style={styles.mapWrap}>
+        <MonsterMapOverlay
+          spawns={displaySpawns}
+          imagePath={displayImagePath}
+          href={mapItem?.url}
+        />
+      </div>
+    </article>
+  );
+}
+
+
+function useHabitatsIsMobile(breakpoint = 920) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth < breakpoint);
+    }
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [breakpoint]);
+
+  return isMobile;
+}
+
+function chunkArray(items, size) {
+  const result = [];
+  for (let i = 0; i < items.length; i += size) {
+    result.push(items.slice(i, i + size));
+  }
+  return result;
+}
+
+function hasHabitatHuntingGround(mapItem) {
+  if (!mapItem) return false;
+  if ((mapItem.is_hunting_ground)) return true;
+
+  const spawns = Array.isArray(mapItem.spawns) ? mapItem.spawns : [];
+  return spawns.some((spawn) => Boolean(spawn?.is_hunting_ground));
+}
+
+function sortMapsByHuntingGround(items = []) {
+  return items
+    .map((item, index) => ({ item, index }))
+    .sort((a, b) => {
+      const aHunting = hasHabitatHuntingGround(a.item);
+      const bHunting = hasHabitatHuntingGround(b.item);
+
+      if (aHunting !== bHunting) {
+        return aHunting ? -1 : 1;
+      }
+
+      return a.index - b.index;
+    })
+    .map(({ item }) => item);
+}
+
+function getHabitatsStyles() {
+  return {
+    section: {
+      marginTop: "8px",
+      width: "100%",
+      maxWidth: "100%",
+      minWidth: 0,
+      overflowX: "clip",
+      boxSizing: "border-box",
+    },
+    header: {
+      marginBottom: "12px",
+      minWidth: 0,
+    },
+    title: {
+      margin: 0,
+      fontSize: "18px",
+      fontWeight: 800,
+      color: "var(--text-title)",
+    },
+    tabScroller: {
+      display: "flex",
+      gap: "8px",
+      width: "100%",
+      maxWidth: "100%",
+      minWidth: 0,
+      overflowX: "auto",
+      overflowY: "hidden",
+      WebkitOverflowScrolling: "touch",
+      overscrollBehaviorX: "contain",
+      marginBottom: "14px",
+      paddingBottom: "4px",
+      boxSizing: "border-box",
+      scrollbarWidth: "thin",
+    },
+    tabGroup: {
+      display: "flex",
+      gap: "8px",
+      flex: "0 0 auto",
+      minWidth: 0,
+      maxWidth: "100%",
+    },
+    tabButton: {
+      appearance: "none",
+      border: `1px solid var(--panel-border)`,
+      background: "var(--panel-bg)",
+      color: "var(--text-sub)",
+      padding: "8px 12px",
+      borderRadius: "999px",
+      fontSize: "12px",
+      fontWeight: 700,
+      lineHeight: 1.2,
+      cursor: "pointer",
+      transition: "all 0.2s ease",
+      whiteSpace: "nowrap",
+      flex: "0 0 auto",
+      flexShrink: 0,
+      boxSizing: "border-box",
+      maxWidth: "100%",
+    },
+    tabButtonActive: {
+      background: "var(--primary-bg)",
+      color: "var(--primary-text)",
+      border: `1px solid var(--primary-border)`,
+    },
+    tabButtonContent: {
+      display: "inline-flex",
+      alignItems: "center",
+      gap: "6px",
+      minWidth: 0,
+    },
+    tabButtonText: {
+      display: "inline-block",
+      minWidth: 0,
+    },
+    huntingLikeIcon: {
+      display: "inline-block",
+      width: "14px",
+      height: "14px",
+      flexShrink: 0,
+      color: "var(--warning-text, #f59e0b)",
+      transform: "translateY(-0.5px)",
+    },
+    huntingLikeIconActive: {
+      color: "var(--primary-text)",
+      opacity: 0.92,
+    },
+    emptyCard: {
+      borderRadius: "18px",
+      padding: "18px",
+      background: "var(--soft-bg)",
+      border: `1px dashed var(--soft-border)`,
+      color: "var(--text-muted)",
+      fontWeight: 700,
+    },
+    mobileContentScroller: {
+      display: "flex",
+      overflowX: "auto",
+      scrollSnapType: "x mandatory",
+      WebkitOverflowScrolling: "touch",
+      scrollbarWidth: "none",
+      msOverflowStyle: "none",
+      width: "100%",
+    },
+    mobilePage: {
+      minWidth: "100%",
+      width: "100%",
+      flex: "0 0 100%",
+      scrollSnapAlign: "start",
+      boxSizing: "border-box",
+    },
+    mobilePageInner: {
+      width: "100%",
+      boxSizing: "border-box",
+    },
+    mobileCardWrap: {
+      width: "100%",
+      boxSizing: "border-box",
+    },
+    desktopGrid: {
+      display: "grid",
+      gridTemplateColumns: "repeat(2, minmax(0,1fr))",
+      gap: "14px",
+      width: "100%",
+      minWidth: 0,
+    },
+    desktopCardWrap: {
+      minWidth: 0,
+    },
+  };
+}
+
+function MapTabButton({ mapItem, isActive, onClick, styles }) {
+  const liked = hasHabitatHuntingGround(mapItem);
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        ...styles.tabButton,
+        ...(isActive ? styles.tabButtonActive : {}),
+      }}
+    >
+      <span style={styles.tabButtonContent}>
+        <span style={styles.tabButtonText}>{mapItem?.name || "地名なし"}</span>
+        {liked ? (
+          <FcLike
+            style={{
+              ...styles.huntingLikeIcon,
+              ...(isActive ? styles.huntingLikeIconActive : {}),
+            }}
+          />
+        ) : null}
+      </span>
+    </button>
+  );
+}
+
+export default function MonsterHabitats({ maps = [] }) {
+  const isMobile = useHabitatsIsMobile();
+  const styles = useMemo(() => getHabitatsStyles(), []);
+
+  const contentScrollerRef = useRef(null);
+  const tabScrollerRef = useRef(null);
+  const tabRefs = useRef({});
+  const isProgrammaticScrollRef = useRef(false);
+
+  const normalizedMaps = useMemo(() => {
+    const filtered = Array.isArray(maps)
+      ? maps.filter((item) => item && (item.name || item.id))
+      : [];
+
+    return sortMapsByHuntingGround(filtered);
+  }, [maps]);
+
+  const pageSize = isMobile ? 1 : 2;
+
+  const pagedMaps = useMemo(() => {
+    return chunkArray(normalizedMaps, pageSize);
+  }, [normalizedMaps, pageSize]);
+
+  const [activeTab, setActiveTab] = useState(0);
+
+  useEffect(() => {
+    if (activeTab > pagedMaps.length - 1) {
+      setActiveTab(0);
+    }
+  }, [pagedMaps, activeTab]);
+
+  useEffect(() => {
+    const scroller = tabScrollerRef.current;
+    const target = tabRefs.current[activeTab];
+    if (!scroller || !target) return;
+
+    const nextLeft =
+      target.offsetLeft - (scroller.clientWidth - target.offsetWidth) / 2;
+
+    scroller.scrollTo({
+      left: Math.max(0, nextLeft),
+      behavior: "smooth",
+    });
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const el = contentScrollerRef.current;
+    if (!el) return;
+
+    const pageWidth = el.clientWidth;
+    isProgrammaticScrollRef.current = true;
+
+    el.scrollTo({
+      left: pageWidth * activeTab,
+      behavior: "auto",
+    });
+
+    const timer = setTimeout(() => {
+      isProgrammaticScrollRef.current = false;
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [activeTab, isMobile]);
+
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const el = contentScrollerRef.current;
+    if (!el) return;
+
+    function handleScroll() {
+      if (isProgrammaticScrollRef.current) return;
+
+      const pageWidth = el.clientWidth || 1;
+      const nextTab = Math.round(el.scrollLeft / pageWidth);
+
+      if (nextTab !== activeTab && nextTab >= 0 && nextTab < pagedMaps.length) {
+        setActiveTab(nextTab);
+      }
+    }
+
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, [activeTab, isMobile, pagedMaps.length]);
+
+  if (normalizedMaps.length === 0) {
+    return (
+      <section className={moduleStyles.root} style={styles.section}>
+        <div style={styles.header}>
+          <h2 style={styles.title}>出現場所</h2>
+        </div>
+        <div style={styles.emptyCard}>出現場所データなし</div>
+      </section>
+    );
+  }
+
+  return (
+    <section className={moduleStyles.root} style={styles.section}>
+      <div style={styles.header}>
+        <h2 style={styles.title}>出現場所</h2>
+      </div>
+
+      <div ref={tabScrollerRef} style={styles.tabScroller}>
+        {pagedMaps.map((group, index) => {
+          const isActive = index === activeTab;
+
+          return (
+            <div
+              key={`tab-group-${index}`}
+              ref={(el) => {
+                tabRefs.current[index] = el;
+              }}
+              style={styles.tabGroup}
+            >
+              {group.map((mapItem) => (
+                <MapTabButton
+                  key={`tab-${index}-${mapItem.id ?? mapItem.name}`}
+                  mapItem={mapItem}
+                  isActive={isActive}
+                  onClick={() => setActiveTab(index)}
+                  styles={styles}
+                />
+              ))}
+            </div>
+          );
+        })}
+      </div>
+
+      {isMobile ? (
+        <div ref={contentScrollerRef} style={styles.mobileContentScroller}>
+          {pagedMaps.map((group, index) => (
+            <div key={`page-${index}`} style={styles.mobilePage}>
+              <div style={styles.mobilePageInner}>
+                {group.map((mapItem) => (
+                  <div
+                    key={mapItem.id ?? mapItem.name}
+                    style={styles.mobileCardWrap}
+                  >
+                    <MonsterMapCard mapItem={mapItem} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div style={styles.desktopGrid}>
+          {(pagedMaps[activeTab] ?? []).map((mapItem) => (
+            <div
+              key={mapItem.id ?? mapItem.name}
+              style={styles.desktopCardWrap}
+            >
+              <MonsterMapCard mapItem={mapItem} />
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
 }

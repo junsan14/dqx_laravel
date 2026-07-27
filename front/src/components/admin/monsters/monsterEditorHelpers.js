@@ -50,6 +50,7 @@ export function emptyMonster() {
     id: null,
     display_order: 0,
     name: "",
+    name_kana: "",
     name_en: "",
     system_type: "",
     system_type_en: "",
@@ -80,6 +81,7 @@ export function normalizeMonster(row = {}) {
     id: row?.id ?? null,
     display_order: row?.display_order ?? 0,
     name: row?.name ?? "",
+    name_kana: row?.name_kana ?? row?.nameKana ?? "",
     name_en: row?.name_en ?? row?.nameEn ?? "",
     system_type: row?.system_type ?? "",
     system_type_en: row?.system_type_en ?? row?.systemTypeEn ?? "",
@@ -159,6 +161,9 @@ export function buildMonsterPayload(monster = {}) {
   return {
     display_order: Number(monster?.display_order ?? 0),
     name: String(monster?.name ?? "").trim(),
+    name_kana: String(
+      monster?.name_kana ?? monster?.nameKana ?? ""
+    ).trim(),
     name_en: String(monster?.name_en ?? "").trim(),
     system_type: String(monster?.system_type ?? "").trim(),
     system_type_en: String(monster?.system_type_en ?? "").trim(),

@@ -10,9 +10,10 @@ class Monster extends Model
     protected $fillable = [
         'display_order',
         'name',
+        'name_kana',
         'name_en',
         'system_type',
-         'system_type_en',
+        'system_type_en',
         'source_url',
         'is_reincarnated',
         'reincarnation_parent_id',
@@ -23,15 +24,15 @@ class Monster extends Model
 
     public function spawns(): HasMany
     {
-    return $this->hasMany(MonsterMapSpawn::class);    
-    //return $this->hasMany(MonsterSpawn::class);
+        return $this->hasMany(MonsterMapSpawn::class);
     }
 
     public function whiteBoxes(): HasMany
     {
         return $this->hasMany(MonsterWhiteBox::class);
     }
-        public function drops()
+
+    public function drops(): HasMany
     {
         return $this->hasMany(MonsterDrop::class);
     }

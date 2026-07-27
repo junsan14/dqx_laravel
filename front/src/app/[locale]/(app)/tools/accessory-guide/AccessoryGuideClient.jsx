@@ -10,12 +10,23 @@ import Image from "next/image";
 import PageHeroTitle from "@/components/PageHeroTitle";
 import SearchableSelect from "@/components/common/SearchableSelect";
 import DropdownSelect from "@/components/common/DropdownSelect";
+import ContentReportArea from "@/components/common/ContentReportArea";
 
 /**
  * 部位の表示順
  * ここを好きな順番に並び替えれば、検索セレクトの順番も変わります。
  * DBに存在するけどここに書いていない部位は、最後に五十音順で表示されます。
  */
+const ACCESSORY_REPORT_FIELDS = [
+  { value: "basic_info", label: "基本情報・説明" },
+  { value: "obtain_methods", label: "入手場所" },
+  { value: "base_effects", label: "基礎効果" },
+  { value: "synthesis_effects", label: "合成効果" },
+  { value: "inheritance", label: "伝承情報" },
+  { value: "image", label: "画像" },
+  { value: "other", label: "その他" },
+];
+
 const SLOT_ORDER = [
   "顔アクセサリー",
   "首アクセサリー",
@@ -386,6 +397,7 @@ export default function AccessoryGuideClient() {
           <span>検索</span>
           <SearchableSelect
             value={q}
+            selectOnFocus
             onChange={setQ}
             options={accessorySearchOptions}
             placeholder={
@@ -607,6 +619,19 @@ function AccessoryGuideCard({ item }) {
           </section>
         </div>
       </details>
+
+      <ContentReportArea
+        reportableType="accessory"
+        reportableId={item.id}
+        targetLabel={item.name}
+        fieldOptions={ACCESSORY_REPORT_FIELDS}
+        context={{
+          page: "accessory-guide",
+          slot: item.slot || null,
+          accessory_type: item.accessory_type || null,
+          item_id: item.item_id || null,
+        }}
+      />
     </article>
   );
 }

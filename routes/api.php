@@ -23,6 +23,9 @@ use App\Http\Controllers\Api\CraftTypeController;
 
 use App\Http\Controllers\Api\UpdateItemMarketPricesController;
 
+use App\Http\Controllers\Api\ContentReportController;
+
+use App\Http\Controllers\Api\AdminContentReportController;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
@@ -112,4 +115,30 @@ Route::get('/monsters/zukan', [MonsterController::class, 'zukan']);
 Route::Resource('/monster-search', MonsterController::class);
 Route::get('/monsters/around-display-order', [MonsterController::class, 'aroundDisplayOrder']);
 
+Route::get('/content-reports', [ContentReportController::class, 'index'])
+    ->middleware('throttle:60,1');
 
+$contentReportThrottle = app()->environment(['local', 'testing'])
+    ? 'throttle:1000,1'
+    : 'throttle:5,10';
+
+Route::post('/content-reports', [ContentReportController::class, 'store'])
+    ->middleware($contentReportThrottle);
+
+
+Route::get('/content-reports', [ContentReportController::class, 'index'])
+    ->middleware('throttle:60,1');
+
+
+
+Route::prefix('admin/content-reports')
+    ->middleware(['auth:sanctum']) // 既存のadmin middlewareがあれば追加してください。
+    ->group(function () {
+        Route::get('/', [AdminContentReportController::class, 'index']);
+        Route::patch('/{contentReport}', [AdminContentReportController::class, 'update']);
+        Route::delete('/{contentReport}', [AdminContentReportController::class, 'destroy']);
+    });
+Route::get(
+    '/content-reports/summary',
+    [ContentReportController::class, 'summary']
+)->middleware('throttle:120,1');

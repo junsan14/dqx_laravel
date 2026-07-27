@@ -4,6 +4,19 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import MonsterImageCropper from "./MonsterImageCropper";
 import { getMonsterAssetUrl } from "@/lib/monsters";
 
+function selectAllInput(event) {
+  const input = event.currentTarget;
+
+  if (typeof window === "undefined") {
+    input.select();
+    return;
+  }
+
+  window.requestAnimationFrame(() => {
+    input.select();
+  });
+}
+
 const appendCacheBust = (url, version) => {
   if (!url) return "";
   const separator = url.includes("?") ? "&" : "?";
@@ -16,7 +29,7 @@ export default function MonsterForm({
   parentCandidates = [],
   onSearchParents,
   disabled = false,
-  defaultOpen = false,
+  defaultOpen = open,
   children = null,
 }) {
   const containerRef = useRef(null);
@@ -207,6 +220,8 @@ export default function MonsterForm({
                   patch("display_order", Number(e.target.value || 0))
                 }
                 style={inputStyle(disabled)}
+                onFocus={selectAllInput}
+                onClick={selectAllInput}
               />
             </label>
 
@@ -218,6 +233,22 @@ export default function MonsterForm({
                 disabled={disabled}
                 onChange={(e) => patch("name", e.target.value)}
                 style={inputStyle(disabled)}
+                onFocus={selectAllInput}
+                onClick={selectAllInput}
+              />
+            </label>
+
+            <label style={fieldStyle}>
+              <span style={labelStyle()}>カナ名</span>
+              <input
+                type="text"
+                value={monster?.name_kana ?? ""}
+                disabled={disabled}
+                onChange={(e) => patch("name_kana", e.target.value)}
+                placeholder="例：スライム"
+                style={inputStyle(disabled)}
+                onFocus={selectAllInput}
+                onClick={selectAllInput}
               />
             </label>
 
@@ -229,6 +260,8 @@ export default function MonsterForm({
                 disabled={disabled}
                 onChange={(e) => patch("name_en", e.target.value)}
                 style={inputStyle(disabled)}
+                onFocus={selectAllInput}
+                onClick={selectAllInput}
               />
             </label>
 
@@ -240,6 +273,8 @@ export default function MonsterForm({
                 disabled={disabled}
                 onChange={(e) => patch("system_type", e.target.value)}
                 style={inputStyle(disabled)}
+                onFocus={selectAllInput}
+                onClick={selectAllInput}
               />
             </label>
 
@@ -251,6 +286,8 @@ export default function MonsterForm({
                 disabled={disabled}
                 onChange={(e) => patch("system_type_en", e.target.value)}
                 style={inputStyle(disabled)}
+                onFocus={selectAllInput}
+                onClick={selectAllInput}
               />
             </label>
 
@@ -262,6 +299,8 @@ export default function MonsterForm({
                 disabled={disabled}
                 onChange={(e) => patch("source_url", e.target.value)}
                 style={inputStyle(disabled)}
+                onFocus={selectAllInput}
+                onClick={selectAllInput}
               />
             </label>
 
@@ -285,6 +324,8 @@ export default function MonsterForm({
                   onKeyDown={handleParentKeyDown}
                   placeholder="モンスター名を入力して候補から選ぶ"
                   style={inputStyle(disabled)}
+                  onFocus={selectAllInput}
+                  onClick={selectAllInput}
                 />
 
                 <button

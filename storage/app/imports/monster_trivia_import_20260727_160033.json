@@ -1,0 +1,4171 @@
+{
+    "executed_at": "2026-07-27T16:00:33+00:00",
+    "source_url": "https://dragon-quest.jp/ten/monster/zukan/",
+    "dry_run": false,
+    "force": true,
+    "all_link_count": 930,
+    "processed_count": 610,
+    "summary": {
+        "updated": 320,
+        "skipped_completed": 290,
+        "not_found": 0,
+        "no_trivia": 0,
+        "failed": 0
+    },
+    "updated_monsters": [
+        {
+            "result": "updated",
+            "monster_id": 321,
+            "name": "プリーストナイト",
+            "detail_name": "プリーストナイト",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "邪神に仕える闇の騎士が魔界より推参した。邪神の加護を発揮して回復呪文を使いこなす。",
+            "trivia_2": "生まじめな性格がたたってプリーストなのかナイトなのか自分のアイデンティティに悩んでいるというウワサ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/39.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 347,
+            "name": "くものきょじん",
+            "detail_name": "くものきょじん",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "雲の中から生まれたという自由気ままな人型の魔物。かまいたちをあやつってうれしげに人を切りきざむ。",
+            "trivia_2": "いつも雲に乗って移動するため運動不足になりがちで最近メタボを気にしている。バトルでメタボ解消を目指す！",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/40.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 352,
+            "name": "じごくのつかい",
+            "detail_name": "じごくのつかい",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "地獄から つかわされたおそろしく強い魔界の参謀。魔王の軍団 ベホマでいやしはむかう敵にメラゾーマ！",
+            "trivia_2": "魔物を強く育てあげる鬼教官として知られている。呪文を唱える前と後にサーと言え スライムども！",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/29.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 365,
+            "name": "メッサーラ",
+            "detail_name": "メッサーラ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "闇の中から悠然と現れた魔王の信頼厚い赤き悪魔。すべてが消しズミになるまでメラゾーマを唱えてくる。",
+            "trivia_2": "魔王のために戦うことを誇りに思っている大悪魔。血のように紅い身体は純血の魔族たる証なのだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/41.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 390,
+            "name": "スライム・強",
+            "detail_name": "スライム・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な スライム。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "おなじみのプルプル姿に 油断することなかれ。鍛え抜かれた青色筋肉に 返り討ちにされてしまうぞ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/sura/33.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 392,
+            "name": "いたずらもぐら・強",
+            "detail_name": "いたずらもぐら・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な いたずらもぐら。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "いたずらも強力になっており 落とし穴の中に毒を仕込んで獲物をじわじわ殺すのも よくある話だという。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/90.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 397,
+            "name": "モーモン・強",
+            "detail_name": "モーモン・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な モーモン。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "理想郷モーモン王国に背を向け 荒野で生きていくことを選んだハードボイルドなモーモン。強くなければ生きていけない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/70.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 400,
+            "name": "いっかくウサギ・強",
+            "detail_name": "いっかくウサギ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な いっかくウサギ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "相手の強さに応じて ツノの硬度を変える。強者が挑んだ際のツノは 武器の素材として重宝される。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/91.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 401,
+            "name": "ファーラット・強",
+            "detail_name": "ファーラット・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ファーラット。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "眼光が赤く輝くことによって 顔の真ん中についているのが目であることがハッキリした。断じてダンゴ鼻ではない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/100.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 403,
+            "name": "さそりばち・強",
+            "detail_name": "さそりばち・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な さそりばち。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "しっぽの針には毒はないが 刺されると猛烈に痛い。痛がる姿が面白いらしく 何度も何度も刺してくる。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/insect/27.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 404,
+            "name": "ドラキー・強",
+            "detail_name": "ドラキー・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ドラキー。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "魔界にはドラキーに変身する 秘術が伝えられているらしい。非常に難度の高い術であり 失敗すると元に戻れなくなる。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/39.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 408,
+            "name": "バブルスライム・強",
+            "detail_name": "バブルスライム・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な バブルスライム。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "強すぎる毒を持つため 近づくだけでも危険。そのため友達がいない かわいそうなスライム。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/sura/34.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 409,
+            "name": "ねこまどう・強",
+            "detail_name": "ねこまどう・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ねこまどう。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "ひたすらメラをみがき上げて ついにメラゾーマに達したが長年の夢をかなえてしまい 以来 何をやってもむなしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/92.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 412,
+            "name": "ランタンこぞう",
+            "detail_name": "ランタンこぞう",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "うち捨てられたランタンに 住みついた火の悪魔。ランタンに化けて油断した冒険者に火をあびせる。",
+            "trivia_2": "身体に抱きかかえた炎が熱くないのかとよく聞かれるがじつはものすごく熱い。正体を隠すために耐えている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/68.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 414,
+            "name": "ゴースト・強",
+            "detail_name": "ゴースト・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ゴースト。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "激しい怨念を抱き すべての生者を憎む悪霊。とにかく恨みがましい性格で 関わるとだいたい損をする。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/44.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 418,
+            "name": "おおきづち・強",
+            "detail_name": "おおきづち・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な おおきづち。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "中に金属製の芯が入った 普通のおおきづちのものより3倍重い木づちを使っている。殺意も3倍増しだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kaijin/54.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 419,
+            "name": "プチアーノン・強",
+            "detail_name": "プチアーノン・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な プチアーノン。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "海岸でのんびりすることを 何より愛する平和主義者。しかし休息を阻む者には容赦なく牙をむく。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/water/31.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 433,
+            "name": "メーダ・強",
+            "detail_name": "メーダ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な メーダ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "巨大な目玉から発せられる 目ヂカラがあまりにもい強いため誰にも目を合わせてもらえず さみしい思いをしてるらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/insect/28.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 436,
+            "name": "ボーンバット・強",
+            "detail_name": "ボーンバット・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ボーンバット。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "死んで 骨だけになっても まだ魔王にコキ使われる魔物。魔王に仕える魔物には 定年退職なんてないのだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/47.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 442,
+            "name": "とこよアゲハ",
+            "detail_name": "とこよアゲハ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "白いチョウの羽を生やした死を招く不吉な妖精。仲間たちのすばやさを上げてイオナズンでたたみかける。",
+            "trivia_2": "生死の淵をさ迷う者の周りに無数のとこよアゲハが舞う時美しい花畑が見えるという。死の妖精と呼ばれるゆえん。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/insect/17.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 444,
+            "name": "メタッピー・強",
+            "detail_name": "メタッピー・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な メタッピー。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "もともと監視用に作られたが 改造を重ねるうち強くなりすぎ今や立派な殺りくマシン。それでもピオラは忘れない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/machine/23.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 447,
+            "name": "ほのおのせんし",
+            "detail_name": "ほのおのせんし",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "炎を飛ばし灼熱の息をはくまさに炎の申し子。短気そうに見えるがためるを使うがまん強さもある。",
+            "trivia_2": "ナドラガンドの魔物にははるか昔にたもとを分かった５つの戦闘部族がいたという。彼らこそその末裔である。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/ele/32.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 450,
+            "name": "ぬすっとウサギ・強",
+            "detail_name": "ぬすっとウサギ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ぬすっとウサギ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "角度 スピード 破壊力…… いつか究極のドロップキックを放つため 今日も技の研究に 余念がないようだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/93.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 452,
+            "name": "キャタピラー・強",
+            "detail_name": "キャタピラー・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な キャタピラー。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "集団で獲物に糸をはきかけ ぐるぐる巻きにして巣に持ち帰り ゆっくりと 溶かしながら 食べるらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/insect/32.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 453,
+            "name": "もみじこぞう・強",
+            "detail_name": "もみじこぞう・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な もみじこぞう。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "元はあざやかな緑色だったが 倒した相手の返り血で身体がどんどん赤く染まり 紅葉していったという。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/plant/30.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 455,
+            "name": "サイコマスター",
+            "detail_name": "サイコマスター",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "邪悪な魔法の扱いに長ける外道に堕ちた魔法戦士。自らの魔力を暴走させて放つバギクロスは脅威。",
+            "trivia_2": "魔法戦士と言ってもヴェリナードの魔法戦士団とは一切関係がないと王国は公式に声明を発表している。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/43.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 456,
+            "name": "おにこぞう・強",
+            "detail_name": "おにこぞう・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な おにこぞう。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "ウデっぷしだけでなくワガママも強レベル。要求が通るまでダダをこね抜く ある意味意志の強いヤツ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kaijin/55.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 457,
+            "name": "リリパット・強",
+            "detail_name": "リリパット・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な リリパット。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "射殺すことに快感を覚えた地獄のスナイパー。魔王の暗殺に成功した リリパットもいたらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kaijin/56.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 900,
+            "name": "メラゴースト・塔",
+            "detail_name": "メラゴースト・塔",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "創失の塔内部で生み出された 捕食しあうよう定められた悲しき魔物たち。その怨念は 巨大な創失波の糧となる。",
+            "trivia_2": "捕食者のマリンスライム・塔を 倒してくれるドロヌーバ・塔を救世主と崇め 慕っているが 当人には迷惑がられている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/ele/49.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 460,
+            "name": "どくろあらい・強",
+            "detail_name": "どくろあらい・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な どくろあらい。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "どくろの美しさを競い合う どくろコンテスト優勝を目指し毎日がんばってみがいている。前回は惜しくも準優勝だった。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/102.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 467,
+            "name": "ピッキー・強",
+            "detail_name": "ピッキー・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ピッキー。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "闇の不死鳥を名乗っていたのは ドルモーアよりも濃い黒歴史。ダークオルニスには今も密かなライバル意識を抱いている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/40.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 468,
+            "name": "おおくちばし・強",
+            "detail_name": "おおくちばし・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な おおくちばし。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "荒野を猛スピードで駆ける。魔界では伝書バトならぬ伝書おおくちばしを 通信に使うこともあるらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/41.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 471,
+            "name": "はめつの使者",
+            "detail_name": "はめつの使者",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "この世を呪い 破滅を振りまく邪神をあがめる神官。そのくせ回復呪文が得意なのはもともとの育ちのよさゆえか？",
+            "trivia_2": "高度な呪文を身につけたエリート神官だったがギャンブルで身を持ち崩し破滅の人生を歩みだした。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/30.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 474,
+            "name": "ギガントドラゴン",
+            "detail_name": "ギガントドラゴン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "あまりの威圧感と凶暴さに 同じドラゴンすら逃げだすおそるべき古代の巨竜。巻き起こす竜巻に注意せよ。",
+            "trivia_2": "ギガントドラゴンが飛び跳ねたら となりの大陸で眠っていた火山が爆発した！そんな途方もないウワサも。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/20.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 475,
+            "name": "ベノムピード",
+            "detail_name": "ベノムピード",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "動きを封じるネバネバした糸や 毒の息をはいてくるイモムシ。丸めた身体を高速回転させて おそいかかってくる。",
+            "trivia_2": "サナギになりそこねた どくイモムシがふてくされて毒をはきまくった結果 ベノムピードになるという。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/insect/24.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 478,
+            "name": "ブラックベジター",
+            "detail_name": "ブラックベジター",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "身体の一部のごときヤリで敵を さみだれ突きにする。何気に強力な呪文をあやつる油断できない暗黒野菜。",
+            "trivia_2": "ヤリをなくしてしまった時は頭に生えたヘタを引き抜くと体内から新たなヤリが出てくると言われている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/plant/28.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 482,
+            "name": "しびれだんびら・強",
+            "detail_name": "しびれだんびら・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な しびれだんびら。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "斬れば相手をマヒさせる強力な刀のモンスター。気位が高く 魔王であっても使いこなすのは難しい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/69.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 486,
+            "name": "グーシオン",
+            "detail_name": "グーシオン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ベギラゴンさえもあやつる強大な魔力を持つ悪魔。死の呪文も会得しているのでとにかく油断ならない相手だ。",
+            "trivia_2": "かの有名な大悪魔バズズはグーシオン族の出身だとか。同族から有名悪魔が出たことは彼らにとっても誇りらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/20.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 893,
+            "name": "マドハンド・強",
+            "detail_name": "マドハンド・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な マドハンド。怪しくうごめく指先には 激しい殺意が宿っている。",
+            "trivia_2": "同種の仲間を呼びよせて 集団で獲物を狩ることを好む。倒した獲物は等分にして それぞれが持ち帰っていく。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/64.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 490,
+            "name": "ランプのまじん",
+            "detail_name": "ランプのまじん",
+            "changed_fields": [
+                "trivia_2"
+            ],
+            "trivia_1": "いにしえの時代に封印されたランプの中から抜け出した悪しき心の魔法使い。風を自在にあやつるという。",
+            "trivia_2": "自分を封じていたランプをなぜか大切に保管している。今では自分の一部のような気がしているらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/31.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 494,
+            "name": "ポイズントリル・強",
+            "detail_name": "ポイズントリル・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ポイズントリル。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "愛らしくも毒気のある外見で 魔界のギャルに大人気だが毒でギャルが倒れるという事故が多発しているらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/ele/37.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 495,
+            "name": "くびかりぞく",
+            "detail_name": "くびかりぞく",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "あざやかなオノさばきで獲物の首を狙う名ハンター。戦うことのよろこびで常に笑顔を浮かべている。",
+            "trivia_2": "一人前として認められるため新月の晩 ひとりきりで獲物を仕留めに旅立つ。失敗したら一族から追放される。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kaijin/52.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 496,
+            "name": "おばけヒトデ・強",
+            "detail_name": "おばけヒトデ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な おばけヒトデ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "おばけヒトデをブン投げて飛距離を競うスポーツが魔界にあるらしい。記録保持者はギガンテス・強。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/water/32.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 502,
+            "name": "しのどれい・強",
+            "detail_name": "しのどれい・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な しのどれい。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "魔王に囚われた哀れな魂は 死んでも決して支配から逃れられない。未来永劫 魔王のため働き続けるのだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/45.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 503,
+            "name": "ブリザードマン",
+            "detail_name": "ブリザードマン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "いてつく吹雪をあやつり 命の灯火を根こそぎ消し去る氷雪の魔人。その姿を見た者は 眠るように死に至る。",
+            "trivia_2": "かつて炎の部族から分かれた 古い戦闘部族の末裔。マヒャデドスをとなえる瞬間は 極上の笑顔を浮かべている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/ele/33.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 504,
+            "name": "シャイニング",
+            "detail_name": "シャイニング",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "周囲を回る相棒とともに戦う太陽の姿をした陽気な魔物。すべてを灰じんに帰さんと周囲をしゃくねつで焼き払う。",
+            "trivia_2": "なげきムーンとはお互いをはげしく意識する間柄だが生活時間が合わずいまだ顔を合わせたことはない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/ele/35.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 506,
+            "name": "ディアブラダ",
+            "detail_name": "ディアブラダ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "悪魔ダンス界の奇跡として 語られる伝説の舞踏家。その つるぎの舞の切れ味は 大岩をも両断するとのウワサ",
+            "trivia_2": "ちがいのわかる者が見れば ザコ悪魔の踊りとは完成度の差が歴然なのだが いかんせん 発現する効果に大差はない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/69.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 516,
+            "name": "ぐんたいガニ・強",
+            "detail_name": "ぐんたいガニ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ぐんたいガニ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "カニ・フォースと呼ばれる エリートぐんたいガニによる百戦錬磨の最強軍の伝説が 魔物界では語り継がれている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/water/33.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 518,
+            "name": "トンブレロ・強",
+            "detail_name": "トンブレロ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な トンブレロ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "魔界をさすらうトンブレロ。何より自由を愛しているが故郷のあの娘を思い出すと ソンブレロを目深にかぶる。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/101.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 524,
+            "name": "原罪のやどりぎ",
+            "detail_name": "原罪のやどりぎ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "罪人を探し 飛び回る 翼のはえた木の魔物。その巨大な目玉は いかなる罪も見逃さない。",
+            "trivia_2": "原罪のやどりぎに 見つめられた者はあまりの眼力に耐えきれず 自ら罪を告白するという。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/plant/38.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 525,
+            "name": "サーバルスカイ",
+            "detail_name": "サーバルスカイ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "大空を華麗に舞う猫魔族。 マホトラで奪った魔力でマホカンタをとなえる。 魔法が好きなのか嫌いなのか？",
+            "trivia_2": "晴れた日の青い空が大好きで 天気の変化に敏感。サーバルスカイが顔を洗うのは 雨が降る前触れらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/109.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 526,
+            "name": "おおさそり",
+            "detail_name": "おおさそり",
+            "changed_fields": [
+                "trivia_2"
+            ],
+            "trivia_1": "突然変異で巨大化したサソリ。巨体をいかした回転アタックとしっぽの先の大きな毒針によるマヒ攻撃をしかけてくる。",
+            "trivia_2": "自慢のしっぽはじつは重くて構えるだけでそこそこ大変。気を抜いて自分のアタマに刺さりそうになったことも。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/insect/23.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 527,
+            "name": "テンツク",
+            "detail_name": "テンツク",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ひょうきんな踊りを見せつけて 旅人にまとわりつく魔物。油断すると次々に仲間を呼び すっかり囲まれてしまう。",
+            "trivia_2": "テンツク界にはピラミッド型の きびしい階級制度が存在し究極へ至った１体のテンツクが その頂点に君臨しているとか。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/insect/25.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 529,
+            "name": "おおがらす",
+            "detail_name": "おおがらす",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "巨大化したカラスの魔物。止まり木代わりのがいこつはお気に入りの逸品だが いざとなれば投げつけてくる。",
+            "trivia_2": "夫婦となったおおがらすは たがいのがいこつを交換し永遠の愛を誓う習性がある。なくすと大事になるのだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/42.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 531,
+            "name": "シャドーサタン",
+            "detail_name": "シャドーサタン",
+            "changed_fields": [
+                "trivia_2"
+            ],
+            "trivia_1": "三つ目が特徴な影の悪魔。いかにも悪そうな見た目だがベホマラーで仲間をいやす心優しい一面もある。",
+            "trivia_2": "魔界でもかなり高位の悪魔だがなぜか知名度は低い。影が薄いことを気にしてあえて自らシャドーを名乗る。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/57.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 533,
+            "name": "黒ごまキッズ",
+            "detail_name": "黒ごまキッズ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "地面に落ちた黒ごまが集まり 月日を経て小山になった頃意思を持って動き出した ごま濃度１００％の妖精。",
+            "trivia_2": "要はごまの塊なので 歩くとパラパラと落ちコイツの歩く後には香ばしい セサミロードができるらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/plant/36.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 534,
+            "name": "スライムナイト・強",
+            "detail_name": "スライムナイト・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な スライムナイト。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "厳しい修行を共に乗り越えた 親友同士のスライムとナイト。俺たちの武器はこの友情だと 熱いコメントを残している。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/sura/36.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 537,
+            "name": "おばけキノコ",
+            "detail_name": "おばけキノコ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "じめじめした場所に群生する 巨大な人面キノコ。ひと吸いで深い眠りに落とされてしまう あまいいきには注意しよう。",
+            "trivia_2": "旅人を眠らせた後は みっちり胞子を植えつける。その旅人を苗床にして今日も キノコは増えつづけていく。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/plant/31.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 540,
+            "name": "はりつきあくま",
+            "detail_name": "はりつきあくま",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "まぶしい光で視力をうばい やけつくいきを吹きかけて獲物が苦しんでいる姿を ながめて楽しむ残忍な悪魔。",
+            "trivia_2": "常に全体重を支える両ウデは 攻撃に使えば強力無比だが使えば地面に落ちること 必至のため文字通り奥の手だ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/68.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 541,
+            "name": "まおうのかげ",
+            "detail_name": "まおうのかげ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "はるか昔 偉大な魔王の影が強い魔力をおびて動きだした。ザラキーマを唱えて冒険者を死の淵へと引きずり込む。",
+            "trivia_2": "魔王の強すぎる魔力によって他の影系魔物たちとは違うあざやかな真紅の姿となった。これも魔王様のおかげ！",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/ele/31.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 542,
+            "name": "ヘブンバルーン",
+            "detail_name": "ヘブンバルーン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ふよふよと宙に浮く 真っ赤な風船型のモンスター。まんまるな見た目とは裏腹に キレキレのダンスを披露する。",
+            "trivia_2": "ヘブンバルーンに出会うと 歓迎に死のおどりを踊られて天に召されてしまうことから その名がついたとか。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/ele/42.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 546,
+            "name": "オークィーン",
+            "detail_name": "オークィーン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "やさしき心を紅の毛皮に隠し多くのオークを統率する華麗なるオークの女王。回復呪文で仲間を助けちゃう。",
+            "trivia_2": "魔物博士イワノフの論文によりオークィーンは女王ではなく単に大食いのオークであるとの新説がこのたび発表された。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/76.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 548,
+            "name": "キメラ・強",
+            "detail_name": "キメラ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な キメラ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "ある魔王がハゲタカとヘビを合成して完成した魔物。手元にタカと竜がなかったので 代わりに使ったと魔王は語る。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/43.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 552,
+            "name": "メガトンチャンプ",
+            "detail_name": "メガトンチャンプ",
+            "changed_fields": [
+                "trivia_2"
+            ],
+            "trivia_1": "たたかいの舞で気分を盛り上げヒップインパクトで大暴れする魔物界の闘技場チャンピオン。階級はもちろん無差別級！",
+            "trivia_2": "ヒップインパクトの強化のため体重の増加に余念がない。食って寝て鍛えてのサイクルを１日３回くり返している。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/78.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 553,
+            "name": "サイおとこ・強",
+            "detail_name": "サイおとこ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な サイおとこ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "魔王に仕えることが サイおとこのステイタス。ボスに大魔王を持つことは サイおとこの悲願でもある。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/95.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 554,
+            "name": "スーパーテンツク",
+            "detail_name": "スーパーテンツク",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "がむしゃらな修行時代を経て ただのテンツクを卒業しメガザルダンスを会得した さらにうっとうしいテンツク。",
+            "trivia_2": "ひらテンツクには尊敬されるし 上を見ればキリがないからと向上心を失いがちなこの時期は テンツクの暗黒期と呼ばれる。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/insect/26.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 555,
+            "name": "カナリアーノ",
+            "detail_name": "カナリアーノ",
+            "changed_fields": [
+                "trivia_2"
+            ],
+            "trivia_1": "カゴと一体化した虹色の怪鳥。嵐を呼び しゃくねつを放って縄張りを侵す敵が息絶えるまでしつこく追いかけまわす。",
+            "trivia_2": "鳥カゴにしか見えない部分は露出した骨格の一部らしい。繁殖期のメスは カゴの内部に産卵して外敵からヒナを守る。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/38.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 557,
+            "name": "ばくだん岩・強",
+            "detail_name": "ばくだん岩・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ばくだんいわ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "横たえた罪人の腹の上に ばくだん岩を置き 少しずつたたきながら追い詰めるという 拷問が魔界にあるらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/70.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 829,
+            "name": "ジア・メーダ",
+            "detail_name": "ジア・メーダ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ジア・クトの放つ結晶化の光に適応した メーダ。元の魔物を はるかに凌駕する能力と凶暴性で 襲ってくる。",
+            "trivia_2": "鉱物生命体となり自慢の目玉はさらに眼力と輝きを増した。その視線にさらされるだけで ビリビリしびれるとの評判。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/94.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 558,
+            "name": "カーディナルナイト",
+            "detail_name": "カーディナルナイト",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "死のチカラをあやつる高貴な闇の聖騎士。強力な呪文と剣技で立ちはだかる敵を滅殺する。",
+            "trivia_2": "重要な物事を決める時 やたらと多数決にしたがる困ったクセがある。そのため損な選択をすることも度々。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/44.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 560,
+            "name": "さんぞくウルフ・強",
+            "detail_name": "さんぞくウルフ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な さんぞくウルフ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "以前は赤狼組に所属していたが 厳しい団則に耐えかねて華のウルフ道を踏み外し 外道ウルフになってしまった。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/103.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 562,
+            "name": "プテラノドン・強",
+            "detail_name": "プテラノドン・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な プテラノドン。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "数千年の時を生きる翼竜。長い間 この世界の歴史を見てきたが言葉を持たないので その知見を伝えるすべはない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/44.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 566,
+            "name": "プリズニャン・強",
+            "detail_name": "プリズニャン・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な プリズニャン。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "監獄帰りの過去を持つ なんだか貫禄があるネコ。罪状は魔王の玉座でツメとぎをしたこと。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/94.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 567,
+            "name": "イエローファット",
+            "detail_name": "イエローファット",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "リザードファッツとは別の進化をとげた黄色の巨竜。ひかりのブレスやリベホイムの呪文も使えるようになった。",
+            "trivia_2": "全身が黄色く染まっているのはじつは太りすぎによる健康状態への危険信号だという説もささやかれている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/29.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 569,
+            "name": "ズッキーニャ",
+            "detail_name": "ズッキーニャ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "廃棄されたズッキーニに邪悪な魂が宿った魔物。手にしたヤリで狙った獲物を メッタ突きにするのが好き。",
+            "trivia_2": "同じヤリ使いとしてオークにはライバル心を抱いている。さみだれづきの命中率で勝負したいと思っているとか。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/plant/32.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 572,
+            "name": "ジュラシックロイド",
+            "detail_name": "ジュラシックロイド",
+            "changed_fields": [
+                "trivia_2"
+            ],
+            "trivia_1": "竜を模して造られた戦闘機械。鋼鉄のツメと伸縮するしっぽが主な武器だが内燃機関を利用し高熱の炎を吹きだすことも。",
+            "trivia_2": "帝国の魔神兵とは明らかに異なる技術で造られておりガテリア皇国の秘密兵器が野生化した物と言われている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/machine/21.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 574,
+            "name": "スペースデーモン",
+            "detail_name": "スペースデーモン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "隕石から生まれたという戦闘に特化した宇宙生命体。呼吸器官から生成した毒素で獲物をじわじわ苦しめる。",
+            "trivia_2": "言葉や文字を持たず全ての感情を攻撃で表現する。胸に秘めた愛を伝えるため相手を殺してしまうことも。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/33.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 575,
+            "name": "デスロマニズム",
+            "detail_name": "デスロマニズム",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "マデッサンスに飾られた絵だが 美術館の警備も務める魔物。この絵画の思想が昇華されてワイルドフォビズムとなった。",
+            "trivia_2": "魔界では軽視されがちだった 死という概念に 美を見出し魔界芸術史で一時代を築いた。運動の中心は マデサゴーラ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/74.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 576,
+            "name": "マジックデモニスム",
+            "detail_name": "マジックデモニスム",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "マデッサンスに飾られた絵だが 美術館の警備も務める魔物。この絵画の思想が昇華されてエビルキュビズムとなった。",
+            "trivia_2": "古来より 魔界で主流派だったヘルデモニスムの発展理念。前期と後期で表現技法が異なり 後期の代表はマデサゴーラ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/75.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 577,
+            "name": "スーパーダーキズム",
+            "detail_name": "スーパーダーキズム",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "魔幻園に飾られる絵だが 美術館の警備も兼ねている。この絵画の思想が昇華されてダークレアリズムとなった。",
+            "trivia_2": "万物の混沌を表す暗黒の美を 探求せんとした芸術上の理念。提唱した 著名な芸術家はマデサゴーラである。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/76.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 578,
+            "name": "ガニメデス",
+            "detail_name": "ガニメデス",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "高度な呪文をとなえる使い魔。ベホイムで形勢を立て直して大火力呪文で攻め立てる。戦いの終盤は特に油断禁物だ。",
+            "trivia_2": "強大な呪文使いでありながら 使い魔としての特技は給仕。俊敏な動きで飛び回り 決して 主人や客の酒杯を空にしない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/80.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 840,
+            "name": "スピンサタン",
+            "detail_name": "スピンサタン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "悪魔のように不気味に笑う闇の太陽。自身の周囲を回る衛星とのコンビネーションで 周囲の敵を惑わせる。",
+            "trivia_2": "なげきムーンに対抗心を燃やし 夜空に浮いてアピールするも闇夜に紛れすぎて 誰にも気づいてもらえなかったとか。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/ele/43.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 855,
+            "name": "ツイストサイダー",
+            "detail_name": "ツイストサイダー",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "パチパチと弾ける 特殊なガスをその身に含んだ雲のこども。吹き出す息は こごえるほどに刺激的。",
+            "trivia_2": "よく仲間を呼んでは みんなで身体をひねって踊っている。身体に含むガスが パチパチ弾けて楽しいらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/ele/44.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 579,
+            "name": "マジックフライ・強",
+            "detail_name": "マジックフライ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な マジックフライ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "テンションの上がらないときは 美しい羽で旅人を惑わせてイオナズンでぶっとばすのが最高のストレス解消法。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/insect/29.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 581,
+            "name": "あくま神官・強",
+            "detail_name": "あくま神官・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な あくま神官。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "自慢の法衣は 汚れると自分で洗濯している。水が冷たくてあかぎれができ この時だけは教会に戻りたいと思ったり。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/76.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 582,
+            "name": "メイジももんじゃ",
+            "detail_name": "メイジももんじゃ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "魔法が得意な ももんじゃ。 大きなクチバシでとなえる強烈な呪文の威力は あなどれぬもんじゃ。",
+            "trivia_2": "今でこそ ももんじゃ界の 偉大な重鎮と呼ばれておるがこれでも若い頃はブイブイ 言わせていたもんじゃ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/105.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 584,
+            "name": "グリングリン",
+            "detail_name": "グリングリン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "大森林のごとき深緑の体毛を 持つ魔獣。ラリホーマで眠らせ痛恨の一撃を放つ凶悪な戦法で 見た目の愛らしさを裏切る。",
+            "trivia_2": "名前の由来は体毛の色でなく グリングリンと巻かれた豊かな尻尾から。一族の中でも大胆で ストレートな名づけ方である。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/106.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 585,
+            "name": "ジャンガラ",
+            "detail_name": "ジャンガラ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "頭上から獲物に狙いを定め 呪いのきり まぶしいひかりで自分のペースに巻き込む おそるべき空の刺客。",
+            "trivia_2": "歌うのが好きでヒマな時は 身体をゆらして独特の歌とも唸り声ともつかぬ音を発する。これをジャンガラ節と呼ぶ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/81.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 586,
+            "name": "ピンキーマッシュ",
+            "detail_name": "ピンキーマッシュ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "あやしい胞子で旅人を 幻惑させた上にマヒと毒でさらなる苦しみを与える 見た目に寄らぬ非道スライム。",
+            "trivia_2": "意外なことにキノコが嫌いで 身体に生えたキノコを場所を考えず投げ捨てるため 自己中と嫌われている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/sura/37.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 588,
+            "name": "オベルジーヌ",
+            "detail_name": "オベルジーヌ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "品種改良を続けるうち 突然変異し白くなったナス。目立つのでよく鳥につつかれ 逃げるうち心身が鍛えられた。",
+            "trivia_2": "オシャレな名が並のナスとは ひと味違うと自負しているがそれもナスの別名であるとは ご存じないようだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/plant/37.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 589,
+            "name": "おどるほうせき・強",
+            "detail_name": "おどるほうせき・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な おどるほうせき。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "輝く宝石は呪われており それを手にした者たちは想像を絶する不幸な最期を迎えるといわれている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/72.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 590,
+            "name": "おにびドングリ",
+            "detail_name": "おにびドングリ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "固いカラに秘められし 炎のチカラで相手の強さを試すため襲いかかってくる。火の粉 ひばしらに要注意だ。",
+            "trivia_2": "あやつる炎は心に燃やした 勇気の証。仲間たちとの楽しいドングリライフを守るため 今日も戦い続けるのだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/90.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 591,
+            "name": "蒼炎の使徒",
+            "detail_name": "蒼炎の使徒",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "高熱の蒼い炎を灯す魔物。 クールに見えるが闘争心が強く魔力を高めたメラゾーマで 灰になるまで敵を焼き尽くす。",
+            "trivia_2": "ろうそくの魔物を捕まえては 蒼い炎はイケてるとそそのかし高値で種火を買わせる。これが本当の炎上商法か？",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/86.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 592,
+            "name": "あらなわ明神",
+            "detail_name": "あらなわ明神",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "しめなわとして使われていた なわに魂が宿り動きだした。やわらかいウデを使った 豊富な手技は あなどれない。",
+            "trivia_2": "人に害を成すとされる場所を 封印するために身体を張ったが心ない者に引きちぎられた。彼の心は怒りに震えている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/88.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 594,
+            "name": "くさった死体・強",
+            "detail_name": "くさった死体・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な くさった死体。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "魔界に出る くさった死体は 当然 もとは魔物の死体。ツノはくさっていく過程で抜け落ちてしまうらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/46.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 600,
+            "name": "リザードマン・強",
+            "detail_name": "リザードマン・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な リザードマン。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "華麗な魔法戦士になるという 夢をあきらめきれずひたすら修行に打ち込んだ結果 無敵の剣士へと成長した。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/45.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 602,
+            "name": "じんめんじゅ・強",
+            "detail_name": "じんめんじゅ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な じんめんじゅ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "自分が襲った相手の養分を吸って成長していく。するとじんめんじゅの顔が 犠牲者に似ていくという。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/plant/33.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 895,
+            "name": "まんじゅシャモン",
+            "detail_name": "まんじゅシャモン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "まんじゅしゃげの花のような あざやかな真紅の身体が自慢。妖しげな踊りで人を死へと誘う おぞましい一面をもつ。",
+            "trivia_2": "仲間を集めては誰が一番 美しい紅かコンテストで競う。優勝目指して人の生き血を すする努力を重ねているとか。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/plant/40.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 604,
+            "name": "岩のり童子",
+            "detail_name": "岩のり童子",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "小柄な見た目にそぐわず ばくれつ棍やイオナズンと強烈な技をくり出してくる 油断のならぬ曲芸師。",
+            "trivia_2": "岩に乗るから この名前なのか 岩のりを主食とする習性からこう呼ばれるのか不明だが 岩のりは栄養満点だ！",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kaijin/61.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 605,
+            "name": "オーク・強",
+            "detail_name": "オーク・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な オーク。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "大半のオークは兵士稼業だが 戦いばかりの人生に疲れ詩人や絵本作家を志す 変わり者もチラホラいるとか。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/96.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 606,
+            "name": "じごくのおくり火",
+            "detail_name": "じごくのおくり火",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "地獄の業火を身の内に抱え ナワバリに侵入した冒険者をことごとく消し炭にする。 炎属性のスペシャリスト。",
+            "trivia_2": "ナワバリ意識が強すぎて 同族間の争いが絶えない。冒険者よりも同族と戦っている 時間のほうが多いらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/85.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 607,
+            "name": "ラストテンツク",
+            "detail_name": "ラストテンツク",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "さそうおどりで攻撃を封じ 仲間よびで 魔物を集めてふくろだたきを もくろむ。すべてヤツの計画どおりだ！",
+            "trivia_2": "いつでも声をかければ 仲間が来てくれるように日々あいさつやお歳暮 お中元 誕生日祝いは欠かさない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/insect/34.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 608,
+            "name": "がいこつ・強",
+            "detail_name": "がいこつ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な がいこつ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "不断の努力で強くなったが やはり そのまんまな名前をつけられてしまった。訴訟も辞さない覚悟である。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/48.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 826,
+            "name": "コットンキャンディ",
+            "detail_name": "コットンキャンディ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ふわふわボディから 甘い香りが漂うおいしそうな魔物。しかし 甘く見ると痛い目にあう。",
+            "trivia_2": "甘い香りと見た目から よく冒険者に味見されるのが悩みのタネだったため 姿をくらます技を覚えた。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/ele/46.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 609,
+            "name": "マリンスライム・強",
+            "detail_name": "マリンスライム・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な マリンスライム。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "いじめられて 貝殻の中に 閉じこもり過ごしていた。殻の中でひたすら自分を鍛え 強く成長したという。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/water/36.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 610,
+            "name": "プラチナサウルス",
+            "detail_name": "プラチナサウルス",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "内燃機関を冷やすための 高度な冷却装置を備えておりそれを最大限活用して かがやくいきを放ってくる。",
+            "trivia_2": "プラチナ製というわけでなく プラチナ級に強いという意味の名前だが部品を持ち去っていく 冒険者が後を絶たない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/machine/22.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 611,
+            "name": "たてまじん・強",
+            "detail_name": "たてまじん・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な たてまじん。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "盾と肉体を徹底的に鍛え 鉄壁の防御力を手に入れたが本当に守りたかった存在の事は 忘れてしまった悲しき魔人。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kaijin/58.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 894,
+            "name": "マリンスライム・塔",
+            "detail_name": "マリンスライム・塔",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "創失の塔内部で生み出された 捕食しあうよう定められた悲しき魔物たち。その怨念は 巨大な創失波の糧となる。",
+            "trivia_2": "塔の外では基本狩られる側だが この塔では狩る側になれたと背後のドロヌーバ・塔の存在も 忘れて張り切っている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/water/41.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 612,
+            "name": "グリーンシザー・強",
+            "detail_name": "グリーンシザー・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な グリーンシザー。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "魔界兵器の第一人者が 開発した 通称シザー2号機。改良されたキャノン砲で 殺りく大臣賞をもらったとか。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/insect/30.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 614,
+            "name": "きりさきピエロ・強",
+            "detail_name": "きりさきピエロ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な きりさきピエロ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "名の知れた剣豪だったが 争いに疲れピエロに転職。たまに昔の血がうずいて無性に斬りたくなるらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kaijin/57.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 816,
+            "name": "クリオネオン",
+            "detail_name": "クリオネオン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "抱える水色の炎は超高熱で ここからベギラゴンを放つ。じつは命の炎で 消えると死んでしまうというウサワも。",
+            "trivia_2": "ランタンこぞうの仲間の中では見た目通りのクールな性格。ただ一匹狼というわけではなく 利害が合えば誰とでも組む。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/100.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 618,
+            "name": "デスフラッター",
+            "detail_name": "デスフラッター",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "死を招く巨大カラス。足元のがいこつを投げる上にしゃくねつの炎で敵を火葬にするのが得意戦法。",
+            "trivia_2": "がいこつをコレクションして気に入ったものを持ち歩く。デスフラッターが集まればがいこつ自慢に花が咲く。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/45.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 619,
+            "name": "スペースデビル",
+            "detail_name": "スペースデビル",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "隕石から生まれたという戦闘に特化した宇宙生命体。動くものすべてを敵とみなし襲いかかってくる。",
+            "trivia_2": "ひとつの星を滅ぼすと手足を丸め隕石に擬態して群れで宇宙を渡る。そして次の星を目指すのだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/34.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 621,
+            "name": "ホースデビル・強",
+            "detail_name": "ホースデビル・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ホースデビル。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "大量のせかいじゅの葉を確保しており 魔物たちに売りさばいているらしい。入手ルートは企業秘密。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/75.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 622,
+            "name": "カラポッポ",
+            "detail_name": "カラポッポ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "見た目と名前のせいで軽く 見られがちだが鳥魔物の中でもにじくじゃく種と並んで 高位とされる炎の魔鳥。",
+            "trivia_2": "カラポッポの名前の由来は おなかが空っぽだから説と吹き出す炎の音から説があり 学界では論争になっている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/51.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 623,
+            "name": "モスボーイ",
+            "detail_name": "モスボーイ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "毒草を食べて育った小鬼。 ツメの先に体液をしたたらせ引っかいた敵をマヒや猛毒で 動けなくして捕食するという。",
+            "trivia_2": "身体の緑色の部分には コケがびっしりと生えていて雨にぬれると胞子を飛ばし モスガールに猛アピールする。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kaijin/62.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 624,
+            "name": "オルフェウス",
+            "detail_name": "オルフェウス",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "美しき調べで人をあやつる おそろしき吟遊詩人。翼が生えてはいるが 天使ではないらしい。",
+            "trivia_2": "イナズマのようにシビれる サウンドが彼の曲の特徴だがかの伝説的ロックバンドの パクリ疑惑も浮上している。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kaijin/59.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 891,
+            "name": "マダムコーン",
+            "detail_name": "マダムコーン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "黄金の粒がびっしり詰まった 豊満ボディが自慢のマダム。くり出すゴージャスレインは とても甘くてとても痛い。",
+            "trivia_2": "セレブとして各種パーティーや コンサートに引っ張りだこで日々を多忙に過ごしている。どこでもマダムは注目の的だ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/plant/41.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 626,
+            "name": "ドロヌーバ・強",
+            "detail_name": "ドロヌーバ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ドロヌーバ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "魔界の環境に適応しきれず ヒトとしての姿が崩れておぞましき不定形の怪物と なりはてた悲しき存在。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/ele/39.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 627,
+            "name": "マタンゴ",
+            "detail_name": "マタンゴ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "エモノを眠らせることに 強烈な欲求を燃やしており攻撃した相手が眠らないと 密かに不機嫌になるという。",
+            "trivia_2": "キノコ魔物のベテランとしては マッシュスライムら新米にはなめられまいと意識しているが 当然相手にされていない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/plant/35.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 628,
+            "name": "疾風テング",
+            "detail_name": "疾風テング",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "疾風のごとき速さを誇る 妖怪。疾風突撃やバギクロスなど風にまつわる 強力な攻撃を得意とする。",
+            "trivia_2": "テングを名乗っているものの 鼻が低いのがコンプレックス。美しく高い鼻を夢見て 密かに 鼻クリップを愛用している。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kaijin/60.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 869,
+            "name": "ドロヌーバ・塔",
+            "detail_name": "ドロヌーバ・塔",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "創失の塔内部で生み出された 捕食しあうよう定められた悲しき魔物たち。その怨念は 巨大な創失波の糧となる。",
+            "trivia_2": "動きが鈍いので 捕食対象は 追わずに待つが基本戦略。自ら動いている時は限界まで 空腹になっている時だとか。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/ele/50.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 629,
+            "name": "ダッシュラン・強",
+            "detail_name": "ダッシュラン・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ダッシュラン。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "さらなる高みを目指し 過酷な魔界を走りこんだ結果異常なまでに心肺がきたえられ 息は白くかがやきはじめた。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/47.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 630,
+            "name": "ドラゴンキッズ・強",
+            "detail_name": "ドラゴンキッズ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ドラゴンキッズ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "大人なんか なれなくていいもん！そんな生意気な息攻撃が 二重の意味でとても痛い。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/48.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 886,
+            "name": "フレイム・塔",
+            "detail_name": "フレイム・塔",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "創失の塔内部で生み出された 捕食しあうよう定められた悲しき魔物たち。その怨念は 巨大な創失波の糧となる。",
+            "trivia_2": "飛んでいるホークマン・塔を 捕食しようと必死で跳ねるうち背後がおろそかになって 食われるドツボにはまりがち。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/ele/51.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 843,
+            "name": "スラマシンＺ",
+            "detail_name": "スラマシンZ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "マッドな科学者に改造を 施されてしまったスライム。最大出力の電圧で放つ ジゴデインに気をつけろ。",
+            "trivia_2": "スラマシンZが完成するまで スラマシンAからYまで計25体の試作スライムが 作られたらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/sura/38.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 631,
+            "name": "サイレス・強",
+            "detail_name": "サイレス・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な サイレス。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "静寂を愛するモンスター。話しかけられると相手を呪文で黙らせてしまうため 何年も会話していない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/47.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 632,
+            "name": "ジャンボドラキー",
+            "detail_name": "ジャンボドラキー",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "巨大な体躯を誇るドラキー。マホトーンで呪文を封じ得意のポヨロンプレスで あらゆる敵を圧殺する。",
+            "trivia_2": "自分は断じてメタボではない。恵まれたフィジカルエリートのドラキーなのだと言い聞かせ 今日も間食に余念がない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/52.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 634,
+            "name": "わかめ王子・強",
+            "detail_name": "わかめ王子・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な わかめ王子。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "類まれな強さと美声を持つ 魔のシンガーソングライター。新曲「かめはめルンバ」は魔物界のベストセラー！",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/water/37.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 865,
+            "name": "ドラグノワール",
+            "detail_name": "ドラグノワール",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ある強大なドラゴンの面影を宿した 漆黒の幼竜。しゃくねつ かがやくいきで パーティ全体を苦しめる。",
+            "trivia_2": "年を経た ドラグノワールが 黄金のトサカを戴きしとき神にみお等しきチカラの竜と 恐れられることになるだろう。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/55.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 841,
+            "name": "スライム・祖",
+            "detail_name": "スライム・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている スライムの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "べちょべちょの液体の姿で この世に生を受けたがある日 神の啓示を得て ぷるぷる姿に進化したという。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/sura/40.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 637,
+            "name": "フォンデュ・強",
+            "detail_name": "フォンデュ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な フォンデュ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "天下に悪名高きチーズ怪盗。家庭料理からフルコースまで数多くのチーズを 華麗に盗んだ食い逃げ犯。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/71.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 864,
+            "name": "ドラキー・祖",
+            "detail_name": "ドラキー・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている ドラキーの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "モーモン・祖への対抗心は特にない。この頃はアイツが自分の地位をおびやかすなんて 思ってもいなかった！",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/57.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 639,
+            "name": "ホークマン・強",
+            "detail_name": "ホークマン・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ホークマン。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "手にした剣は倒した敵から 奪ったもの。もっとも多くの剣を集めたホークマンが 一族の長と認められるという。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/48.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 640,
+            "name": "ゴルゴンゾーラ",
+            "detail_name": "ゴルゴンゾーラ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "周囲に独特なニオイを まき散らすチーズの化身。その匂いは姿は見えずとも どこにいるかわかるほど強烈。",
+            "trivia_2": "名前負けしていると言われ 悔しい思いをすることが多い。いつか名前通りの凶悪なボスに なろうと日々修練を重ねている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/89.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 842,
+            "name": "スライムベス・祖",
+            "detail_name": "スライムベス・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている スライムベスの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "まれにスライムの群れに ベス1匹が混ざることがありそれを目撃できた者には 幸運が訪れるというウサワ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/sura/41.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 830,
+            "name": "ジェイドウォリアー",
+            "detail_name": "ジェイドウォリアー",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "この世を焼き尽くさんとする はた迷惑な魔炎の戦士。アシッドブレスと火炎弾を使い分け 攻撃してくる。",
+            "trivia_2": "不届き者の手で切り倒されたご神木を 火にくべたとき宝石のようにきらめく魔炎が燃え立ち 魔物を生み出した。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/ele/45.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 642,
+            "name": "ニードルマン・強",
+            "detail_name": "ニードルマン・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ニードルマン。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "昔はかわいいお人形だったが 持ち主に捨てられてグレた。周囲をいっさい信用せず さわる者みなキズつける。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/77.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 644,
+            "name": "ヘルプラネット",
+            "detail_name": "ヘルプラネット",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "地獄の底で生まれながら 天体を思わせる奇妙な魔物。闇の呪文を駆使し 生ける者を ことごとく死へといざなう。",
+            "trivia_2": "衛星のように従う子分の 身体の色は忠誠心が高ければ青へと近づく。子分の忠誠心の 低さにため息が出る毎日。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/ele/36.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 889,
+            "name": "ホークマン・塔",
+            "detail_name": "ホークマン・塔",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "創失の塔内部で生み出された 捕食しあうよう定められた悲しき魔物たち。その怨念は 巨大な創失波の糧となる。",
+            "trivia_2": "捕食されたくない一心で 肩をもんだりパシリをしたり他の魔物に媚びを売っている。その効果は無いようだが……。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/61.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 646,
+            "name": "あやしいかげ・強",
+            "detail_name": "あやしいかげ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な あやしいかげ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "暗夜にまぎれ 音もなく仕事をこなす魔界の殺し屋。過去に数多くの要人を 葬ってきたプロ中のプロ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/ele/38.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 850,
+            "name": "大王イカ・塔",
+            "detail_name": "大王イカ・塔",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "創失の塔内部で生み出された 捕食しあうよう定められた悲しき魔物たち。その怨念は 巨大な創失波の糧となる。",
+            "trivia_2": "捕食される自分の味が気になり 触手をかじってみたところ非常に美味だったらしい。 我を食する者は幸運である。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/water/42.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 927,
+            "name": "スライム・異",
+            "detail_name": "スライム・異",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている スライムの新たな姿。白きオーラをまとった身体には 未知のパワーが 宿っている。",
+            "trivia_2": "どんな所で暮らしていても 最弱モンスターであることに変わりはない。 それでも健気に生きていく。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/sura/44.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 890,
+            "name": "マーブルヴォルク",
+            "detail_name": "マーブルヴォルク",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "怒りにかられ動くモノすべてに 襲いかかる凶暴な猛獣。鋭いツメでつうこんをくり出し 周囲の生物を根絶やしにする。",
+            "trivia_2": "自分に向けられる感情を匂いで感じ取る能力を持っておりじつは恐れや敵意に反応して 襲いかかっているだけなのだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/111.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 649,
+            "name": "ガメゴンロード",
+            "detail_name": "ガメゴンロード",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "マホカンタを得意とするガメゴンたちの王様。ガメゴン界で呪文を使えるのは相当のステータスなのだ。",
+            "trivia_2": "覚えた呪文がマホカンタな辺りやはり王様はあなどれない。硬いこうらと魔法反射バリアで鉄壁のガードを展開だ！",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/35.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 654,
+            "name": "マージマタンゴ",
+            "detail_name": "マージマタンゴ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "不気味なカサを揺らして現れ どくどくキノコの時限爆弾とマヒャドで敵を翻弄する キノコ界のファンタジスタ。",
+            "trivia_2": "どくどくキノコで出現する 小さなキノコは一説によるとマージマタンゴの幼生だと ウワサされている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/plant/39.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 899,
+            "name": "むくろカサゴ",
+            "detail_name": "むくろカサゴ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "冥界の海を泳ぐ魚の魔物。闇のチカラに満ちたブレスや強烈ないなずまで襲いかかり 敵を死の淵へといざなう。",
+            "trivia_2": "生きて海を泳いでいた頃は 珍しい怪魚として狙われた。あまたの釣り人たちの指に かみついてやったのが自慢。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/55.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 650,
+            "name": "いしにんぎょう・強",
+            "detail_name": "いしにんぎょう・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な いしにんぎょう。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "キモカワ系人形として マニアの間で人気が急上昇。本人もまんざらではないが 興味ない風をよそおっている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/78.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 651,
+            "name": "メイデンドール",
+            "detail_name": "メイデンドール",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "美しい姿で人間を魅了し 意のままにあやつる人形。あやつるのに飽きると今度は こごえるふぶきを浴びせる。",
+            "trivia_2": "ワタシはキレイなお人形。ワタシと一緒に遊びましょう？遊んでくれないなら…… ワタシがアナタでアソブわね。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/79.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 655,
+            "name": "あかつきの神兵",
+            "detail_name": "あかつきの神兵",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "密命を帯びた仮面の騎士。夜明け前の闇に紛れコウモリを従えて現れる。痛恨の一撃には要注意。",
+            "trivia_2": "召喚するコウモリのために 木の実や昆虫などのおやつをマントの裏に隠し持っている。おやつの切れ目が縁の切れ目。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/82.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 653,
+            "name": "マッドルーパー・強",
+            "detail_name": "マッドルーパー・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な マッドルーパー。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "身体に砂をため込んだ 大きくて重いモンスター。砂をすべて出してしまうと 半分くらいの大きさになる。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/water/34.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 806,
+            "name": "ガチャコッコ・祖",
+            "detail_name": "ガチャコッコ・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている ガチャコッコの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "ガチャコッコの胴体は野営時 鍋がわりにするのに便利だと一時乱獲されたらしい。その時の恨みは忘れてはいない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/machine/28.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 853,
+            "name": "タホドラキー・祖",
+            "detail_name": "タホドラキー・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている タホドラキーの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "タホとは「猛る炎」の略だと うそぶいてみたものの自分でも納得していないので真のタホの 意味を今も探し続けている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/56.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 870,
+            "name": "ねこまどう・祖",
+            "detail_name": "ねこまどう・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている ねこまどうの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "猫魔族の天才を自認するが 最上位呪文のメラガイアーを覚えられないせいでメラ系への 愛着と向上心を失いつつある。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/112.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 656,
+            "name": "アームライオン・強",
+            "detail_name": "アームライオン・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な アームライオン。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "魔界の大食いチャンピオン。4つのハンバーガーを手にし大きなクチで一気食いする。その食いっぷり正に縦横無尽。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/104.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 657,
+            "name": "しにがみきぞく・強",
+            "detail_name": "しにがみきぞく・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な しみがみきぞく。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "魔界に豪華な邸宅を持ち 狩りとった魂を調理してディナーを楽しむなど 優雅な暮らしを送っている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/49.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 901,
+            "name": "モーモン・祖",
+            "detail_name": "モーモン・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている モーモンの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "毛に隠れて見えないが じつは原種モーモンにはヘソがある。だが その存在は今のところ 誰にも知られていない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/84.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 658,
+            "name": "くらやみハーピー",
+            "detail_name": "くらやみハーピー",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "大きな羽で闇夜を飛びまわる 美しく華麗なモンスター。その魅力で相手を骨抜きにし 鋭いツメで切り裂く。",
+            "trivia_2": "フワフワの羽毛でくり出される ぱふぱふはまさに天国の心地。だが 下手すると本当に 天国送りにされるのでご注意。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/46.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 659,
+            "name": "さまようよろい・強",
+            "detail_name": "さまようよろい・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な さまようよろい。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "「打倒！ 魔王」を誓うも 志半ばで倒れた騎士のよろい。執念だけで動いてはいるが 目的を忘れた哀れな抜けがら。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/80.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 660,
+            "name": "エンタシスマン・強",
+            "detail_name": "エンタシスマン・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な エンタシスマン・強。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "修行して踊りのキレは増したが 振りがマンネリなのが不満。新たな踊りを編み出すべく 日々練習に はげんでいる。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/84.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 801,
+            "name": "おおきづち・祖",
+            "detail_name": "おおきづち・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている おおきづちの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "赤ちゃんの頃は母きづちや 兄弟とともに巣穴で育ち木づちを持てるようになると 巣を出てひとり立ちする",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kaijin/63.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 903,
+            "name": "もみじこぞう・祖",
+            "detail_name": "もみじこぞう・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている もみじこぞうの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "じつはド近眼で転ばぬようにと足をどんどん増やしていったが今度は足同士がもつれて 転ぶようになった悲しいヤツ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/plant/44.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 808,
+            "name": "キメラ・祖",
+            "detail_name": "キメラ・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている キメラの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "足がないので休む時の姿勢を いつも試行錯誤している。今のところは蛇のように とぐろを巻くのがお気に入り。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/60.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 661,
+            "name": "デビルアーマー・強",
+            "detail_name": "デビルアーマー・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な デビルアーマー。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "鎧の中には誰もいないが なぜか目が光っている。内側にたまったガスが 燃えているだけという説も。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/83.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 662,
+            "name": "ガルバ・強",
+            "detail_name": "ガルバ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ガルバ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "相棒のゴルバのねちっこい性格を 嫌った過去もあったが 彼の慎重さに救われることも多く 今となっては感謝しかない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/78.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 663,
+            "name": "ゴルバ・強",
+            "detail_name": "ゴルバ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ゴルバ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "相棒のガルバのアタマの悪さに 呆れた過去もあったが 彼の明るさに救われることも多く 今となっては尊敬している。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/79.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 897,
+            "name": "みならいあくま・祖",
+            "detail_name": "みならいあくま・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている みならいあくまの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "みならいという名に反し メラゾーマを覚えた努力家。しかしどうすれば みならいを卒業できるのだろうか……。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/83.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 856,
+            "name": "つららわたり",
+            "detail_name": "つららわたり",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "雪山の洞くつで生まれたため 暗く寒いところを好む。旅人を見つけては眠らせて 氷漬けにする意地の悪いヤツ。",
+            "trivia_2": "雪山にいた頃はつららを渡って移動していたが 春になるとつららが解けて 手をすべらせ よく落ちていたらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/86.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 664,
+            "name": "パンプキッズ・強",
+            "detail_name": "パンプキッズ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な パンプキッズ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "キッズと名乗ってはいるが この道ウン十年のベテラン。踊りのキレも愛らしさも 若いモンには負けないぜ！",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/plant/34.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 837,
+            "name": "じんめんちょう",
+            "detail_name": "じんめんちょう",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "インパクトのあるカオと 羽根の模様でヒトを惑わす蝶。笑ったカオを見た者は 誰ひとり生きていないという。",
+            "trivia_2": "戦闘中の仲間呼びで 仲間が来てくれるように日頃からプレゼントを配って ポイント稼ぎに勤しんでいる。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/insect/35.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 912,
+            "name": "リリパット・祖",
+            "detail_name": "リリパット・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている リリパットの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "当初は他に使っているヤツがいなかったからという理由で弓を使い始めただけで 別に強いこだわりはなかった。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kaijin/66.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 896,
+            "name": "ミーラカンス",
+            "detail_name": "ミーラカンス",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ゾンビ化した古代魚だが 太古にゾンビ化した魚なのか生きていた古代魚が最近 ゾンビ化したものかは不明。",
+            "trivia_2": "生きた化石ならぬ死んだ化石と呼ばれているが それって普通なんじゃ……とつっこむと 途端に不機嫌になる。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/66.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 858,
+            "name": "てっこうまじん・祖",
+            "detail_name": "てっこうまじん・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている てっこうまじんの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "新品の鎧を着て浮かれているが やがて鎧のあまりの重さに生活の多くをあきらめる未来を 彼はまだ知らない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/104.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 665,
+            "name": "てつのさそり",
+            "detail_name": "てつのさそり",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "鉄の殻でおおわれたサソリ。ただでさえ硬い身体をスクルトでさらに強化する カタくて一本気なヤツ。",
+            "trivia_2": "自慢のアイアンボディだが メンテナンスにはひと苦労。表面がくもってくると砂嵐に 飛び込んでピカピカにする。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/insect/31.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 666,
+            "name": "デスクローゼット",
+            "detail_name": "デスクローゼット",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "決して開けてはならないと 言われる恐怖のたんす。呪文で混乱させてから ゆっくりと獲物を飲み込む。",
+            "trivia_2": "かくれんぼでクローゼットに 隠れた子供が姿を消した。後日 クローゼットの中から 子供の骨が発見された……。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/91.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 667,
+            "name": "パペットマン・強",
+            "detail_name": "パペットマン・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な パペットマン。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "ふしぎなおどりの不思議さも パワーアップしているらしいがどのへんが変わったかは相当の目利きでもわからないという。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/81.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 669,
+            "name": "ドラゴンライダー",
+            "detail_name": "ドラゴンライダー",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "その名の通りドラゴンを駆り 大空を翔ける戦士。剣による攻撃だけでなく 竜のブレスにも注意が必要だ。",
+            "trivia_2": "じつはあまり高く飛べないのが目下の悩みのタネ。愛竜から過酷なダイエットメニューを 渡されて困り果てている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/46.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 881,
+            "name": "ブラウニー・祖",
+            "detail_name": "ブラウニー・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている ブラウニーの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "大のチョコレートケーキ好きで 報酬として用意しておけば寝ている間に面倒事を 片付けておいてくれるとか。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kaijin/65.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 687,
+            "name": "ブラッドレディ",
+            "detail_name": "ブラッドレディ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "滴りおちる血のように 赤い翼を持つ美しき妖魔。桃色の嵐を巻き起こし 相手を骨抜きにする。",
+            "trivia_2": "ひたいのハートマークは 恋がかなうおまじない。好きな人にアタックできない ウブで純な面もある。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/50.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 670,
+            "name": "ヘルカッチャ・強",
+            "detail_name": "ヘルカッチャ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ヘルカッチャ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "邪神信仰の異形の一族。成人時に七柱の邪神の中から推しの邪神を選ぶ。人気ナンバーワンは虚無。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/machine/26.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 671,
+            "name": "ベレス・強",
+            "detail_name": "ベレス・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ベレス。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "鎌がよく似合う魔物を選ぶ ベスト鎌ニスト投票で冥王ネルゲルに僅差で敗れ 一方的にライバル視している。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/74.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 819,
+            "name": "ぐんたいガニ・祖",
+            "detail_name": "ぐんたいガニ・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている ぐんたいガニの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "1匹はみんなのために！ みんなは1匹のために！がモットー。負けたときは みんなで反省会を開くらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/water/39.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 839,
+            "name": "ズッキーニャ・祖",
+            "detail_name": "ズッキーニャ・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている ズッキーニャの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "はるか昔 とある村の近くで 救世の天使と一戦交えたという武勇伝がズッキーニャらの間で 代々語り継がれているらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/plant/46.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 862,
+            "name": "どくやずきん・祖",
+            "detail_name": "どくやずきん・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている どくやずきんの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "リリパット・祖とは長年の対立関係にあり ライバルに差をつけようと矢に毒を ぬったことがその名の起源。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kaijin/64.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 906,
+            "name": "ライトアーマー",
+            "detail_name": "ライトアーマー",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "グランゼニスの試練場に訪れる 勇者と大魔王の前に立ちふさがる試練の魔物。 神のチカラを宿している。",
+            "trivia_2": "盾は自分でデザインした。 儚げな乙女の横顔を見ると存在しないはずの心臓が キュンキュンする。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/101.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 834,
+            "name": "シャドーメイル",
+            "detail_name": "シャドーメイル",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "グランゼニスの試練場に訪れる 勇者と大魔王の前に立ちふさがる試練の魔物。 魔のチカラを宿している。",
+            "trivia_2": "武器は自分でデザインした。 デカくてカッコいい武器に存在しないはずの心臓が 熱く高鳴る。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/102.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 673,
+            "name": "ホワイトパンサー",
+            "detail_name": "ホワイトパンサー",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "純白の体毛が美しいが とてつもなく凶暴な獣。痛恨の一撃をくり出し 葬った獲物は数知れず。",
+            "trivia_2": "ものすごくキレイ好き。汚れや返り血を落とすため獲物をしとめた後は必ず 川や湖などに入って洗う。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/107.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 674,
+            "name": "ブラックドラゴン",
+            "detail_name": "ブラックドラゴン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "常闇の竜と呼ばれる存在の末裔たる凶悪なドラゴン。やみのブレスや呪文に加え巨体を活かした強烈な攻撃も。",
+            "trivia_2": "始祖たる常闇の竜は炎の領界で眠りについたため闇の領界で暮らしてきた彼らはその存在に気付いていない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/37.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 675,
+            "name": "フェアリーバット",
+            "detail_name": "フェアリーバット",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "魔物らしからぬ魅惑的な姿で 冒険者を油断させ 愛きょうをふりまきメロメロにする。狡知に長けた魔物である。",
+            "trivia_2": "戦いに自信を持つ冒険者を 魅了のまなざしで魅了してのどぶえをかき切る行為に 無上の喜びを感じている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/49.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 802,
+            "name": "おばけキノコ・祖",
+            "detail_name": "おばけキノコ・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている おばけキノコの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "この種のおばけキノコの あまいいきは糖度が高く最高級メロンに匹敵する。 眠るなんてもったいない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/plant/42.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 676,
+            "name": "メカジラフ",
+            "detail_name": "メカジラフ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "修理いらずで数千年もの間 稼働できる驚異の耐久性。魔界技術の粋をつめ込んだ 頑強無比の戦闘マシン。",
+            "trivia_2": "闇のキリンジの強さにあやかり 外見が決められたらしい。その開発には先代魔仙卿も 関わっているとのウワサだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/machine/25.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 677,
+            "name": "グレイトドラゴン",
+            "detail_name": "グレイトドラゴン",
+            "changed_fields": [
+                "trivia_2"
+            ],
+            "trivia_1": "いにしえの時代から息づく竜たちの英雄。黄金色の身体に月日をかけて霊光を貯め込み強烈なひかりのブレスを放つ。",
+            "trivia_2": "ドラゴンキッズに聞いた将来なりたい竜ランキングで２５年連続ナンバーワン！グレイトな雄姿は皆の憧れだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/38.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 678,
+            "name": "ゴーレム・強",
+            "detail_name": "ゴーレム・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ゴーレム。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "彼が守っていた町は 大昔に滅ぼされたが今も変わらず跡地に立ち続け 誰もいない廃墟を守っている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/82.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 875,
+            "name": "ひとくいが",
+            "detail_name": "ひとくいが",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "人喰いと呼ばれているが 実際にはそうでもない。ただ魔物として恐れられるのは アリなので否定はしていない。",
+            "trivia_2": "戦闘で良質な毒を出せるよう 日頃から毒素満点の食事を欠かさないようにしている。 特に毒ヘビが好物らしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/insect/36.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 902,
+            "name": "モノクロームナイト",
+            "detail_name": "モノクロームナイト",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "グランゼニスの試練場に訪れる 勇者と大魔王の前に立ちふさがる試練の魔物。 神と魔のチカラを宿している。",
+            "trivia_2": "自分を造った時に余ったはずの ライトアーマーの左半分とシャドーメイルの右半分の ゆくえが気になっている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/103.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 904,
+            "name": "ゆうれい",
+            "detail_name": "ゆうれい",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "生きとし生けるものを恨み 闇雲にやいばを振り回す。ゆうれいというよりも 悪霊と呼ぶべき厄介なヤツ。",
+            "trivia_2": "生前の人格は失われているが やいばくだきを使いこなす。生きているときは意外とウデの立つ戦士だったのかも？",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/61.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 863,
+            "name": "とっしんこぞう",
+            "detail_name": "とっしんこぞう",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "スクルトで身体を硬くし 体当たりしてくる暴走野郎。魔物界に運転免許があったら 確実に免停コースだろう。",
+            "trivia_2": "車を降りると驚くほど気弱で奥ゆかしい性格に。ハンドル？を握ると途端に暴れん坊に変身する。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/99.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 679,
+            "name": "ビッグファング",
+            "detail_name": "ビッグファング",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ニヒルな笑みを浮かべると 鋭くとがった牙がギラリ。巨体から放つボディプレスや テールスイングも脅威。",
+            "trivia_2": "その名前に恥じないように 牙の手入れには余念がない。色と形には自信があるが 肝心の大きさは やや不満。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/43.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 680,
+            "name": "ハーベストドラゴ",
+            "detail_name": "ハーベストドラゴ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "黄金の大樹を 背に生やす竜。バイキルトで攻撃力を高めて巨体で たたきつぶしてくる。やけつくいきにも要注意だ。",
+            "trivia_2": "強大で尊大な竜は語った。オレは収穫される側じゃない。オレが冒険者を収穫するから この名を与えられたのだと。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/52.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 681,
+            "name": "デスマドモアゼル",
+            "detail_name": "デスマドモアゼル",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "敵対する相手をも 魅了してしまう魔性の人形。もてあそぶのに飽きると 死の呪文で命を奪う。",
+            "trivia_2": "魅了された者にはこの人形が 最愛の人に映ると言われる。身体に受ける痛みさえも 愛の証に感じるのだろう……。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/92.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 682,
+            "name": "クラーゴン",
+            "detail_name": "クラーゴン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "イカに似た巨体の持ち主で おそるべき海の怪物として伝承に語りつがれる。9本の触手が最大の武器。",
+            "trivia_2": "タコは8本。イカなら10本。9本の触手を持つ自分はどちらでもない特別な存在だと信じ 心の支えにしている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/water/35.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 799,
+            "name": "ウパソルジャー",
+            "detail_name": "ウパソルジャー",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "みずみずしい身体をした ウーパールーパーの戦士。剣と盾の扱いは 一流の戦士をしのぐほど。",
+            "trivia_2": "顔の左右にある水疱は 健康状態のバロメーターで体調の悪い日は ほんのりしぼんでしまう。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/water/38.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 860,
+            "name": "テンツク・祖",
+            "detail_name": "テンツク・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている テンツクの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "踊りはじめて まだ日が浅く レパートリーも少ないがいつか大舞台のメインを 張ることを夢見て鍛錬の日々。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/insect/37.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 908,
+            "name": "リザードマン・祖",
+            "detail_name": "リザードマン・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている リザードマンの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "フォースを使いこなしての 多彩な剣技はまさに魔法戦士。アストルティアの子孫は 先祖の記憶を追い求めていた？",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/58.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 824,
+            "name": "ゴーレム・塔",
+            "detail_name": "ゴーレム・塔",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "創失の塔内部で生み出された 捕食しあうよう定められた悲しき魔物たち。その怨念は 巨大な創失波の糧となる。",
+            "trivia_2": "クチのないゴーレム・塔が 他の魔物を どの器官でとうやって捕食するのか？ 研究が待たれるところである。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/107.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 683,
+            "name": "バザックス・強",
+            "detail_name": "バザックス・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な バザックス。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "敵を見ると炎を吹きながら 突進してくれる習慣があり『炎の暴走特急』と呼ばれ 恐れられている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/99.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 909,
+            "name": "リターナーモア",
+            "detail_name": "リターナーモア",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "広大な大地を超高速で 一気に駆け抜ける魔物界きっての走り屋。その姿はまさに風。",
+            "trivia_2": "走り屋の異名に似合わず ザオリクを使いこなす心優しき魔鳥。愛を知るからこそ速くなれる！",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/58.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 861,
+            "name": "てんとうスカラベ",
+            "detail_name": "てんとうスカラベ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "毒々しい配色の甲殻を持つ 甲虫界のかぶき者。吸血したり毒にしてきたり 攻撃手段もかぶいている。",
+            "trivia_2": "生まれつきの派手な色のせいで 無頼の徒を演じてはいるが根は小心者で生真面目なので 日々ストレスをためている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/insect/38.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 807,
+            "name": "かまいたち",
+            "detail_name": "かまいたち",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "竜巻を身にまとう風の化身。どんなに はげしい竜巻でも目にも止まらぬ速さで操り 自分の住処にしてしまう。",
+            "trivia_2": "かまいたちプリズムの登場で 自分のアイデンティティがはげしく揺らがされて じつは深く傷付いている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/ele/48.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 833,
+            "name": "しびれあげは",
+            "detail_name": "しびれあげは",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "アゲハ蝶としてのプライドから ひとくいがやじんめんちょうに優越感を抱いているが とこよアゲハには遠慮がち。",
+            "trivia_2": "やけつくいきで 敵をシビれさせるたびに息がクサいかもと心配になり ひそかに口臭対策している。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/insect/39.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 880,
+            "name": "フォレドラ・塔",
+            "detail_name": "フォレドラ・塔",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "創失の塔内部で生み出された 捕食しあうよう定められた悲しき魔物たち。その怨念は 巨大な創失波の糧となる。",
+            "trivia_2": "背中の樹木に青々とした葉を 生い茂らせることを夢見て早寝早起きと栄養満点の食事を 毎日心がけている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/59.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 872,
+            "name": "ハデスナイト",
+            "detail_name": "ハデスナイト",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "華麗にドラゴンを駆る 冥府より遣われし戦士。生物を暗黒のきりで包み あの世へ連れさるという。",
+            "trivia_2": "かなりの暑がりであるため 鎧の下にタイツ等はつけない。直接汗がつくので 相棒のドラゴンは迷惑してるらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/54.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 685,
+            "name": "死のさそり",
+            "detail_name": "死のさそり",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "姿を見た者に死を招くと 言われる恐ろしいさそり。するどい針のひと刺しで 息の根を止める殺し屋。",
+            "trivia_2": "毒針で刺すのは親愛の証。 同族には毒の耐性があるがそれ以外は死んでしまうので 不思議に思っているらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/insect/33.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 854,
+            "name": "タホバルキー",
+            "detail_name": "タホバルキー",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "タホドラキーの突然変異体。その豊満なボディを活かし必殺のポヨロンプレスを 放ってくる。",
+            "trivia_2": "うっかり体重が増えすぎたため 小さな翼では飛べなくなって近くの魔物を押しつぶした。必殺技誕生の瞬間だった。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/55.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 882,
+            "name": "ブラッディ・ゼア",
+            "detail_name": "ブラッディ・ゼア",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "まがまがしい深紅色に染まった どうもろこしの化身。ミラクルブーストで冒険者の活力を吸い取り 骨抜きにする。",
+            "trivia_2": "黒く染めた頭上のヒゲには 並々ならぬコダワリがありこの形にセットするのに 半日を費やしているらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/plant/43.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 804,
+            "name": "かいぞくウーパー",
+            "detail_name": "かいぞくウーパー",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "兵士を辞めて海賊に転職した熟練のウパソルジャー。剣技だけでなく様々な戦法を身につけた歴戦の猛者なのだ。",
+            "trivia_2": "海賊を名乗っているが じつは海に出たことがない。そもそも海水が苦手なので 海に近づくつもりもない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/water/40.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 809,
+            "name": "キラーアーマー・祖",
+            "detail_name": "キラーアーマー・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている キラーアーマーの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "全身を赤でまとめつつ 随所に差し色として緑を取り入れたコーデは 誰もが認めるオシャレ上級者。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/105.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 878,
+            "name": "飛竜・塔",
+            "detail_name": "飛竜・塔",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "創失の塔内部で生み出された 捕食しあうよう定められた悲しき魔物たち。その怨念は 巨大な創失波の糧となる。",
+            "trivia_2": "ドラゴン・塔とすこぶる険悪。飛べないからってひがむなよ！……翼なんてあったところで 塔からは出られないんだしさ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/60.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 825,
+            "name": "コーンホワイト",
+            "detail_name": "コーンホワイト",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "マダム界隈でも一目置かれる美貌と品格の持ち主。攻撃法さえもスイートかつゴージャスな究極のマダム。",
+            "trivia_2": "宝石コレクターとしても有名で ゴージャスレインでまき散らす宝石はそのほんの一部だとか。ライバルは賢者マリーンか。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/plant/47.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 686,
+            "name": "シャイニング・強",
+            "detail_name": "シャイニング・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な シャイニング。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "我が身の炎を活用して 毎日バーベキューパーティーを開くほどのアクティブな性格。生まれついての陽キャ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/ele/41.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 884,
+            "name": "プリズンイーグル",
+            "detail_name": "プリズンイーグル",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "青い羽毛に黄金のカゴと一見 縁起がいいがイオナズンややけつくいきで攻撃されたら 不幸の青い鳥と感じるだろう。",
+            "trivia_2": "イーグルを名乗っているが 見た目はどう見てもインコ。とはいえ強さは本物で 猛禽にふさわしい魔鳥なのだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/54.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 817,
+            "name": "グリズリー",
+            "detail_name": "グリズリー",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "クマの中でも特に狂暴な種。その痛恨のいちげきはあらゆるものを粉砕する。出会ったら死を覚悟すべし。",
+            "trivia_2": "雑食性でなんでも食べられるが 大食らいなのでいつも空腹。目の前で死んだフリなどしたら 悲惨な結末を迎えるだろう。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/113.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 846,
+            "name": "ダークゲージ",
+            "detail_name": "ダークゲージ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "闇にまつわる技や呪文だけを習得した闇に魅せられし鳥。クール＆スタイリッシュを 信条にしている。",
+            "trivia_2": "闇に生きる者を演出してきたが そのコミカルな見た目ゆえ思い通り決まらないのが悩み。今更ながら路線変更を検討中。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/59.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 832,
+            "name": "しにがみ",
+            "detail_name": "しにがみ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "多くの生者を死に追いやった ゆうれいが進化した存在。ザキをあやつって さらなる死を振りまいてくる。",
+            "trivia_2": "しにがみと名乗っているが 要は強力な悪霊に過ぎない。誇大表現といわれるのを 密かに恐れているらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/62.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 800,
+            "name": "エンペラーレグホン",
+            "detail_name": "エンペラーレグホン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "その真っ赤な尾羽にふさわしい 灼熱の業火の使い手。これまで数多の冒険者を ギラグレイドで葬ってきた。",
+            "trivia_2": "ある種の家畜と似た体色のため 頭上の突起物はトサカと勘違いされがち。よく見ると ツノなので間違えないように。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/bird/53.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 911,
+            "name": "りゅう兵士",
+            "detail_name": "りゅう兵士",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "たゆまぬ鍛錬によって 持って生まれたキバや爪をしのぐほどの剣技を会得した 竜としては異色の存在。",
+            "trivia_2": "自由自在に手を操ることができ ナイフやフォークを使った食事のマナーも完璧なことを 密かに誇りに思っている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/57.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 803,
+            "name": "がいこつ・祖",
+            "detail_name": "がいこつ・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている がいこつの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "そもそもコイツのこの名前が 後に続くがいこつ種の不幸の始まりだった。世界をまたぐ悪しき因縁の祖と言える。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/60.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 814,
+            "name": "くらやみ僧正",
+            "detail_name": "くらやみ僧正",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "信仰の道に入ったが 修行に耐えきれず闇に取り込まれて魔物と化した。修行中の僧侶を挫折させることが生きがい。",
+            "trivia_2": "人としては修行僧崩れだったが 闇の世界の水がなじんだらしく魔物としては僧正という 高位の存在に生まれ変わった。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/85.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 914,
+            "name": "ワイトキング・祖",
+            "detail_name": "ワイトキング・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている ワイトキングの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "死霊の王として すべてを手にした今でも 食事にだけは未練があり お抱えコックが作った料理をながめる日々。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/68.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 852,
+            "name": "堕天のメイス",
+            "detail_name": "堕天のメイス",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ダークフォースをあやつり バギクロスで裁きを下して敵に死の安息を与えんとする 堕落した魂のなれの果て。",
+            "trivia_2": "生まれ落ちた時から愛を知らず人を憎み世を呪い 神の恩寵に背いて 悪事にまい進するも 神罰によって命を落とした。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/63.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 849,
+            "name": "ダースリカント",
+            "detail_name": "ダースリカント",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "冷静さと凶暴さを合わせ持つ 巨大なクマ。その体躯から放たれる痛恨のいちげきは 相手に致命傷を与える",
+            "trivia_2": "痛恨のいちげきを連続12回 放ったという伝説を持ち周囲から怖れられている。本人は否定も肯定もしない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/115.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 907,
+            "name": "リカント",
+            "detail_name": "リカント",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "目が覚めるように鮮やかな 青い体毛を持つ獣人。本能のままテンションを燃やし 獲物にすばやく襲いかかる。",
+            "trivia_2": "自称かざらない ムダがない スタンダードの実力派。狼男という意味の名前だが 別に変身したりはしない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/118.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 805,
+            "name": "かげのきし・祖",
+            "detail_name": "かげのきし・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている かげのきしの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "かげのきしなのに緑に光って 名称に矛盾を抱えることに。だが矛盾した存在なんて ちょっとイカすと思っている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/67.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 688,
+            "name": "ジェイドマスク",
+            "detail_name": "ジェイドマスク",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ヒスイで作られた 巨大な顔面の彫刻の魔物。その輝きはすべてを 凍りつかせるほどの荘厳さ。",
+            "trivia_2": "ヒスイで できているため 表面がツルツルしておりザラザラのビッグモアイからは 羨望の眼差しで見られている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/87.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 857,
+            "name": "デザートモデル",
+            "detail_name": "デザートモデル",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "砂漠での作戦遂行を目的とし 防塵機能を充実させた破壊兵器。地平線に光る緑の モノアイは死を意味する。",
+            "trivia_2": "内部構造を砂嵐から守るため パーツとパーツの隙間を完璧に合わせすぎ メンテナンス時は分解するにもひと苦労だとか。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/machine/29.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 892,
+            "name": "マタンゴ・祖",
+            "detail_name": "マタンゴ・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている マタンゴの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "きのこらしくジメジメした場所を好むが 水にぬれるのは大の苦手。雨の日には 目いっぱいカサを広げている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/plant/45.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 689,
+            "name": "キングスライム・強",
+            "detail_name": "キングスライム・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な キングスライム。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "魅惑のほほえみを浮かべる 自称スライム界の大魔王。魔王たる貫録を身につけるため ドカ食いしてこの巨体を得た。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/sura/35.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 871,
+            "name": "ノーライフロード",
+            "detail_name": "ノーライフロード",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "つらく苦しき生を終えた君主は 生きとし生けるもの全てに死の苦役を課すため 永遠にさまよい続けるのだ。",
+            "trivia_2": "ノーカース ノーライフを合言葉に世の中を呪っているがそもそも生きてないじゃん！と ツッコまれるのを待っている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/59.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 910,
+            "name": "りゅうぐう王・塔",
+            "detail_name": "りゅうぐう王・塔",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "創失の塔内部で生み出された 捕食しあうよう定められた悲しき魔物たち。その怨念は 巨大な創失波の糧となる。",
+            "trivia_2": "王となるべく すべての魔物を 平らげようとしているがここは りゅうぐうではなく 創失の塔なのである。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/61.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 691,
+            "name": "キングリザード・強",
+            "detail_name": "キングリザード・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な キングリザード。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "トカゲこそ最強！世界からドラゴンを駆逐しトカゲによる下克上を企む。それこそ我が野望なりィ！！",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/50.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 812,
+            "name": "キングスライム・祖",
+            "detail_name": "キングスライム・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている キングスライムの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "８匹のスライムの集合体だが 場所によって負荷が違う。一番下の段は重労働なので 平等に 交代制になったとか。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/sura/43.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 828,
+            "name": "ジア・デーモン",
+            "detail_name": "ジア・デーモン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ジア・クトの放つ結晶化の光に適応した キラーデーモン。元の魔物を はるかに凌駕する能力と凶暴性で 襲ってくる。",
+            "trivia_2": "一般キラーデーモン時代の上司だったベルフェゴルにお礼参りをしてきたらしい。ジア・クトには感謝している。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/95.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 692,
+            "name": "キラーマシン・強",
+            "detail_name": "キラーマシン・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な キラーマシン。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "ドルセリンに魔力を混合した新種の燃料を採用することで燃費の向上に成功した。おかげで家計も大助かりだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/machine/24.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 887,
+            "name": "ベスキング",
+            "detail_name": "ベスキング",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "太陽のごとく輝くその身は 同胞スライム族への愛で満ち頭上に輝く冠を支えるは 仲間を守りぬくという矜持。",
+            "trivia_2": "表立っては言えないが お供の魔物はスライムやバブルなどオレンジ色が引き立つ連中が いいなと思っている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/sura/42.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 693,
+            "name": "ギガントモンキー",
+            "detail_name": "ギガントモンキー",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "巨大なサルのような姿だが ドラゴンだという説もある。呪文も使うが腕力に 訴えるほうを好むようだ。",
+            "trivia_2": "自分はサルかドラゴンか？ そんなことはどうでもいい。彼の興味は今夜のディナーを 何にするか……それだけだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/108.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 694,
+            "name": "まおうのつかい・強",
+            "detail_name": "まおうのつかい・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な まおうのつかい。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "村や町を滅ぼした数で 魔王から出る俸給が決まる。100個の集落を滅ぼすと 特別手当が出るらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/50.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 695,
+            "name": "ライオネック",
+            "detail_name": "ライオネック",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "強烈なバギクロスで 敵を一気になぎ倒す冷酷非情な 悪魔界の エリート・オブ・エリート。",
+            "trivia_2": "エリート街道を歩むがゆえに 魔界ではモテモテらしいが交際経験は意外と少なく じつは とってもウブらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/72.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 877,
+            "name": "ビビッドヘッド",
+            "detail_name": "ビビッドヘッド",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "極彩色でカラーリングされた巨大な石頭。その圧倒的な色彩の違和感でこちらの目をくらませ かく乱してくる。",
+            "trivia_2": "幼いころはただの石だったが 地味な自分を変えたくてド派手に変身し 技を鍛え イメチェンに成功した努力家。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/96.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 696,
+            "name": "ギガンテス・強",
+            "detail_name": "ギガンテス・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ギガンテス。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "魔物界の掃除屋と恐れられる 凶悪でどん欲な巨人。会心のランドインパクトで 大地と相手を粉々に砕く。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/71.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 876,
+            "name": "ひとくいばこ・祖",
+            "detail_name": "ひとくいばこ・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている ひとくいばこの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "宝箱のフリをして旅人を おどろかすのがシュミだがさすがにマンネリ化してきて 新たな潜伏先を探している。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/98.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 697,
+            "name": "デュラハーン",
+            "detail_name": "デュラハーン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "冥界の首なし騎士。バイキルトで強化してからふりまわされる鉄球は 多くの首級を挙げてきた。",
+            "trivia_2": "持っている盾にも意思があり よく身体とケンカする。くちゲンカでは盾の圧勝だが 最終的には鉄球で沈黙する。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/51.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 797,
+            "name": "暗黒の使い",
+            "detail_name": "暗黒の使い",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "変幻自在に動く4本のウデから くり出される連続攻撃であっという間に敵を葬り去る 暗黒の仕事人。",
+            "trivia_2": "非番の時は武器を包丁に 持ち替え料理人をしている。食材を切っている方が性に合ってるよ……とは本人談。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/57.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 703,
+            "name": "ギガントヒルズ・強",
+            "detail_name": "ギガントヒルズ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ギガントヒルズ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "巨大な腹にガスをためこみ 牙をかみ合わせた火花で火炎球をはき出すドラゴン。 人呼んで魔界の火薬庫。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/49.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 818,
+            "name": "くろがねの巨人",
+            "detail_name": "くろがねの巨人",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "一流の職人に鍛え抜かれた 鋼鉄の身体を持つ巨人。黒光りする拳から放たれる 一撃は石垣をも粉砕する。",
+            "trivia_2": "くろがねとは鉄のこと。要するに鉄の巨人なのだが全身鉄製だと重すぎるので 中は空洞になっているらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/97.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 811,
+            "name": "キラーマシン・祖",
+            "detail_name": "キラーマシン・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている キラーマシンの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "殺りくに不要なため 心を持たないはずだが 左胸の空虚感を満たしたいがゆえに 目に付く者に襲いかかる。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/machine/31.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 888,
+            "name": "ベヒードス・塔",
+            "detail_name": "ベヒードス・塔",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "創失の塔内部で生み出された 捕食しあうよう定められた悲しき魔物たち。その怨念は 巨大な創失波の糧となる。",
+            "trivia_2": "魔物の捕食を楽しんでいる グルメドラゴン。好きな魔物は大きくて食い応えがあるやつ。小骨が少ないと なおよし。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/62.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 698,
+            "name": "ミミック・強",
+            "detail_name": "ミミック・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ミミック。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "きっと中にはレアものが……。ミミック・強の危険な魅力に人々の目はくらんでしまう。宝もいいが いのちだいじに。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/73.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 699,
+            "name": "ダークトロル",
+            "detail_name": "ダークトロル",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "幾多の罪なき命を奪い続け 悪に染まりきったトロル。自らをバイキルトで強化し 痛恨の一撃で相手を粉砕する。",
+            "trivia_2": "彼にとって戦いとは戯れ。相手をたたいて ふみつけてつぶして ぺえしゃんこにして 動かなくなるまで遊びつくす。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/akuma/73.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 704,
+            "name": "ホワイトジャッジ",
+            "detail_name": "ホワイトジャッジ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "好敵手を求めて さまよい 出会いし者に戦いを挑む。資格なき者とみなしたならば 死の裁きを下すのだ。",
+            "trivia_2": "ジャッジと呼ばれているが 自分勝手な好き嫌いで裁きを下す対象を決めるので 公正公平とは言い難い。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/51.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 851,
+            "name": "だいまじん・祖",
+            "detail_name": "だいまじん・祖",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "誰もがよく知っている だいまじんの原種。緑のオーラをまとった身体には 強い攻撃本能が宿っている。",
+            "trivia_2": "仲間同士で集まると 誰がいちばん長くポーズを維持できるかの争いになるが 数万年 決着がついていない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/106.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 700,
+            "name": "闇のキリンジ",
+            "detail_name": "闇のキリンジ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "幼い頃から将来を期待されたジラフ族の天才児だったが長ずるにつれ闇に惹かれて 道を踏み外してしまった。",
+            "trivia_2": "かけられた期待へのストレスと 天才ゆえのごう慢さが悪い方に作用して すっかり残忍で排他的な性格に育った。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/97.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 701,
+            "name": "スケアフレイル",
+            "detail_name": "スケアフレイル",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "首をハネられて絶命した騎士が 悪霊となってよみがえった。ヘルサークルで相手を弱め 鉄球で粉砕する戦法を好む。",
+            "trivia_2": "失った首を探して夜な夜な 徘徊するが 左手に持つ盾こそおのれの首であるという事実に 気づかないのは現実逃避か？",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/53.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 702,
+            "name": "ドラゴンゾンビ・強",
+            "detail_name": "ドラゴンゾンビ・強",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ケタ違いの強さを持つ 邪悪な ドラゴンゾンビ。赤く鋭い眼光には 激しい殺意が宿っている。",
+            "trivia_2": "かつて魔界で猛威をふるった 邪竜の一族の成れの果て。死してなおチカラを失わず 多くの命を奪いつづける。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/42.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 705,
+            "name": "ダークパラディン",
+            "detail_name": "ダークパラディン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "闇の法と秩序を守ることに 誓いを立てた悪霊の騎士。手にした盾を守りだけでなく 攻撃に使うことがある。",
+            "trivia_2": "生前は民衆を守ることに 命を懸けたパラディンだったが裏切りによる非業の死をとげ世を恨み 闇の先兵となった。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/52.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 706,
+            "name": "プラチナミミック",
+            "detail_name": "プラチナミミック",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "豪華な見た目の宝箱に 擬態する魔物。欲に駆られて箱を開けようとする旅人を 致命的な攻撃で仕留める。",
+            "trivia_2": "自分のルックスにふさわしい 豪華で清潔でお洒落な居場所を求めるが条件がきびしくて 安住の地が見つからない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/obj/93.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 707,
+            "name": "キースドラゴン",
+            "detail_name": "キースドラゴン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "いにしえより生き続けてきた 青いウロコを持つドラゴン。炎と氷のブレスを使い分け 歯向かう者を粉々にかみ砕く。",
+            "trivia_2": "体内に膨大なエネルギーを たくわえるために朝から晩まで眠ることもある。寝起きは特に 機嫌が悪いので近寄らぬが吉。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/53.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 859,
+            "name": "デンガー",
+            "detail_name": "デンガー",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "黄金のスライムを駆る剣士。バイキルトと組み合わせた剣戟のみならず広範囲に轟く いなずまなど戦法は多彩。",
+            "trivia_2": "一番好きな色はもちろん金。しかし黄金の剣や防具の維持黄金スライムの人件費など つねに金欠にあえいでいる。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/sura/39.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 835,
+            "name": "ジラフドラグーン",
+            "detail_name": "ジラフドラグーン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "100年に1匹の確率で 生まれる 選ばれしキリンが1000歳まで生き延びた時 竜のチカラを得るという。",
+            "trivia_2": "キリンとして生きていた時は 裸でも恥ずかしくなかったが竜化して知恵をつけたとたん あわてて衣服を身につけた。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/117.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 708,
+            "name": "ヘルガーディアン",
+            "detail_name": "ヘルガーディアン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "地獄の首なし騎士。 バイキルトをとなえチカラをためて鉄球を振り回し 敵対する者を血祭りに上げる。",
+            "trivia_2": "魔物としてよみがえる代償に 地獄に首を捧げ記憶も失った。身体に刻んだ戦いの本能だけが 己を証明してくれるのだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/54.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 815,
+            "name": "グリーンボーン",
+            "detail_name": "グリーンボーン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "もうどくのきりで敵を弱らせ やいばのぼうぎょで時間を稼ぐいやらしい戦法の使い手。性格の悪さは折り紙付きだ。",
+            "trivia_2": "身体中に着けたトゲつきの盾は 攻撃的でありながら身を守りたいという心の表れ。生前に何があったのか……。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/56.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 848,
+            "name": "ダースドラゴン",
+            "detail_name": "ダースドラゴン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "燃える炎の色のウロコを持つ灼熱のドラゴン。クチから放たれる業火に焼かれた者は チリひとつも残らない。",
+            "trivia_2": "ダースドラゴンは一度に 12個ものタマゴを産むが成長の早い1匹が他の兄弟を すべて殺す習性があるらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/56.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 810,
+            "name": "キラーシーカー",
+            "detail_name": "キラーシーカー",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "狙った獲物は必ず殺す エリート殺りくマシン。大地の衝撃で相手を転ばせ こちらの動くを封じてくる。",
+            "trivia_2": "抹殺対象を追跡するために 熱 音 振動等のセンサー完備。真夜中プリズランの追跡者に いたら圧勝間違いなし。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/machine/27.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 867,
+            "name": "ドリアンデッド",
+            "detail_name": "ドリアンデッド",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "両手に持ったトゲトゲの盾で 多彩な技をくりだす盾使いのスペシャリスト。攻撃は最大の防御がモットー。",
+            "trivia_2": "見た目がそれっぽいから こんな名前で呼ばれているけど匂いケアには気をつけてます。大丈夫。クサくないですよ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/zombi/58.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 866,
+            "name": "ドラゴン・塔",
+            "detail_name": "ドラゴン・塔",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "創失の塔内部で生み出された 捕食しあうよう定められた悲しき魔物たち。その怨念は 巨大な創失波の糧となる。",
+            "trivia_2": "飛竜・塔とすこぶる険悪。ちょっと飛べるからって調子に乗りやがって。この牙で 床に引きずり落してやる！",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/dra/63.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 883,
+            "name": "ブラッドエイプス",
+            "detail_name": "ブラッドエイプス",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "飛竜を思わせる翼を生やした 巨大なサル。その剛腕で身の丈を超える岩石を 軽々と投げつけてくる。",
+            "trivia_2": "物騒な名前で誤解されがちだが 体毛が赤いのは生まれつき。返り血なのかと恐れられるのに いいかげん辟易している。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/114.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 710,
+            "name": "キラークリムゾン",
+            "detail_name": "キラークリムゾン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "炎の領界を徘徊している唯一無二の超高性能マシン。冷酷なるグランドインパクトで群がる敵を一網打尽にする。",
+            "trivia_2": "メギドロイドの後継機として造られたが予想を超えた性能に製作者が恐れを抱いたため量産されることはなかった。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/machine/20.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 711,
+            "name": "大魔獣イーギュア",
+            "detail_name": "大魔獣イーギュア",
+            "changed_fields": [
+                "trivia_2"
+            ],
+            "trivia_1": "魔獣イーギュアよりも巨大で残忍さと狡猾さを備えている。白霜の流氷野をうろついて獲物をはげしく斬り裂くのだ。",
+            "trivia_2": "じつは家出息子を探している頑固一徹のイーギュア父。しかし一向に見つからずいいかげんイライラしている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/kemono/89.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 913,
+            "name": "ローヤルさそりばち",
+            "detail_name": "ローヤルさそりばち",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "特別な栄養食を食べて育った 選ばれし さそりばち。身体的に屈強なだけでなく 頭脳明晰でメンタルも強い。",
+            "trivia_2": "身にまとう花粉団子こそが ウワサの完全栄養食。美容と健康を増進するらしく 冒険者に狙われるのが悩み。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/80.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 717,
+            "name": "大ナスビナーラ",
+            "detail_name": "大ナスビナーラ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "品種改良を重ねられたジャンボナスビナーラ。格段に大きくなったものの性格や戦い方は相変わらず。",
+            "trivia_2": "地獄の農場で 催されたジャンボ野菜コンテストで惜しくも 優勝を逃した。次回に望みをかけている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/02.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 718,
+            "name": "つむりんママ",
+            "detail_name": "つむりんママ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "のんびり屋で おおらかなスライムつむりの お母さん。ただし びっくりさせると雷を落としちゃうぞ！",
+            "trivia_2": "つむりんママの殻にトゲが生えていないのは子つむりたちをキズつけないママの優しさなのだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/03.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 719,
+            "name": "ミケまどう",
+            "detail_name": "ミケまどう",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "にくきゅうの杖のチカラでねこまどうがミケ猫チェンジ！愛と勇気のメラミで 並みいる敵を 一網打尽にするのだ。",
+            "trivia_2": "夢の輝きを心に宿したねこまどうの女の子だけがミケ猫チェンジできるはずだがまれに男の子もいるらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/04.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 720,
+            "name": "キラーピッケル",
+            "detail_name": "キラーピッケル",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "血と汗がにじんだピッケルを握りしめ 地下を見守る魔獣。工事のジャマをする旅人にはチカラをためて 鉄槌を下す。",
+            "trivia_2": "地下ではたらく もぐらたちの仕事っぷりを見守っているたよれる 現場の親方さん。手抜き工事は許さない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/05.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 721,
+            "name": "マーブルン",
+            "detail_name": "マーブルン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "カラフルなシマ模様が自慢のすごく めずらしい猫魔族。気まぐれにメラを唱えたりペロペロなめまわしたりする。",
+            "trivia_2": "猫島の７匹のキャッツがプリズニャンに いたずらして魔法のペンキをぬったら生みだされてしまったのニャ！",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/06.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 905,
+            "name": "ようがんトーチ",
+            "detail_name": "ようがんトーチ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "溶岩の爆発的なパワーを宿した おばけキャンドルの変異種。頑強な身体にたくわえた 地獄の炎で敵を燃やし尽くす。",
+            "trivia_2": "仲間のおばけキャンドルたちは 近づきすぎると溶けてしまう。そのため常に距離を置かれ 皮肉にも心は冷えきっている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/79.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 722,
+            "name": "メタルホイミン",
+            "detail_name": "メタルホイミン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "全身がメタルボディに変化した奇跡のホイミスライム。仲間たちを いやしながら華麗に逃げてゆく。",
+            "trivia_2": "誰よりはやく仲間をいやすその姿に皆あこがれ神話の英雄の名前をとってホイミンと呼ばれている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/07.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 723,
+            "name": "メタルトリュフ",
+            "detail_name": "メタルトリュフ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "あのメタルスライムのボディに謎のキノコが生えてきた！胞子をバラまきながらさっそうと逃げていく。",
+            "trivia_2": "ボディに生えたキノコはアストルティア三大珍味とうたわれるが 珍しいだけで味はイマイチ……らしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/08.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 724,
+            "name": "キョンシーゴースト",
+            "detail_name": "キョンシーゴースト",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "何の取り柄もないゴーストが 奇妙な術をほどこされて呪文を使うのが得意なイケてるゴーストに転生した。",
+            "trivia_2": "じつは目の前のお礼が ジャマで仕方ないのだが勝手に取るとヤバいらしいので ストレスためつつ今日も我慢。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/73.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 725,
+            "name": "さくらこぞう",
+            "detail_name": "さくらこぞう",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "舞い落ちた桜の花びらに美に魅せられた邪鬼が宿った。魅惑のおどりで旅人を魅了しチカラをためて おそいかかる。",
+            "trivia_2": "マスカラぱっちり 朱の口紅。ゲタの鼻緒は さくら色。乙女チックに胸トキメかせる。……でも こぞう。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/09.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 726,
+            "name": "とげこんぼう",
+            "detail_name": "とげこんぼう",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "旅人を 地獄に突きおとすおそろしい処刑人。特製の トゲつき棍棒で痛恨の一撃を お見舞いする。",
+            "trivia_2": "一度 トゲつきハンマーを導入しようかと 検討したがそうしたら オレの名前はどうなるの……と思い直した。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/10.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 727,
+            "name": "レッドアーチャー",
+            "detail_name": "レッドアーチャー",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "血に染まった 赤いフードをまぶかにかぶる 邪悪な射手。ただひたすら 一心不乱にさみだれうちを放ちまくる。",
+            "trivia_2": "左手に持つ 黄金の弓矢は以前 弓対決した弓の達人からぶんどった戦利品だ。光り物に目がないらしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/11.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 728,
+            "name": "シールドあにき",
+            "detail_name": "シールドあにき",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "立派なちょんまげのはえたこぞうたちの頼れる あにき。その堅い守りにかけては右に出る こぞうはいない！",
+            "trivia_2": "無造作に見える ちょんまげは毎朝１時間もかけてセットしているらしい。意外と シャレ者なのだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/12.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 729,
+            "name": "サンバ・デ・ビーク",
+            "detail_name": "サンバ・デ・ビーク",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "華麗な羽根飾りを身にまとう 魔物界のファッションリーダー……と思ってるのは本人だけで その派手さに周りは引き気味。",
+            "trivia_2": "背負った羽根飾りは れんごくちょうの落とし物を1枚1枚拾い集めて作った。血と汗と涙の結晶なのだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/75.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 798,
+            "name": "ウールギズモ",
+            "detail_name": "ウールギズモ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "刈られた羊毛が風に飛ばされ 寄り集まり 丸裸にされた羊の怨念を宿すことで モンスターと化した。",
+            "trivia_2": "ふわふわの毛はつながっており すべてほどくと その全長はアストルティアを軽く3周 できるほどの長さがあるとか。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/83.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 730,
+            "name": "ゴールデンコーン",
+            "detail_name": "ゴールデンコーン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "金色に輝く 毛並みとツノがひときわ目立つ ウサギの魔物。かわいい見た目とは 裏腹に血眼になって 獲物を求める。",
+            "trivia_2": "ゴールデンコーンの大好物はつぶつぶコーンポタージュ。ナベの底に残ったコーン粒もツノを使って 器用に食べる。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/13.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 731,
+            "name": "聖銀のどくろあらい",
+            "detail_name": "聖銀のどくろあらい",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "聖銀のメタルボディに変化したとても希少な どくろあらい。珠玉の逃げ足と豪華な経験値が冒険者たちのウワサの的に。",
+            "trivia_2": "ひとつのどくろを決して離さず１００年 洗い続けた時身体が聖銀に変わるという不思議な言い伝えがある。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/14.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 732,
+            "name": "ももいろ三姉妹",
+            "detail_name": "ももいろ三姉妹",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "桃色スライム３人娘が結成した魔物界のアイドルユニット。十八番の ももいろシャワーはファン感涙のパフォーマンス！",
+            "trivia_2": "魔物アイドル戦国時代の頂点を極め 人気絶頂のうちに普通のスライムに戻ります！と言って引退するのが夢。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/15.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 733,
+            "name": "アメジストクラブ",
+            "detail_name": "アメジストクラブ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "背中に紫水晶を背負った カニ魔物界のセレブリティ。ゴージャスレインで盛大にバラまいても気にしない。",
+            "trivia_2": "セキバーンとは親交が深く 運命に翻弄されがちな友人の悩み相談によく乗っている。慈悲深く面倒見のいい性格。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/76.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 734,
+            "name": "ファイアボール",
+            "detail_name": "ファイアボール",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "火の玉のように空を翔ける赤き鳥型の殺人マシン。翼からメラストームを放ち自爆ダンスで大爆発！",
+            "trivia_2": "ファイアボールの正体は熱暴走したガチャコッコだと唱える科学者もいるが目撃例が少なく 真相は不明。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/16.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 736,
+            "name": "クイーンモーモン",
+            "detail_name": "クイーンモーモン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "伝説の楽園モーモン王国から迷い込んだ フワフワ女王様。たたかいのうたを可憐に歌いモーモンたちを奮い立たせる。",
+            "trivia_2": "うつくしい青の毛並みは幻の青いバラにも例えられる。ちょこんと載ったティアラが頂点に立つ者の証なのだ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/18.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 737,
+            "name": "スウィートバッグ",
+            "detail_name": "スウィートバッグ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "お菓子好きの魔女が作りだした 袋の魔物。ピンチに おちいるとハッスルダンスを踊る。",
+            "trivia_2": "ノースウィーツ ノーライフ。お菓子好きの魔女が遺したこの言葉を胸に 今日もスウィートバッグは戦う。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/19.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 813,
+            "name": "クラゲぼうや",
+            "detail_name": "クラゲぼうや",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "しびれくらげとは全く別種の クラゲの化身モンスター。ぼうやと呼ばれているが これですでに成体らしい。",
+            "trivia_2": "クラゲにしては意外と硬く 押すと適度な弾力があって枕として使うと 非常によく眠れるという。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/86.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 738,
+            "name": "アルケミストン",
+            "detail_name": "アルケミストン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "禁忌の錬金術を身につけたいまわしい ブタの魔物。やみのブレスや呪いのきりで世に災いをもたらす。",
+            "trivia_2": "いつも かぶっている帽子ははじめて錬金で作ったもの。テカテカした色合いがだいぶ 気に入っている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/20.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 739,
+            "name": "セクシーキャット",
+            "detail_name": "セクシーキャット",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "魅惑のおどりで魅了して ねこだましで意外性を演出することも忘れない 自称小悪魔系の猫魔族。",
+            "trivia_2": "相棒のプリティフライとは 長年のくされ縁だが内心では自分のほうが いいオンナだと思っている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/71.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 740,
+            "name": "プリティフライ",
+            "detail_name": "プリティフライ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ハッスルダンスで回復して つるぎの舞の攻撃力で頼りになるところも見せつける 自称いやし系の猫魔族。",
+            "trivia_2": "相棒のセクシーキャットとは 長年のくされ縁だが内心では自分のほうがカワイイと思っている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/72.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 745,
+            "name": "ちょうろうじゅ",
+            "detail_name": "ちょうろうじゅ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "何千年も生き邪悪な知識を身につけた魔界の霊木。高度な呪文を使いこなし混沌と破滅をまきちらす。",
+            "trivia_2": "長寿の秘薬になると勘違いされ頭の葉っぱをちぎって持っていく不届き者が後を絶たず困っている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/25.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 885,
+            "name": "ブルジョワハンド",
+            "detail_name": "ブルジョワハンド",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "高価な宝石付きの指輪や 有名ブランドの腕輪をこれ見よがしに身につけた イヤミな金持ち魔物。",
+            "trivia_2": "イヤリングやペンダントなどの 装飾品を身につけられないのが不満で そのストレス解消に 今日も散財している。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/88.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 898,
+            "name": "ミノカサハギン",
+            "detail_name": "ミノカサハギン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "シマシマ模様がイカした トがり気味の半魚人。触る者みなキズつける ギザギザ背びれが自慢らしい。",
+            "trivia_2": "なんでシマシマなのかって？ シマシマ カッコイイだろ！文句あんのかコラ！ テメ 表でろオッラァァン！",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/82.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 831,
+            "name": "ジェントルダンス",
+            "detail_name": "ジェントルダンス",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "魔物紳士録にも載っている 悪魔の紳士。そのダンスは多彩かつ華麗でジェントルの なんたるかを教えてくれる。",
+            "trivia_2": "同じ転生モンスターの バロンシルエットは親友だがその出会いは互いの名誉を賭け 決闘するというものだった。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/87.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 873,
+            "name": "バロンシルエット",
+            "detail_name": "バロンシルエット",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "爵位を持つ高貴な影魔物。 その顔立ちは壮麗かつ端正でその眼差しは領民への慈悲に 満ちている……らしい。",
+            "trivia_2": "じつは貴族の中では下級。優秀さから王の覚えがめでたく上級貴族から嫉妬されており 心労でやつれた……らしい。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/84.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 769,
+            "name": "ドラゴメタル",
+            "detail_name": "ドラゴメタル",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "強力な息攻撃に回復呪文まであわせもった優秀な戦士。おまけに経験値も高いというスライム界のカリスマ的存在。",
+            "trivia_2": "ドラゴスライムのメタル化か メタルドラゴンのスライム化か学界で争われたことがあるが ドラゴスライム派が圧勝した。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/57.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 774,
+            "name": "ゴールデンディスコ",
+            "detail_name": "ゴールデンディスコ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "陽気でハデ好きな性格だが 戦いでは様々な表情を見せる。時には重々しい態度で他者を威圧することも。",
+            "trivia_2": "見た目こそキラキラしていてゴージャスそのものだが クラブに通いすぎたせいでお金はあまり持っていない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/52.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 779,
+            "name": "もじゃらきラクーン",
+            "detail_name": "もじゃらきラクーン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ももんじゃ界の飲んだくれ。各地の宴会に顔を出しては歌うわ踊るわバギムーチョをブッ放すわの大暴れを重ねる。",
+            "trivia_2": "もともとは単なるももんじゃ。あまりにヒドい大暴れの罰にこんな姿にさせられているが 本人はちっともこりていない。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/74.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 785,
+            "name": "デザートデーモン",
+            "detail_name": "デザートデーモン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "巨大なスプーンを手にしたスイーツ好きの大悪魔。同族の悪魔の中では慈悲深く 人格者として知られる。",
+            "trivia_2": "ひどい偏食でスイーツばかり食べているうちに変色したベリアル本人ではないかとのウワサがある。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/63.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 786,
+            "name": "とうぞくこぞう",
+            "detail_name": "とうぞくこぞう",
+            "changed_fields": [
+                "trivia_2"
+            ],
+            "trivia_1": "バーサーカーとして生まれたが仲間たちほどはっちゃけられずオノをこんぼうに持ち替え顔を覆面で隠して生きている。",
+            "trivia_2": "覆面で顔を隠すことで彼の中の何かが解放された。今では仲間に負けず劣らず自由自在に暴れまわっている。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/68.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 792,
+            "name": "フギンムニン",
+            "detail_name": "フギンムニン",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "優れた思考力と記憶力を持ち 手下のおおがらすを使って方々のうわさ話を集めている 魔物界の情報マスター。",
+            "trivia_2": "集めた情報の用途は自由自在。ある時は権力者に売り渡したりある時は敵をワナに陥れたり 油断ならない智謀の持ち主だ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/77.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 788,
+            "name": "パンプキャビネット",
+            "detail_name": "パンプキャビネット",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "ハロウィンの仮装をしたお祭り好きのたんすミミック。ハイになっている分 暴れていると手が付けられない。",
+            "trivia_2": "一応トリックオアトリートと聞くけれど どちらを選んでも相手を丸かじりする気満々の地獄の二択を迫ってくる。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/64.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 838,
+            "name": "スカラベテンツク",
+            "detail_name": "スカラベテンツク",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "甲虫を好んで食べ続けるうちに 突然変異したテンツクの一種。普通のテンツクよりもちょっと 身体が硬くなっている。",
+            "trivia_2": "身体が硬い分 柔軟性に欠け 踊りのしなやかさが失われたががむしゃらに修行し 克服した 顔の割に努力家なヤツ。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/85.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 789,
+            "name": "ドラゴントイズ",
+            "detail_name": "ドラゴントイズ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "カラフルでポップな見た目だが ケタ外れの殺傷力を持つ兵器。外見にだまされ 油断した敵をおもちゃにして もてあそぶ",
+            "trivia_2": "その製造者は誰も知らない。 一説では 天を突く程の巨人が赤ん坊を あやすために作った おもちゃなのだとか。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/69.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 790,
+            "name": "あらくれパンダ",
+            "detail_name": "あらくれパンダ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "血の気が多すぎる巨大パンダ。 目があった者を敵とみなし強力なツメの一撃で 何もかも引き裂いてしまう。",
+            "trivia_2": "とある あらくれ者が 真のあらくれを決めるために戦いを挑むもコテンパンにされ 白黒はっきりつけたという。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/70.php"
+        },
+        {
+            "result": "updated",
+            "monster_id": 791,
+            "name": "ネリもののふ",
+            "detail_name": "ネリもののふ",
+            "changed_fields": [
+                "trivia_1",
+                "trivia_2"
+            ],
+            "trivia_1": "植物系のズッキーニャが どういうわけか物質系に転生。出自の縁から用心棒として 雇われているらしい。",
+            "trivia_2": "一時はカマボコ幕府に仕えたが 激動の時代に主家は断絶。今は浪人に身をやつしつつ 幕府再興を志している。",
+            "url": "https://dragon-quest.jp/ten/monster/zukan/tensei/78.php"
+        }
+    ],
+    "not_found_monsters": [],
+    "no_trivia_monsters": [],
+    "failed_pages": []
+}

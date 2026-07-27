@@ -4,12 +4,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { fetchMonsterDetail, searchMonsters } from "@/lib/monsters";
 
-import MonsterSearchCard from "./MonsterSearchCard";
-import MonsterDetailHero from "@/components/tools/monsters/detail/MonsterDetailHero";
-import MonsterDropSection from "@/components/tools/monsters/detail/MonsterDropSection";
-import MonsterMapSection from "@/components/tools/monsters/detail/MonsterMapSection";
+import MonsterDetailClient from "./detail/MonsterDetailClient";
 import PageHeroTitle from "@/components/PageHeroTitle";
 import SearchableSelect from "@/components/common/SearchableSelect";
+
+
 
 function MonstersSearchPageLoading() {
   const loadingStyles = getLoadingStyles();
@@ -646,7 +645,7 @@ export default function MonstersSearchClient() {
                   ...(loading ? styles.listItemLoading : {}),
                 }}
               >
-                <MonsterSearchCard
+                <MonsterSearchResultCard
                   monster={monster}
                   searchType={searchType}
                   formatSubText={formatSubText}
@@ -662,18 +661,15 @@ export default function MonstersSearchClient() {
                       <div style={styles.errorCard}>{errorText}</div>
                     ) : detail ? (
                       <div style={styles.detailCard}>
-                        <MonsterDetailHero monster={detail} />
-                        <MonsterDropSection
+                        <MonsterDetailClient
                           monster={detail}
-                          normalDrops={detail.normal_drops ?? []}
-                          rareDrops={detail.rare_drops ?? []}
-                          accessoryDrops={detail.accessory_drops ?? []}
-                          orbDrops={detail.orb_drops ?? []}
-                          whiteBoxDrops={detail.equipment_drops ?? []}
-                          equipmentDrops={detail.equipment_drops ?? []}
+                          embedded
+                          sourcePage="monster-search"
+                          context={{
+                            search_type: searchType,
+                            result_monster_id: Number(monster.id),
+                          }}
                         />
-
-                        <MonsterMapSection maps={detail.maps ?? []} />
                       </div>
                     ) : null}
                   </div>
@@ -702,6 +698,136 @@ export default function MonstersSearchClient() {
       `}</style>
     </main>
   );
+}
+
+
+function MonsterSearchResultCard({
+  monster,
+  searchType,
+  formatSubText,
+  isOpen = false,
+  onClick,
+}) {
+  const cardStyles = useMemo(() => getSearchCardStyles(), []);
+  const subText = formatSubText ? formatSubText(monster) : null;
+  const typeText = searchType === "monster" ? monster?.system_type || "" : "";
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        ...cardStyles.card,
+        ...(isOpen ? cardStyles.cardOpen : {}),
+      }}
+    >
+      <div style={cardStyles.topRow}>
+        <h2 style={cardStyles.cardTitle}>{monster.name}</h2>
+
+        <div style={cardStyles.rightSide}>
+          {typeText ? <span style={cardStyles.typeTag}>{typeText}</span> : null}
+          <span
+            style={{
+              ...cardStyles.arrow,
+              ...(isOpen ? cardStyles.arrowOpen : {}),
+            }}
+          >
+            {isOpen ? "−" : "+"}
+          </span>
+        </div>
+      </div>
+
+      {subText && searchType !== "monster" ? (
+        <p style={cardStyles.subText}>{subText}</p>
+      ) : null}
+    </button>
+  );
+}
+
+function getSearchCardStyles() {
+  return {
+    card: {
+      width: "100%",
+      display: "block",
+      textAlign: "left",
+      borderRadius: "5px",
+      padding: "18px",
+      background: "var(--card-bg)",
+      border: "1px solid var(--card-border)",
+      transition:
+        "transform .16s ease, box-shadow .16s ease, border-color .16s ease, background .16s ease, color .16s ease",
+      cursor: "pointer",
+      appearance: "none",
+    },
+    cardOpen: {
+      border: "1px solid var(--selected-border)",
+      borderBottom: "1px solid transparent",
+      borderBottomLeftRadius: 0,
+      borderBottomRightRadius: 0,
+      background: "var(--panel-bg)",
+    },
+    topRow: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "flex-start",
+      gap: "12px",
+    },
+    cardTitle: {
+      margin: 0,
+      fontSize: "24px",
+      lineHeight: 1.2,
+      fontWeight: 900,
+      letterSpacing: "-0.03em",
+      color: "var(--text-title)",
+      minWidth: 0,
+    },
+    rightSide: {
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      flexShrink: 0,
+    },
+    typeTag: {
+      display: "inline-flex",
+      alignItems: "center",
+      maxWidth: "220px",
+      padding: "7px 10px",
+      borderRadius: "999px",
+      background: "var(--badge-bg)",
+      color: "var(--badge-text)",
+      fontSize: "12px",
+      fontWeight: 800,
+      border: "1px solid var(--selected-border)",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    },
+    arrow: {
+      minWidth: "32px",
+      height: "32px",
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: "999px",
+      fontSize: "18px",
+      color: "var(--text-muted)",
+      fontWeight: 800,
+      background: "var(--soft-bg)",
+      border: "1px solid var(--soft-border)",
+    },
+    arrowOpen: {
+      color: "var(--badge-text)",
+      background: "var(--badge-bg)",
+      border: "1px solid var(--selected-border)",
+    },
+    subText: {
+      margin: "12px 0 0",
+      color: "var(--text-sub)",
+      fontSize: "14px",
+      lineHeight: 1.7,
+      minHeight: "24px",
+    },
+  };
 }
 
 function getShimmer() {
@@ -816,17 +942,17 @@ function getLoadingStyles() {
       justifySelf: "end",
     },
     detailCard: {
-  borderRadius: "0 0 24px 24px",
-  padding: "18px",
-  background: "var(--panel-bg)",
-  border: "1px solid var(--selected-border)",
-  borderTop: "1px solid var(--selected-border)",
-  width: "100%",
-  maxWidth: "100%",
-  minWidth: 0,
-  overflowX: "hidden",
-  boxSizing: "border-box",
-},
+      borderRadius: "0 0 6px 6px",
+      padding: "18px",
+      background: "var(--panel-bg)",
+      border: "1px solid var(--selected-border)",
+      borderTop: "1px solid var(--selected-border)",
+      width: "100%",
+      maxWidth: "100%",
+      minWidth: 0,
+      overflowX: "hidden",
+      boxSizing: "border-box",
+    },
 
 detailOverview: {
   width: "100%",

@@ -22,7 +22,6 @@
         "inheritance": "What was the inheritance accessory for Red Dragon?"
       }
     }
-    
   },
   "Header": {
     "logout": "Log out",
@@ -47,7 +46,6 @@
         "equipments": "Equipment Manager",
         "orbs": "Orb Manager",
         "continents": "Continent Manager",
-        
         "crystals": "Crystal Manager"
       }
     }
@@ -213,7 +211,6 @@
     "close": "Close",
     "bubbleAriaLabel": "View details for {area}"
   },
-
   "MonsterZukan": {
     "title": "Monster Zukan",
     "empty": "No monsters found",
@@ -232,8 +229,6 @@
       "pages": "pages"
     }
   },
-  
-
   "MapMonsterBrowser": {
     "title": "Map Monster Browser",
     "continent": "Continent",
@@ -329,7 +324,6 @@
       "jarim": "Jarim Desert",
       "oldNecrodea": "Old Necrodea"
     },
-
     "colors": {
       "yellow": "Yellow",
       "red": "Red"
@@ -442,11 +436,28 @@
         }
       }
     }
-}
-
-
-
-
-
-
+  },
+  "ContentReportArea": {
+    "publicTitle": "Reports from users",
+    "reportCount": "{count} reports",
+    "publicLoading": "Loading reports…",
+    "publicError": "The reports could not be loaded. Close and reopen this section to try again.",
+    "trigger": "Report incorrect information",
+    "title": "Report incorrect information",
+    "description": "Send us the details when information on this page is incorrect or incomplete.",
+    "target": "Report target",
+    "anonymous": "No name or email is required. Reports are reviewed before changes are made.",
+    "message": "Correction details",
+    "messagePlaceholder": "Example: The page shows 10 required materials, but the correct quantity is 12. Include a source or verification method when available.",
+    "close": "Close",
+    "submit": "Submit anonymously",
+    "submitting": "Submitting…",
+    "successTitle": "Thank you for your report",
+    "messageTooShort": "Enter at least {min} characters.",
+    "unavailable": "The report target ID is invalid.",
+    "genericError": "The report could not be submitted. Please try again later.",
+    "rateLimited": "Too many reports were submitted in a short time. Please try again later.",
+    "modalClose": "Close report dialog",
+    "replyQuoteLabel": "Replying to"
+  }
 }

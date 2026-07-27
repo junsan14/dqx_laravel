@@ -137,7 +137,7 @@
       "total": "原価合計",
       "tool": "道具",
       "noMaterials": "この項目で使う素材はない。",
-      "averagePerSlot":"平均コスト"
+      "averagePerSlot": "平均コスト"
     },
     "salePrice": {
       "title": "適正売値",
@@ -212,7 +212,6 @@
     "close": "閉じる",
     "bubbleAriaLabel": "{area} の詳細を見る"
   },
-
   "MonsterZukan": {
     "title": "モンスター図鑑",
     "empty": "モンスターがいない",
@@ -221,7 +220,7 @@
       "total": "全{total}件"
     },
     "sort": {
-      "no": "NO順",
+      "no": "つよさ順",
       "kana": "50音順",
       "comingSoon": "調整中",
       "kanaSoonTitle": "50音順は現在調整中"
@@ -231,7 +230,6 @@
       "pages": "ページ"
     }
   },
-
   "MapMonsterBrowser": {
     "title": "マップ別モンスター検索",
     "continent": "大陸",
@@ -265,7 +263,6 @@
     "selectMap": "地名を選択して下さい",
     "noMatchedMonster": "この条件に一致するモンスターはいない"
   },
-
   "MonsterDetailPage": {
     "fetchError": "モンスター詳細を取得できなかった",
     "notFound": "データが見つからなかった",
@@ -281,7 +278,6 @@
     "noNormalDrops": "登録なし",
     "noWhiteBoxDrops": "登録なし",
     "noOrbDrops": "登録なし"
-
   },
   "KishojuHome": {
     "defaultRoomName": "輝晶獣 分散ルーム",
@@ -324,12 +320,12 @@
       "common": "エラーが発生しました"
     },
     "notice": {
-    "roomNotFoundKicker": "Room Not Found",
-    "roomNotFoundTitle": "ルームが作成されていません",
-    "roomNotFoundText": "入力されたルームURLは存在しないか、すでに削除された可能性があります。新しくルームを作成するか、共有されたルームコードを確認してください。",
-    "ok": "OK",
-    "close": "閉じる"
-  }
+      "roomNotFoundKicker": "Room Not Found",
+      "roomNotFoundTitle": "ルームが作成されていません",
+      "roomNotFoundText": "入力されたルームURLは存在しないか、すでに削除された可能性があります。新しくルームを作成するか、共有されたルームコードを確認してください。",
+      "ok": "OK",
+      "close": "閉じる"
+    }
   },
   "KishojuRoom": {
     "maps": {
@@ -452,12 +448,28 @@
         }
       }
     }
-}
-
-
-
-
-
-
-
+  },
+  "ContentReportArea": {
+    "publicTitle": "ユーザーから寄せられた指摘",
+    "reportCount": "{count}件",
+    "publicLoading": "指摘内容を読み込んでいます…",
+    "publicError": "指摘内容を取得できませんでした。閉じてからもう一度開いてください。",
+    "trigger": "情報の間違いを報告",
+    "title": "情報の間違いを報告",
+    "description": "掲載内容に間違いや不足がある場合は、指摘内容を送ってください。",
+    "target": "報告対象",
+    "anonymous": "名前やメールアドレスは不要です。投稿内容は確認後に反映します。",
+    "message": "指摘内容",
+    "messagePlaceholder": "例：必要素材が10個と表示されていますが、実際は12個です。確認できるURLや方法があれば一緒に記入してください。",
+    "close": "閉じる",
+    "submit": "匿名で送信",
+    "submitting": "送信中…",
+    "successTitle": "ご報告ありがとうございます",
+    "messageTooShort": "指摘内容を{min}文字以上で入力してください。",
+    "unavailable": "報告対象のIDが正しく取得できませんでした。",
+    "genericError": "送信に失敗しました。時間をおいてもう一度お試しください。",
+    "rateLimited": "短時間に送信できる回数を超えました。しばらくしてからお試しください。",
+    "modalClose": "報告画面を閉じる",
+    "replyQuoteLabel": "返信先"
+  }
 }

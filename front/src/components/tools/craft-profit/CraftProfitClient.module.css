@@ -12,9 +12,6 @@
   margin-top: 1.25rem;
 }
 
-.loadingArea > * + * {
-  margin-top: 1.25rem;
-}
 
 .errorMessage {
   padding: 1rem;
@@ -33,6 +30,44 @@
 
 .infoColumn > * + * {
   margin-top: 1.25rem;
+}
+
+
+.skeletonSearchCard {
+  min-height: 7.25rem;
+}
+
+.skeletonInfoCard {
+  min-height: 7.25rem;
+}
+
+.skeletonFieldHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.skeletonEquipmentMeta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skeletonInputWrap {
+  margin-top: 0.75rem;
+}
+
+.skeletonInputWrap .skeletonLine {
+  border-radius: 0.75rem;
+}
+
+.skeletonInfoLines {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 1rem;
 }
 
 .visuallyHidden {
@@ -107,6 +142,28 @@
   margin-top: 1.25rem;
 }
 
+
+.skeletonRecommendPanel {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  padding: 1rem;
+  border: 1px solid var(--card-border);
+  border-radius: 0.875rem;
+  background: var(--soft-bg);
+}
+
+.skeletonRecommendPanel > .skeletonLine {
+  background: var(--card-bg);
+}
+
+.skeletonRecommendHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
 .skeletonPanel {
   min-width: 0;
   padding: 1rem;
@@ -132,6 +189,20 @@
 @media (max-width: 767px) {
   .skeletonCard {
     padding: 1rem;
+  }
+
+  .skeletonSearchCard,
+  .skeletonInfoCard {
+    min-height: auto;
+  }
+
+  .skeletonFieldHeader,
+  .skeletonRecommendHeader {
+    align-items: flex-start;
+  }
+
+  .skeletonEquipmentMeta {
+    max-width: 55%;
   }
 
   .skeletonMaterialGrid,

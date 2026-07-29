@@ -1,5 +1,367 @@
 .root {
+  margin-top: 14px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.sectionHeader {
+  margin-bottom: 12px;
+  min-width: 0;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-title);
+}
+
+.outerGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  width: 100%;
+  min-width: 0;
+}
+
+.tabsRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+}
+
+.contentRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+}
+
+.contentRowWithImage {
+  grid-template-columns: minmax(0, 1fr) 165px;
+}
+
+.leftWrap {
+  min-width: 0;
+  width: 100%;
+}
+
+.rightWrap {
+  width: 165px;
+  min-width: 165px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.tabButton {
+  appearance: none;
+  border: 1px solid var(--panel-border);
+  background: var(--panel-bg);
+  color: var(--text-sub);
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.2;
+  cursor: pointer;
+  border-radius: 5px;
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
+}
+
+.tabButtonActive {
+  background: var(--primary-bg);
+  color: var(--primary-text);
+  border-color: var(--primary-border);
+}
+
+.mobileContentViewport {
+  overflow: hidden;
+  width: 100%;
+  min-width: 0;
+}
+
+.mobileScroller {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  width: 100%;
+  min-width: 0;
+}
+
+.mobileScroller::-webkit-scrollbar {
+  display: none;
+}
+
+.mobilePage {
+  min-width: 100%;
+  width: 100%;
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  box-sizing: border-box;
+}
+
+.desktopPanels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.panel {
+  height: 100%;
+  border-radius: 5px;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.panelHeader {
+  padding: 12px 12px 10px;
+  border-bottom: 1px solid var(--soft-border);
+  background: var(--soft-bg);
+  text-align: center;
+}
+
+.panelTitle {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: 900;
+  color: var(--text-title);
+}
+
+.panelBody {
+  padding: 12px 10px;
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  display: flex;
+  align-items: flex-start;
+}
+
+.tagList {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  min-width: 0;
+}
+
+.emptyBox {
+  border-radius: 10px;
+  padding: 14px;
+  background: var(--soft-bg);
+  border: 1px dashed var(--soft-border);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  width: 100%;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.itemTag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  width: 100%;
+  border-radius: 999px;
+  padding: 4px 10px;
+  color: var(--tag-text);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.kindBadge, .orbColorBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.kindBadgeNormal {
+  background: var(--badge-bg);
+  color: var(--badge-text);
+}
+
+.kindBadgeRare {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+  border: 1px solid var(--warning-border);
+}
+
+.kindBadgeEquipment {
+  background: var(--badge-bg);
+  color: var(--badge-text);
+  border: 1px solid var(--tag-border);
+}
+
+.itemTagText {
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 700;
+  color: var(--text-main);
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  min-width: 0;
+  flex: 1;
+}
+
+.orbColorBadge {
+  min-width: 28px;
+}
+
+.orbFlame {
+  background: color-mix(in srgb, #be123c 14%, var(--panel-bg));
+  color: #be123c;
+}
+
+.orbWater {
+  background: color-mix(in srgb, #1d4ed8 14%, var(--panel-bg));
+  color: #1d4ed8;
+}
+
+.orbWind {
+  background: color-mix(in srgb, #047857 14%, var(--panel-bg));
+  color: #047857;
+}
+
+.orbLightning {
+  background: color-mix(in srgb, #b45309 14%, var(--panel-bg));
+  color: #b45309;
+}
+
+.orbEarth {
+  background: color-mix(in srgb, #92400e 14%, var(--panel-bg));
+  color: #92400e;
+}
+
+.orbLight {
+  background: color-mix(in srgb, #a16207 14%, var(--panel-bg));
+  color: #a16207;
+}
+
+.orbDark {
+  background: color-mix(in srgb, #5b21b6 14%, var(--panel-bg));
+  color: #5b21b6;
+}
+
+.orbDefault {
+  background: var(--badge-bg);
+  color: var(--badge-text);
+}
+
+.imageFrame,
+.imagePlaceholder {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.image {
+  object-fit: contain;
+  border-radius: 5px;
+}
+
+.imagePlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--soft-bg);
+  color: var(--text-muted);
+  font-size: 24px;
+  user-select: none;
+}
+
+@media (max-width: 919px) {
+  .root {
+    margin-top: 14px;
+  }
+
+  .outerGrid {
+    gap: 8px;
+  }
+
+  .contentRow {
+    gap: 10px;
+  }
+
+  .contentRowWithImage {
+    grid-template-columns: minmax(0, 1fr) 84px;
+  }
+
+  .rightWrap {
+    width: 84px;
+    min-width: 84px;
+    position: sticky;
+    top: 12px;
+    align-items: stretch;
+  }
+
+  .tabButton {
+    padding: 9px 6px;
+    font-size: 11px;
+  }
+
+  .panelBody {
+    padding: 10px 8px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tagList {
+    gap: 4px;
+  }
+
+  .emptyBox {
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  .itemTag {
+    gap: 5px;
+    padding: 3px 0;
+  }
+
+  .kindBadge, .orbColorBadge {
+    min-width: 32px;
+    height: 18px;
+    padding: 0 6px;
+    font-size: 9px;
+  }
+
+  .orbColorBadge {
+    min-width: 24px;
+  }
+
+  .itemTagText {
+    font-size: 12px;
+    line-height: 1.35;
+  }
 }

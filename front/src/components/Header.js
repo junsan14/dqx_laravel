@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { FaXTwitter } from "react-icons/fa6";
+import { FiMoon, FiSun } from "react-icons/fi";
 
 import { useAuth } from "@/hooks/auth";
 import { mochiy } from "@/app/fonts";
@@ -85,6 +86,76 @@ function LanguageSwitcher({ onNavigate }) {
       >
         EN
       </ProgressIntlLink>
+    </div>
+  );
+}
+
+function ThemeSwitcher() {
+  const [theme, setTheme] = useState("light");
+  const [mounted, setMounted] = useState(false);
+
+  function applyTheme(nextTheme) {
+    const root = document.documentElement;
+
+    root.dataset.theme = nextTheme;
+    root.classList.toggle("dark", nextTheme === "dark");
+    root.classList.toggle("light", nextTheme === "light");
+    root.style.colorScheme = nextTheme;
+
+    window.localStorage.setItem("theme", nextTheme);
+    setTheme(nextTheme);
+  }
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const storedTheme = window.localStorage.getItem("theme");
+    const rootTheme = root.dataset.theme;
+    const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+
+    const initialTheme =
+      storedTheme === "dark" || storedTheme === "light"
+        ? storedTheme
+        : rootTheme === "dark" || rootTheme === "light"
+          ? rootTheme
+          : preferredTheme;
+
+    applyTheme(initialTheme);
+    setMounted(true);
+  }, []);
+
+  const getItemClassName = (itemTheme) =>
+    [
+      styles.themeItem,
+      mounted && theme === itemTheme ? styles.themeItemActive : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+  return (
+    <div className={styles.themeSwitcher} aria-label="Theme switcher">
+      <button
+        type="button"
+        className={getItemClassName("light")}
+        onClick={() => applyTheme("light")}
+        aria-label="ライトテーマ"
+        aria-pressed={mounted && theme === "light"}
+        title="ライトテーマ"
+      >
+        <FiSun aria-hidden="true" />
+      </button>
+
+      <button
+        type="button"
+        className={getItemClassName("dark")}
+        onClick={() => applyTheme("dark")}
+        aria-label="ダークテーマ"
+        aria-pressed={mounted && theme === "dark"}
+        title="ダークテーマ"
+      >
+        <FiMoon aria-hidden="true" />
+      </button>
     </div>
   );
 }
@@ -253,7 +324,7 @@ export default function Header() {
       );
     };
   }, []);
-
+  
   useEffect(() => {
     if (open) {
       setMenuVisible(true);
@@ -316,15 +387,19 @@ export default function Header() {
               className={styles.brandLink}
               onClick={closeMenu}
             >
-              <span className={styles.brandBadge}>
-                DQX
+              <span className={styles.brandText}>
+                <span className={styles.brandBadge}>
+                  DQX TOOLS
+                </span>
+
+                <span className={styles.brandTitle}>
+                  アストルティアの孫の手
+                </span>
               </span>
 
-              <span className={styles.brandTitle}>
-                Tools
-              </span>
-
-              <span className={styles.versionBadge}>
+              <span
+                className={`${styles.versionBadge} ${styles.headerVersion}`}
+              >
                 {term}
               </span>
             </HeaderNavLink>
@@ -456,9 +531,13 @@ export default function Header() {
               ) : null}
 
               <div className={styles.menuFooter}>
-                <LanguageSwitcher
-                  onNavigate={closeMenu}
-                />
+                <div className={styles.menuPreferenceRow}>
+                  <LanguageSwitcher
+                    onNavigate={closeMenu}
+                  />
+
+                  <ThemeSwitcher />
+                </div>
 
                 <div
                   className={`${styles.versionBadge} ${styles.footerVersion}`}

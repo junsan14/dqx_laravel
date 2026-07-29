@@ -13,7 +13,6 @@ import {
 import { fetchCrystalRules } from "@/lib/crystalRules";
 import CraftProfitHeaderCard from "./CraftProfitHeaderCard";
 import CraftProfitMaterialsCard from "./CraftProfitMaterialsCard";
-import CraftProfitSkeleton from "@/components/ui/CraftProfitSkeleton";
 import EquipmentInfoCard from "./EquipmentInfoCard";
 import SalePriceCard from "./SalePriceCard";
 import PageHeroTitle from "@/components/PageHeroTitle";
@@ -150,7 +149,10 @@ function SkeletonLine({ width = "100%", height = "0.875rem" }) {
 
 function EquipmentInfoSkeleton() {
   return (
-    <section className={styles.skeletonCard} aria-hidden="true">
+    <section
+      className={`${styles.skeletonCard} ${styles.skeletonInfoCard}`}
+      aria-hidden="true"
+    >
       <div className={styles.skeletonHeadingRow}>
         <SkeletonLine width="7.5rem" height="1.15rem" />
         <SkeletonLine width="5.5rem" />
@@ -160,6 +162,11 @@ function EquipmentInfoSkeleton() {
         <SkeletonLine width="4.5rem" height="1.75rem" />
         <SkeletonLine width="5.75rem" height="1.75rem" />
         <SkeletonLine width="4rem" height="1.75rem" />
+      </div>
+
+      <div className={styles.skeletonInfoLines}>
+        <SkeletonLine width="82%" />
+        <SkeletonLine width="64%" />
       </div>
     </section>
   );
@@ -201,25 +208,68 @@ function EquipmentDetailsSkeleton() {
 
       <section className={styles.skeletonCard} aria-hidden="true">
         <div className={styles.skeletonHeadingRow}>
-          <SkeletonLine width="8rem" height="1.15rem" />
-          <SkeletonLine width="5rem" />
+          <SkeletonLine width="9rem" height="1.15rem" />
+          <SkeletonLine width="5rem" height="2.25rem" />
         </div>
 
-        <div className={styles.skeletonPriceGrid}>
-          <div className={styles.skeletonPanel}>
-            <SkeletonLine width="55%" />
-            <SkeletonLine width="78%" height="1.5rem" />
+        <div className={styles.skeletonRecommendPanel}>
+          <div className={styles.skeletonRecommendHeader}>
+            <SkeletonLine width="12rem" />
+            <SkeletonLine width="7rem" height="1.75rem" />
           </div>
-          <div className={styles.skeletonPanel}>
-            <SkeletonLine width="50%" />
-            <SkeletonLine width="70%" height="1.5rem" />
-          </div>
-          <div className={styles.skeletonPanel}>
-            <SkeletonLine width="60%" />
-            <SkeletonLine width="74%" height="1.5rem" />
+
+          <SkeletonLine
+            width="100%"
+            height="5.25rem"
+          />
+
+          <div className={styles.skeletonPriceGrid}>
+            <div className={styles.skeletonPanel}>
+              <SkeletonLine width="55%" />
+              <SkeletonLine width="78%" height="1.5rem" />
+            </div>
+            <div className={styles.skeletonPanel}>
+              <SkeletonLine width="50%" />
+              <SkeletonLine width="70%" height="1.5rem" />
+            </div>
+            <div className={styles.skeletonPanel}>
+              <SkeletonLine width="60%" />
+              <SkeletonLine width="74%" height="1.5rem" />
+            </div>
           </div>
         </div>
       </section>
+    </>
+  );
+}
+
+function CraftProfitInitialSkeleton() {
+  return (
+    <>
+      <div className={styles.topGrid} aria-hidden="true">
+        <section
+          className={`${styles.skeletonCard} ${styles.skeletonSearchCard}`}
+        >
+          <div className={styles.skeletonFieldHeader}>
+            <SkeletonLine width="5.5rem" />
+
+            <div className={styles.skeletonEquipmentMeta}>
+              <SkeletonLine width="4.5rem" height="1.5rem" />
+              <SkeletonLine width="5.25rem" height="1.5rem" />
+            </div>
+          </div>
+
+          <div className={styles.skeletonInputWrap}>
+            <SkeletonLine width="100%" height="2.75rem" />
+          </div>
+        </section>
+
+        <div className={styles.infoColumn}>
+          <EquipmentInfoSkeleton />
+        </div>
+      </div>
+
+      <EquipmentDetailsSkeleton />
     </>
   );
 }
@@ -908,8 +958,8 @@ export default function CraftProfitClient() {
       />
 
       {loading ? (
-        <div className={styles.loadingArea}>
-          <CraftProfitSkeleton />
+        <div className={styles.content}>
+          <CraftProfitInitialSkeleton />
         </div>
       ) : loadError ? (
         <div className={styles.errorMessage}>{loadError}</div>

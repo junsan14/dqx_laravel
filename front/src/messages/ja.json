@@ -170,7 +170,18 @@
     "emptyText": "キーワードを変えて試してください",
     "errors": {
       "detailFetchFailed": "モンスター詳細を取得できなかった"
-    }
+    },
+    "suggestionsEmpty": "候補がありません",
+    "info": {
+      "title": "モンスター情報",
+      "open": "開く",
+      "close": "閉じる"
+    },
+    "habitats": {
+      "title": "出現場所"
+    },
+    "searchTypeLabel": "なにを調べる?",
+    "keywordLabel": "キーワード"
   },
   "MonsterDropSection": {
     "unknown": "不明",
@@ -198,7 +209,11 @@
       "土": "土",
       "光": "光",
       "闇": "闇"
-    }
+    },
+    "title": "ドロップ",
+    "whiteBox": "白箱",
+    "noImage": "画像なし",
+    "imageAlt": "モンスター画像"
   },
   "MonsterMapOverlay": {
     "noImage": "画像なし",
@@ -259,7 +274,7 @@
     "unknownMonster": "不明なモンスター",
     "floorLabel": "階層 {floor}",
     "loadFailed": "データ取得に失敗",
-    "emptyGuide": "大陸と地名を選ぶと、出現モンスターを確認できる",
+    "emptyGuide": "大陸と地名を選ぶと、出現モンスターを確認できます",
     "selectMap": "地名を選択して下さい",
     "noMatchedMonster": "この条件に一致するモンスターはいない"
   },
@@ -471,5 +486,38 @@
     "rateLimited": "短時間に送信できる回数を超えました。しばらくしてからお試しください。",
     "modalClose": "報告画面を閉じる",
     "replyQuoteLabel": "返信先"
+  },
+  "MonsterInfoSection": {
+    "title": "モンスター情報",
+    "trivia": "まめちしき",
+    "triviaTab": "まめちしき {number}",
+    "reincarnated": "転生",
+    "noImage": "画像なし",
+    "imageAlt": "モンスター画像",
+    "exp": "EXP",
+    "gold": "G"
+  },
+  "MonsterHabitatSection": {
+    "title": "出現場所",
+    "noData": "出現場所データなし",
+    "unnamedMap": "地名なし",
+    "huntingGround": "狩場",
+    "daytime": "日中",
+    "night": "夜"
+  },
+  "MonsterDetailSection": {
+    "notFound": "モンスター情報が見つかりませんでした。",
+    "backToList": "一覧へ戻る",
+    "monsterFallback": "モンスター",
+    "reportFields": {
+      "basicInfo": "基本情報・説明",
+      "normalDrops": "通常ドロップ",
+      "rareDrops": "レアドロップ",
+      "accessories": "アクセサリー",
+      "orbs": "宝珠",
+      "equipment": "白宝箱・装備",
+      "habitats": "出現場所・マップ",
+      "other": "その他"
+    }
   }
 }

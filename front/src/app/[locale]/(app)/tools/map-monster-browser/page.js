@@ -1,7 +1,7 @@
 import MapMonsterBrowserClient from "@/components/tools/map-monster-browser/MapMonsterBrowserClient";
-import MapMonsterBrowserSkeleton from "@/components/ui/MapMonsterBrowserSkeleton";
+//import MapMonsterBrowserSkeleton from "@/components/ui/MapMonsterBrowserSkeleton";
 import { createBaseMetadata } from "@/lib/metadata";
-import { Suspense } from "react";
+//import { Suspense } from "react";
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;
@@ -24,8 +24,8 @@ export async function generateMetadata({ params }) {
 
 export default function MapMonsterBrowserPage() {
   return (
-    <Suspense fallback={<MapMonsterBrowserSkeleton />}>
+   
       <MapMonsterBrowserClient />
-    </Suspense>
+
   );
 }

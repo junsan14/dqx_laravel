@@ -169,7 +169,18 @@
     "emptyText": "Try a different keyword.",
     "errors": {
       "detailFetchFailed": "Failed to fetch monster details."
-    }
+    },
+    "suggestionsEmpty": "No suggestions",
+    "info": {
+      "title": "Monster Information",
+      "open": "Open",
+      "close": "Close"
+    },
+    "habitats": {
+      "title": "Habitats"
+    },
+    "searchTypeLabel": "Search type",
+    "keywordLabel": "Keyword"
   },
   "MonsterDropSection": {
     "unknown": "Unknown",
@@ -197,7 +208,11 @@
       "土": "Earth",
       "光": "Light",
       "闇": "Dark"
-    }
+    },
+    "title": "Drops",
+    "whiteBox": "White Box",
+    "noImage": "No image",
+    "imageAlt": "Monster image"
   },
   "MonsterMapOverlay": {
     "noImage": "No image",
@@ -459,5 +474,38 @@
     "rateLimited": "Too many reports were submitted in a short time. Please try again later.",
     "modalClose": "Close report dialog",
     "replyQuoteLabel": "Replying to"
+  },
+  "MonsterInfoSection": {
+    "title": "Monster Information",
+    "trivia": "Trivia",
+    "triviaTab": "Trivia {number}",
+    "reincarnated": "Reincarnated",
+    "noImage": "No image",
+    "imageAlt": "Monster image",
+    "exp": "EXP",
+    "gold": "G"
+  },
+  "MonsterHabitatSection": {
+    "title": "Habitats",
+    "noData": "No habitat data",
+    "unnamedMap": "Unnamed map",
+    "huntingGround": "Farming spot",
+    "daytime": "Daytime",
+    "night": "Night"
+  },
+  "MonsterDetailSection": {
+    "notFound": "Monster information was not found.",
+    "backToList": "Back to list",
+    "monsterFallback": "Monster",
+    "reportFields": {
+      "basicInfo": "Basic information / description",
+      "normalDrops": "Normal drops",
+      "rareDrops": "Rare drops",
+      "accessories": "Accessories",
+      "orbs": "Orbs",
+      "equipment": "White boxes / equipment",
+      "habitats": "Habitats / maps",
+      "other": "Other"
+    }
   }
 }

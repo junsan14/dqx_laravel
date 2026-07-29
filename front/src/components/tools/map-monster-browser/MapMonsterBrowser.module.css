@@ -488,3 +488,419 @@
     grid-column: span 2;
   }
 }
+
+/* =========================================================
+   Content-matched loading skeleton
+========================================================= */
+
+@keyframes mapBrowserSkeletonShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.mapBrowserSkeletonWrap {
+  width: 100%;
+  min-width: 0;
+  margin-top: 1.5rem;
+}
+
+.mapBrowserSkeletonGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+  gap: 1.5rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.mapSkeletonBlock {
+  position: relative;
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--soft-border) 72%, transparent) 0%,
+    color-mix(in srgb, var(--soft-bg) 82%, var(--card-bg) 18%) 50%,
+    color-mix(in srgb, var(--soft-border) 72%, transparent) 100%
+  );
+  background-size: 200% 100%;
+  animation: mapBrowserSkeletonShimmer 1.4s ease-in-out infinite;
+}
+
+.mapBrowserSkeletonAside,
+.mapBrowserSkeletonContentCard {
+  min-width: 0;
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  background: var(--card-bg);
+  box-sizing: border-box;
+}
+
+.mapBrowserSkeletonAside {
+  height: 100%;
+  padding: 16px;
+}
+
+.mapBrowserSkeletonEmptyBox {
+  min-width: 0;
+  min-height: 78px;
+  padding: 20px 16px;
+  border: 1px dashed var(--soft-border);
+  border-radius: 16px;
+  background: var(--soft-bg);
+  box-sizing: border-box;
+}
+
+.mapBrowserSkeletonAside > .mapBrowserSkeletonEmptyBox {
+  min-height: 100%;
+}
+
+.mapSkeletonEmptyLine {
+  width: min(240px, 72%);
+  height: 14px;
+}
+
+.mapSkeletonEmptyLineShort {
+  width: min(170px, 48%);
+  height: 12px;
+  margin-top: 10px;
+}
+
+.mapSkeletonContinent {
+  width: 42%;
+  height: 13px;
+}
+
+.mapSkeletonMapTitle {
+  width: 72%;
+  height: 24px;
+  margin-top: 8px;
+}
+
+.mapSkeletonCount {
+  width: 34%;
+  height: 13px;
+  margin-top: 12px;
+}
+
+.mapSkeletonSection {
+  margin-top: 24px;
+}
+
+.mapSkeletonSectionTitle {
+  width: 34%;
+  height: 14px;
+  margin-bottom: 10px;
+}
+
+.mapSkeletonChipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mapSkeletonChip,
+.mapSkeletonChipWide {
+  height: 30px;
+}
+
+.mapSkeletonChip {
+  width: 68px;
+}
+
+.mapSkeletonChipWide {
+  width: 92px;
+}
+
+.mapSkeletonMonsterGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.mapSkeletonMonsterChip {
+  width: 100%;
+  height: 42px;
+  border-radius: 999px;
+}
+
+.mapBrowserSkeletonContentCard {
+  overflow: hidden;
+}
+
+.mapBrowserSkeletonHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-height: 57px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.mapSkeletonLayerTab,
+.mapSkeletonLayerTabActive,
+.mapSkeletonLayerTabShort {
+  height: 30px;
+}
+
+.mapSkeletonLayerTabActive {
+  width: 88px;
+}
+
+.mapSkeletonLayerTab {
+  width: 76px;
+}
+
+.mapSkeletonLayerTabShort {
+  width: 58px;
+}
+
+.mapBrowserSkeletonBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  padding: 16px;
+}
+
+.mapBrowserSkeletonMapColumn,
+.mapBrowserSkeletonSpawnColumn {
+  min-width: 0;
+}
+
+.mapBrowserSkeletonMap {
+  width: 100%;
+  border-radius: 14px;
+  aspect-ratio: 1 / 1;
+}
+
+.mapBrowserSkeletonReportBox {
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  background: var(--soft-bg);
+}
+
+.mapSkeletonReportTitle {
+  width: 36%;
+  height: 13px;
+}
+
+.mapSkeletonReportText {
+  width: 78%;
+  height: 12px;
+  margin-top: 10px;
+}
+
+.mapBrowserSkeletonSwipeRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+.mapSkeletonSwipeHint {
+  width: 72px;
+  height: 26px;
+}
+
+.mapBrowserSkeletonSpawnCard {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  background: var(--card-bg);
+}
+
+.mapBrowserSkeletonSpawnHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mapBrowserSkeletonSpawnHeading {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.mapSkeletonMonsterName {
+  width: min(150px, 68%);
+  height: 20px;
+}
+
+.mapSkeletonSystemBadge {
+  width: 54px;
+  height: 22px;
+}
+
+.mapSkeletonDetailButton {
+  width: 58px;
+  min-width: 58px;
+  height: 28px;
+}
+
+.mapBrowserSkeletonStatGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.mapBrowserSkeletonStatBox,
+.mapBrowserSkeletonMemoBox,
+.mapBrowserSkeletonAreaBox {
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  background: var(--soft-bg);
+}
+
+.mapSkeletonStatLabel {
+  width: 58%;
+  height: 10px;
+}
+
+.mapSkeletonStatValue {
+  width: 74%;
+  height: 14px;
+  margin-top: 8px;
+}
+
+.mapBrowserSkeletonMemoBox,
+.mapBrowserSkeletonAreaBox {
+  margin-top: 14px;
+}
+
+.mapSkeletonMemoLabel,
+.mapSkeletonAreaTitle {
+  width: 24%;
+  height: 11px;
+}
+
+.mapSkeletonMemoText {
+  width: 82%;
+  height: 14px;
+  margin-top: 9px;
+}
+
+.mapBrowserSkeletonAreaBox .mapSkeletonChipRow {
+  margin-top: 10px;
+}
+
+.mapSkeletonAreaBadge,
+.mapSkeletonAreaBadgeShort {
+  height: 24px;
+}
+
+.mapSkeletonAreaBadge {
+  width: 62px;
+}
+
+.mapSkeletonAreaBadgeShort {
+  width: 46px;
+}
+
+@media (min-width: 768px) {
+  .mapBrowserSkeletonBody {
+    grid-template-columns: minmax(280px, 410px) minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .mapBrowserSkeletonGrid {
+    grid-template-columns: 320px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .mapBrowserSkeletonBody {
+    align-items: stretch;
+  }
+
+  .mapBrowserSkeletonStatGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mapSkeletonBlock {
+    animation: none;
+  }
+}
+
+/* =========================================================
+   Mobile layer switch stability
+========================================================= */
+
+.mobileLayerCard {
+  overflow-anchor: none;
+}
+
+.mobileLayerHeader {
+  min-height: 82px;
+  overflow-anchor: auto;
+}
+
+.mobileLayerTabs {
+  min-height: 32px;
+  align-items: center;
+}
+
+.mobileLayerContent {
+  min-width: 0;
+  overflow-anchor: none;
+}
+
+@media (max-width: 1199px) {
+  .mapMobileBox {
+    position: relative;
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 1 / 1;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .mapMobileBox > * {
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .layerTab {
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

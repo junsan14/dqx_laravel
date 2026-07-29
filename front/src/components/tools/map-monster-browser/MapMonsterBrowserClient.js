@@ -16,7 +16,6 @@ import { fetchMonsterDetail, searchMonsters } from "@/lib/monsters";
 import MonsterMapOverlay from "./MonsterMapOverlay";
 import styles from "./MapMonsterBrowser.module.css";
 import PageHeroTitle from "@/components/PageHeroTitle";
-import MapMonsterBrowserSkeleton from "@/components/ui/MapMonsterBrowserSkeleton";
 import ContentReportArea from "@/components/common/ContentReportArea";
 import {
   MdOutlineSwipe,
@@ -279,6 +278,161 @@ function getDisplayValue(row, keys = [], fallback = "") {
 
 function cn(...classes) {
   return classes.filter(Boolean).join(" ");
+}
+
+function MapLocationLabel({ continentLabel, mapLabel }) {
+  if (!continentLabel && !mapLabel) return null;
+
+  return (
+    <div className="min-w-0 flex-1">
+      {continentLabel ? (
+        <div className={cn("truncate text-xs", styles.cardHeaderSub)}>
+          {continentLabel}
+        </div>
+      ) : null}
+
+      {mapLabel ? (
+        <div
+          className={cn(
+            "mt-0.5 truncate text-sm font-semibold",
+            styles.cardHeaderTitle
+          )}
+        >
+          {mapLabel}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function MapSkeletonBlock({ className = "" }) {
+  return (
+    <span
+      className={cn(styles.mapSkeletonBlock, className)}
+      aria-hidden="true"
+    />
+  );
+}
+
+function MapMonsterBrowserContentSkeleton({ hasSelectedMap = false }) {
+  if (!hasSelectedMap) {
+    return (
+      <div className={styles.mapBrowserSkeletonWrap} aria-hidden="true">
+        <div className={styles.mapBrowserSkeletonGrid}>
+          <aside className={styles.mapBrowserSkeletonAside}>
+            <div className={styles.mapBrowserSkeletonEmptyBox}>
+              <MapSkeletonBlock className={styles.mapSkeletonEmptyLine} />
+              <MapSkeletonBlock className={styles.mapSkeletonEmptyLineShort} />
+            </div>
+          </aside>
+
+          <div className={styles.mapBrowserSkeletonEmptyBox}>
+            <MapSkeletonBlock className={styles.mapSkeletonEmptyLine} />
+            <MapSkeletonBlock className={styles.mapSkeletonEmptyLineShort} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.mapBrowserSkeletonWrap} aria-hidden="true">
+      <div className={styles.mapBrowserSkeletonGrid}>
+        <aside className={styles.mapBrowserSkeletonAside}>
+          <MapSkeletonBlock className={styles.mapSkeletonContinent} />
+          <MapSkeletonBlock className={styles.mapSkeletonMapTitle} />
+          <MapSkeletonBlock className={styles.mapSkeletonCount} />
+
+          <div className={styles.mapSkeletonSection}>
+            <MapSkeletonBlock className={styles.mapSkeletonSectionTitle} />
+            <div className={styles.mapSkeletonChipRow}>
+              <MapSkeletonBlock className={styles.mapSkeletonChipWide} />
+              <MapSkeletonBlock className={styles.mapSkeletonChip} />
+              <MapSkeletonBlock className={styles.mapSkeletonChip} />
+            </div>
+          </div>
+
+          <div className={styles.mapSkeletonSection}>
+            <MapSkeletonBlock className={styles.mapSkeletonSectionTitle} />
+            <div className={styles.mapSkeletonMonsterGrid}>
+              {Array.from({ length: 8 }).map((_, index) => (
+                <MapSkeletonBlock
+                  key={index}
+                  className={styles.mapSkeletonMonsterChip}
+                />
+              ))}
+            </div>
+          </div>
+        </aside>
+
+        <section className={styles.mapBrowserSkeletonContentCard}>
+          <div className={styles.mapBrowserSkeletonHeader}>
+            <div className="min-w-0 flex-1">
+              <MapSkeletonBlock className={styles.mapSkeletonContinent} />
+              <div className="mt-2">
+                <MapSkeletonBlock className={styles.mapSkeletonMapTitle} />
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              <MapSkeletonBlock className={styles.mapSkeletonLayerTabActive} />
+              <MapSkeletonBlock className={styles.mapSkeletonLayerTab} />
+              <MapSkeletonBlock className={styles.mapSkeletonLayerTabShort} />
+            </div>
+          </div>
+
+          <div className={styles.mapBrowserSkeletonBody}>
+            <div className={styles.mapBrowserSkeletonMapColumn}>
+              <MapSkeletonBlock className={styles.mapBrowserSkeletonMap} />
+              <div className={styles.mapBrowserSkeletonReportBox}>
+                <MapSkeletonBlock className={styles.mapSkeletonReportTitle} />
+                <MapSkeletonBlock className={styles.mapSkeletonReportText} />
+              </div>
+            </div>
+
+            <div className={styles.mapBrowserSkeletonSpawnColumn}>
+              <div className={styles.mapBrowserSkeletonSwipeRow}>
+                <MapSkeletonBlock className={styles.mapSkeletonSwipeHint} />
+              </div>
+
+              <div className={styles.mapBrowserSkeletonSpawnCard}>
+                <div className={styles.mapBrowserSkeletonSpawnHeader}>
+                  <div className={styles.mapBrowserSkeletonSpawnHeading}>
+                    <MapSkeletonBlock className={styles.mapSkeletonMonsterName} />
+                    <MapSkeletonBlock className={styles.mapSkeletonSystemBadge} />
+                  </div>
+                  <MapSkeletonBlock className={styles.mapSkeletonDetailButton} />
+                </div>
+
+                <div className={styles.mapBrowserSkeletonStatGrid}>
+                  {Array.from({ length: 3 }).map((_, index) => (
+                    <div key={index} className={styles.mapBrowserSkeletonStatBox}>
+                      <MapSkeletonBlock className={styles.mapSkeletonStatLabel} />
+                      <MapSkeletonBlock className={styles.mapSkeletonStatValue} />
+                    </div>
+                  ))}
+                </div>
+
+                <div className={styles.mapBrowserSkeletonMemoBox}>
+                  <MapSkeletonBlock className={styles.mapSkeletonMemoLabel} />
+                  <MapSkeletonBlock className={styles.mapSkeletonMemoText} />
+                </div>
+
+                <div className={styles.mapBrowserSkeletonAreaBox}>
+                  <MapSkeletonBlock className={styles.mapSkeletonAreaTitle} />
+                  <div className={styles.mapSkeletonChipRow}>
+                    <MapSkeletonBlock className={styles.mapSkeletonAreaBadge} />
+                    <MapSkeletonBlock className={styles.mapSkeletonAreaBadgeShort} />
+                    <MapSkeletonBlock className={styles.mapSkeletonAreaBadge} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  );
 }
 
 function MonsterChip({
@@ -725,8 +879,21 @@ function LayerSection({
       )}
     >
       <div className={cn("px-4 py-3", styles.cardHeader)}>
-        <div className={cn("text-sm font-semibold", styles.cardHeaderTitle)}>
-          {layerTitle}
+        <div className="flex min-w-0 items-center justify-between gap-3">
+          <MapLocationLabel
+            continentLabel={continentLabel}
+            mapLabel={mapLabel}
+          />
+
+          <div
+            className={cn(
+              "max-w-[45%] shrink-0 truncate text-sm font-semibold",
+              styles.cardHeaderTitle
+            )}
+            title={layerTitle}
+          >
+            {layerTitle}
+          </div>
         </div>
       </div>
 
@@ -758,10 +925,54 @@ function LayerCarousel({
   t,
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const mobileCarouselRef = useRef(null);
+  const mobileLayerRafRef = useRef(null);
 
   useEffect(() => {
     setActiveIndex(0);
   }, [sections]);
+
+  useEffect(() => {
+    return () => {
+      if (mobileLayerRafRef.current) {
+        window.cancelAnimationFrame(mobileLayerRafRef.current);
+      }
+    };
+  }, []);
+
+  function handleMobileLayerChange(nextIndex) {
+    if (nextIndex === activeIndex) return;
+
+    const previousTop =
+      mobileCarouselRef.current?.getBoundingClientRect().top ?? null;
+
+    setActiveIndex(nextIndex);
+
+    if (previousTop == null) return;
+
+    if (mobileLayerRafRef.current) {
+      window.cancelAnimationFrame(mobileLayerRafRef.current);
+    }
+
+    mobileLayerRafRef.current = window.requestAnimationFrame(() => {
+      mobileLayerRafRef.current = window.requestAnimationFrame(() => {
+        const nextTop =
+          mobileCarouselRef.current?.getBoundingClientRect().top ?? null;
+
+        if (nextTop == null) return;
+
+        const offset = nextTop - previousTop;
+
+        if (Math.abs(offset) > 0.5) {
+          window.scrollBy({
+            top: offset,
+            left: 0,
+            behavior: "auto",
+          });
+        }
+      });
+    });
+  }
 
   if (sections.length === 0) return null;
 
@@ -770,11 +981,30 @@ function LayerCarousel({
 
   if (isMobile) {
     return (
-      <section className={cn("overflow-hidden rounded-2xl", styles.card)}>
+      <section
+        ref={mobileCarouselRef}
+        className={cn(
+          "overflow-hidden rounded-2xl",
+          styles.card,
+          styles.mobileLayerCard
+        )}
+      >
         <div className={cn("px-4 py-3", styles.cardHeader)}>
           <div className={styles.mobileLayerHeader}>
-            <div className={cn("text-xs", styles.cardHeaderSub)}>
-              {activeIndex + 1} / {sections.length}
+            <div className="flex min-w-0 items-start justify-between gap-3">
+              <MapLocationLabel
+                continentLabel={continentLabel}
+                mapLabel={mapLabel}
+              />
+
+              <div
+                className={cn(
+                  "shrink-0 pt-0.5 text-xs",
+                  styles.cardHeaderSub
+                )}
+              >
+                {activeIndex + 1} / {sections.length}
+              </div>
             </div>
 
             <div className={styles.mobileLayerTabs}>
@@ -788,7 +1018,7 @@ function LayerCarousel({
                   <button
                     key={section.layer.id}
                     type="button"
-                    onClick={() => setActiveIndex(index)}
+                    onClick={() => handleMobileLayerChange(index)}
                     className={cn(
                       "shrink-0",
                       styles.layerTab,
@@ -803,7 +1033,7 @@ function LayerCarousel({
           </div>
         </div>
 
-        <div className="p-4">
+        <div className={cn("p-4", styles.mobileLayerContent)}>
           <MapWithCards
             layer={current.layer}
             spawns={current.spawns}
@@ -829,8 +1059,14 @@ function LayerCarousel({
       )}
     >
       <div className={cn("px-4 py-3", styles.cardHeader)}>
-        <div className="flex flex-wrap items-center gap-2">
-          {sections.map((section, index) => {
+        <div className="flex min-w-0 items-center justify-between gap-4">
+          <MapLocationLabel
+            continentLabel={continentLabel}
+            mapLabel={mapLabel}
+          />
+
+          <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">
+            {sections.map((section, index) => {
             const active = index === activeIndex;
             const layerTitle =
               getDisplayValue(section.layer, ["map_layer_name", "layer_name"]) ||
@@ -849,7 +1085,8 @@ function LayerCarousel({
                 {layerTitle}
               </button>
             );
-          })}
+            })}
+          </div>
         </div>
       </div>
 
@@ -2090,10 +2327,16 @@ export default function MapMonsterBrowser() {
 
       {loading ? (
         <>
-          <div className={cn("mt-6 p-4", styles.loadingBox)}>
+          <span
+            className={styles.visuallyHidden}
+            role="status"
+            aria-live="polite"
+          >
             {t("loadingContinentData")}
-          </div>
-          <MapMonsterBrowserSkeleton />
+          </span>
+          <MapMonsterBrowserContentSkeleton
+            hasSelectedMap={Boolean(selectedMapId)}
+          />
         </>
       ) : null}
 

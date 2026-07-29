@@ -1,0 +1,656 @@
+@keyframes monsterSearchShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+
+
+.skeleton {
+  display: block;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--soft-border) 88%, transparent) 0%,
+    color-mix(in srgb, var(--soft-bg) 100%, white 0%) 50%,
+    color-mix(in srgb, var(--soft-border) 88%, transparent) 100%
+  );
+  background-size: 200% 100%;
+  animation: monsterSearchShimmer 1.4s ease-in-out infinite;
+}
+
+.skeletonLine {
+  display: block;
+  border-radius: 999px;
+}
+
+.skeletonRounded {
+  border-radius: 12px;
+}
+
+.skeletonW100 {
+  width: 100%;
+}
+
+.skeletonW92 {
+  width: 92%;
+}
+
+.skeletonW72 {
+  width: 72%;
+}
+
+.skeletonW42 {
+  width: 42%;
+}
+
+.skeletonW38 {
+  width: 38%;
+}
+
+.skeletonW24 {
+  width: 24%;
+}
+
+.skeletonW22 {
+  width: 22%;
+}
+
+.skeletonW94px {
+  width: 94px;
+}
+
+.skeletonW92px {
+  width: 92px;
+}
+
+.skeletonW86px {
+  width: 86px;
+}
+
+.skeletonW84px {
+  width: 84px;
+}
+
+.skeletonW72px {
+  width: 72px;
+}
+
+.skeletonW68px {
+  width: 68px;
+}
+
+.skeletonH12 {
+  height: 12px;
+}
+
+.skeletonH13 {
+  height: 13px;
+}
+
+.skeletonH20 {
+  height: 20px;
+}
+
+.skeletonH24 {
+  height: 24px;
+}
+
+.skeletonH56 {
+  height: 56px;
+}
+
+.loadingPageWrap {
+  width: 100%;
+  max-width: 1100px;
+  min-width: 0;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.loadingSearchCard,
+.searchCard {
+  position: relative;
+  width: 100%;
+  padding: 18px;
+  border: 1px solid var(--panel-border);
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--panel-bg) 82%, transparent);
+  box-sizing: border-box;
+  backdrop-filter: blur(14px);
+}
+
+.loadingSearchCard {
+  margin-bottom: 28px;
+}
+
+.loadingSearchControls {
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+  align-items: end;
+  gap: 14px;
+}
+
+.loadingSearchField {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.loadingSelectControl,
+.loadingKeywordControl {
+  width: 100%;
+  height: 42px;
+  border: 1px solid var(--input-border);
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.loadingSelectControl {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 12px;
+  background: var(--input-bg);
+}
+
+.loadingSelectArrow {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+
+.loadingKeywordControl {
+  display: block;
+}
+
+.loadingStatusRow,
+.statusRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.loadingList,
+.list {
+  display: grid;
+  gap: 16px;
+  width: 100%;
+}
+
+.loadingCard {
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+  border-radius: 5px;
+  background: var(--card-bg);
+}
+
+.loadingCardInner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 34px;
+  align-items: center;
+  gap: 12px;
+  min-height: 70px;
+  padding: 18px;
+}
+
+.loadingThumb {
+  width: 72px;
+  height: 72px;
+  border-radius: 5px;
+}
+
+.loadingContent,
+.infoLoadingText {
+  min-width: 0;
+}
+
+.loadingLineSpacerSmall {
+  margin-top: 10px;
+}
+
+.loadingLineSpacerLarge {
+  margin-top: 14px;
+}
+
+.loadingInfoMemoFirst {
+  margin-top: 18px;
+}
+
+.loadingInfoMemoSecond {
+  margin-top: 10px;
+}
+
+.loadingMetaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.loadingBadge {
+  height: 28px;
+  border-radius: 999px;
+}
+
+.loadingChevron {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  justify-self: end;
+}
+
+.searchSection {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 1100px;
+  min-width: 0;
+  margin: 0 auto 28px;
+  box-sizing: border-box;
+}
+
+.searchCard {
+  z-index: 60;
+  overflow: visible;
+}
+
+.searchControls {
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+  align-items: end;
+  gap: 14px;
+}
+
+.searchField {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.keywordField {
+  min-width: 0;
+}
+
+.searchLabel {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.searchTypeSelect {
+  width: 100%;
+  min-width: 0;
+}
+
+.searchInputInteraction,
+.searchInputControl {
+  width: 100%;
+  min-width: 0;
+}
+
+.searchInputControl :global(input) {
+ 
+  border-radius: 5px;
+  font: inherit;
+}
+
+.searchInputControl :global([role="listbox"]) {
+  border-radius: 5px !important;
+}
+
+
+.statusText {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.empty {
+  width: 100%;
+  max-width: 1100px;
+  margin: 24px auto 0;
+  padding: 38px 18px;
+  border: 1px solid var(--soft-border);
+  border-radius: 24px;
+  background: var(--panel-bg);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.emptyIcon {
+  margin-bottom: 8px;
+  color: var(--text-muted);
+  font-size: 28px;
+}
+
+.emptyTitle {
+  margin: 0 0 8px;
+  color: var(--text-title);
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.emptyText {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.list {
+  max-width: 1100px;
+  min-width: 0;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.listItem {
+  display: grid;
+  scroll-margin-top: calc(var(--site-header-height, 68px) + 20px);
+  width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  transition: opacity 0.18s ease;
+}
+
+.listItemLoading {
+  opacity: 0.7;
+}
+
+.resultCard {
+  width: 100%;
+  padding: 18px;
+  border: 1px solid var(--card-border);
+  border-radius: 5px;
+  background: var(--card-bg);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    border-color 0.16s ease,
+    background 0.16s ease,
+    color 0.16s ease;
+}
+
+.resultCardOpen {
+  border-color: var(--selected-border);
+  border-bottom-color: transparent;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  background: var(--panel-bg);
+}
+
+.resultTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.resultTitle {
+  min-width: 0;
+  margin: 0;
+  color: var(--text-title);
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+.resultArrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+.resultArrowIcon {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.2s ease;
+}
+
+.resultArrowOpen {
+  border-color: var(--selected-border);
+  background: var(--soft-bg);
+  color: var(--text-title);
+}
+
+.resultArrowOpen .resultArrowIcon {
+  transform: rotate(90deg);
+}
+
+.resultSubText {
+  display: block;
+  min-height: 24px;
+  margin-top: 12px;
+  color: var(--text-sub);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.detailWrap {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.detailCard {
+  width: 100%;
+  min-width: 0;
+  padding: 18px;
+  overflow-x: hidden;
+  border: 1px solid var(--selected-border);
+  border-top-color: var(--selected-border);
+  border-radius: 0 0 5px 5px;
+  background: var(--panel-bg);
+  box-sizing: border-box;
+}
+
+.infoAccordionSection {
+  width: 100%;
+  min-width: 0;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  gap: 12px;
+  min-width: 0;
+  margin-bottom: 12px;
+}
+
+.sectionHeaderOpen {
+  margin-bottom: 12px;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-title);
+}
+
+.infoToggleButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 34px;
+  margin: 0;
+  padding: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+
+
+.infoAccordionIcon {
+  width: 20px;
+  height: 20px;
+  color: currentColor;
+  flex-shrink: 0;
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
+}
+
+.infoAccordionIconOpen {
+  color: var(--text-title);
+  transform: rotate(180deg);
+}
+
+.infoAccordionContent {
+  min-width: 0;
+  padding-top: 16px;
+  overflow-x: hidden;
+  border-top: 1px solid var(--soft-border);
+  box-sizing: border-box;
+}
+
+.infoErrorCard {
+  padding: 16px;
+  border: 1px solid var(--danger-border);
+  border-radius: 5px;
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  font-size: 14px;
+  font-weight: 700;
+  box-sizing: border-box;
+}
+
+.summaryDetail {
+  width: 100%;
+  min-width: 0;
+  margin-top: 18px;
+}
+
+.habitatLoadingCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  margin-top: 14px;
+  padding: 16px;
+  border: 1px solid var(--soft-border);
+  border-radius: 5px;
+  background: var(--soft-bg);
+  box-sizing: border-box;
+}
+
+.habitatLoadingTitle {
+  color: var(--text-title);
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.habitatLoadingText {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.infoLoadingCard {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.infoLoadingGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(110px, 180px);
+  align-items: start;
+  gap: 18px;
+  width: 100%;
+  min-width: 0;
+}
+
+.infoLoadingImage {
+  width: 100%;
+  border-radius: 5px;
+  aspect-ratio: 1 / 1;
+}
+
+@media (max-width: 640px) {
+  .loadingSearchControls {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .loadingSelectControl,
+  .loadingKeywordControl {
+    height: 40px;
+  }
+
+  .listItem {
+    scroll-margin-top: calc(var(--site-header-height, 68px) + 8px);
+  }
+
+
+.resultCard {
+
+  padding: 8px;
+  
+
+}
+
+
+  .loadingCardInner {
+    grid-template-columns: minmax(0, 1fr) 24px;
+  }
+
+  .loadingThumb {
+    display: none;
+  }
+
+  .searchControls {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .resultTitle {
+    font-size: 20px;
+  }
+
+  .detailCard {
+    padding: 14px;
+  }
+
+  .infoLoadingGrid {
+    grid-template-columns: minmax(0, 1fr) 90px;
+    gap: 12px;
+  }
+}

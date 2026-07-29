@@ -136,7 +136,7 @@ export default function SearchableSelect({
     const nextLabel = String(getOptionLabel(option));
 
     setInputValue(nextLabel);
-    onChange?.(nextValue, option);
+    onChange?.(nextValue, option, { reason: "select" });
     setOpen(false);
     setHighlightedIndex(0);
   }
@@ -146,7 +146,7 @@ export default function SearchableSelect({
     setOpen(true);
 
     if (!next.trim()) {
-      onChange?.("", null);
+      onChange?.("", null, { reason: "input" });
       return;
     }
 
@@ -163,81 +163,66 @@ export default function SearchableSelect({
     });
 
     if (allowCustomValue) {
-      onChange?.(next, exact ?? null);
+      onChange?.(next, exact ?? null, { reason: "input" });
       return;
     }
 
     if (exact) {
-      onChange?.(String(getOptionValue(exact)), exact);
+      onChange?.(String(getOptionValue(exact)), exact, { reason: "input" });
     } else {
-      onChange?.("", null);
+      onChange?.("", null, { reason: "input" });
     }
   }
 
   function handleKeyDown(event) {
-  // 日本語変換中のEnterでは確定しない
-  if (event.nativeEvent.isComposing) {
-    return;
-  }
-
-  if (event.key === "ArrowDown") {
-    event.preventDefault();
-    setOpen(true);
-
-    setHighlightedIndex((current) =>
-      Math.min(
-        current + 1,
-        Math.max(filteredOptions.length - 1, 0)
-      )
-    );
-
-    return;
-  }
-
-  if (event.key === "ArrowUp") {
-    event.preventDefault();
-    setOpen(true);
-
-    setHighlightedIndex((current) =>
-      Math.max(current - 1, 0)
-    );
-
-    return;
-  }
-
-  if (event.key === "Enter") {
-    if (filteredOptions.length === 0) {
+    // 日本語変換中のEnterでは候補を確定しない。
+    if (event.nativeEvent.isComposing) {
       return;
     }
 
-    event.preventDefault();
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setOpen(true);
 
-    // 候補が1件なら、その候補をそのまま確定
-    if (filteredOptions.length === 1) {
-      handleSelect(filteredOptions[0]);
+      setHighlightedIndex((current) =>
+        Math.min(
+          current + 1,
+          Math.max(filteredOptions.length - 1, 0)
+        )
+      );
+
       return;
     }
 
-    // 候補が複数なら、選択中の候補を確定
-    const selectedOption =
-      filteredOptions[highlightedIndex] ??
-      filteredOptions[0];
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setOpen(true);
+      setHighlightedIndex((current) => Math.max(current - 1, 0));
+      return;
+    }
 
-    handleSelect(selectedOption);
-    return;
-  }
+    if (event.key === "Enter") {
+      if (filteredOptions.length === 0) {
+        return;
+      }
 
-  if (event.key === "Escape") {
-    setOpen(false);
-    setHighlightedIndex(0);
+      event.preventDefault();
+
+      const selectedOption =
+        filteredOptions[highlightedIndex] ?? filteredOptions[0];
+
+      handleSelect(selectedOption);
+      return;
+    }
+
+    if (event.key === "Escape") {
+      setOpen(false);
+      setHighlightedIndex(0);
+    }
   }
-}
 
   return (
-    <div
-      ref={rootRef}
-      className={cn(styles.root, className)}
-    >
+    <div ref={rootRef} className={cn(styles.root, className)}>
       <input
         type="text"
         role="combobox"
@@ -246,9 +231,7 @@ export default function SearchableSelect({
         aria-controls={open ? listboxId : undefined}
         aria-expanded={open}
         value={inputValue}
-        onChange={(event) =>
-          handleInputChange(event.target.value)
-        }
+        onChange={(event) => handleInputChange(event.target.value)}
         onFocus={(event) => {
           if (disabled) return;
 
@@ -267,26 +250,14 @@ export default function SearchableSelect({
       />
 
       {open && !disabled ? (
-        <div
-          id={listboxId}
-          className={styles.dropdown}
-          role="listbox"
-        >
+        <div id={listboxId} className={styles.dropdown} role="listbox">
           {filteredOptions.length === 0 ? (
-            <div className={styles.empty}>
-              {emptyText}
-            </div>
+            <div className={styles.empty}>{emptyText}</div>
           ) : (
             filteredOptions.map((option, index) => {
-              const optionValue = String(
-                getOptionValue(option)
-              );
-
-              const active =
-                optionValue === String(value);
-
-              const description =
-                getOptionDescription(option);
+              const optionValue = String(getOptionValue(option));
+              const active = optionValue === String(value);
+              const description = getOptionDescription(option);
 
               return (
                 <button
@@ -294,15 +265,12 @@ export default function SearchableSelect({
                   type="button"
                   role="option"
                   aria-selected={active}
-                  onMouseEnter={() =>
-                    setHighlightedIndex(index)
-                  }
+                  onMouseEnter={() => setHighlightedIndex(index)}
                   onClick={() => handleSelect(option)}
                   className={cn(
                     styles.option,
                     active && styles.optionActive,
-                    index === highlightedIndex &&
-                      styles.optionHighlighted
+                    index === highlightedIndex && styles.optionHighlighted
                   )}
                 >
                   <span className={styles.optionContent}>
@@ -311,11 +279,7 @@ export default function SearchableSelect({
                     </span>
 
                     {description ? (
-                      <span
-                        className={
-                          styles.optionDescription
-                        }
-                      >
+                      <span className={styles.optionDescription}>
                         {description}
                       </span>
                     ) : null}

@@ -33,7 +33,6 @@ function FooterNavLink({
 export default function Footer() {
   const t = useTranslations("Footer");
   const { user } = useAuth();
-
   const currentYear = new Date().getFullYear();
 
   const toolLinks = [
@@ -67,104 +66,58 @@ export default function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.inner}>
-        <div className={styles.sections}>
-          <section className={styles.section}>
-            <h3 className={styles.heading}>
-              {t("sections.tools")}
-            </h3>
-
-            <ul className={styles.linkList}>
-              {toolLinks.map((link) => (
-                <li
-                  key={link.href}
-                  className={styles.linkItem}
-                >
-                  <FooterNavLink
-                    href={link.href}
-                    localized={link.localized}
-                    className={styles.link}
-                  >
-                    {link.label}
-                  </FooterNavLink>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          <section className={styles.section}>
-            <h3 className={styles.heading}>
-              {t("sections.info")}
-            </h3>
-
-            <ul className={styles.linkList}>
-              <li className={styles.linkItem}>
-                <FooterNavLink
-                  href="/about"
-                  localized
-                  className={styles.link}
-                >
-                  {t("links.about")}
-                </FooterNavLink>
-              </li>
-
-              <li className={styles.linkItem}>
-                <span className={styles.description}>
-                  {t("unofficialFanSite")}
-                </span>
-              </li>
-            </ul>
-          </section>
-
-          <section className={styles.section}>
-            <h3 className={styles.heading}>
-              {t("sections.admin")}
-            </h3>
-
-            <ul className={styles.linkList}>
-              {!user && (
-                <li className={styles.linkItem}>
-                  <FooterNavLink
-                    href="/login"
-                    localized={false}
-                    className={styles.adminButton}
-                  >
-                    {t("adminLogin")}
-                  </FooterNavLink>
-                </li>
-              )}
-
-              {user && (
-                <li className={styles.linkItem}>
-                  <NextLink
-                    href="/admin"
-                    className={styles.adminButton}
-                  >
-                    ADMIN
-                  </NextLink>
-                </li>
-              )}
-            </ul>
-          </section>
+        <div className={styles.titleRow}>
+          <FooterNavLink
+            href="/"
+            localized
+            className={styles.brand}
+            aria-label="アストルティアの孫の手"
+          >
+            アストルティアの孫の手
+          </FooterNavLink>
         </div>
 
-        <div className={styles.bottom}>
-          <div className={styles.brand}>
-            <span>© {currentYear}</span>
+        <nav className={styles.nav} aria-label={t("sections.tools")}>
+          {toolLinks.map((link) => (
+            <FooterNavLink
+              key={link.href}
+              href={link.href}
+              localized={link.localized}
+              className={styles.link}
+            >
+              {link.label}
+            </FooterNavLink>
+          ))}
 
-            <span className={styles.brandBadge}>
-              DQX
+          <FooterNavLink href="/about" localized className={styles.link}>
+            {t("links.about")}
+          </FooterNavLink>
+        </nav>
+
+        <div className={styles.bottomRow}>
+          <div className={styles.legalText}>
+            <span>© {currentYear} アストルティアの孫の手</span>
+            <span>{t("unofficialFanSite")}</span>
+            <span>{t("copyrightNotice")}</span>
+            <span className={styles.rights}>
+              © ARMOR PROJECT/BIRD STUDIO/SQUARE ENIX All Rights Reserved.
             </span>
-
-            <span>Tools</span>
           </div>
 
-          <div className={styles.copyrightNotice}>
-            {t("copyrightNotice")}
-          </div>
-
-          <div className={styles.rights}>
-            © ARMOR PROJECT/BIRD STUDIO/SQUARE ENIX
-            All Rights Reserved.
+          <div className={styles.account} aria-label={t("sections.admin")}>
+            {!user ? (
+              <FooterNavLink
+                href="/login"
+                localized={false}
+                className={styles.adminLink}
+              >
+                admin
+              </FooterNavLink>
+            ) : (
+              <NextLink href="/admin" className={styles.adminLink}>
+                admin
+              </NextLink>
+            )}
           </div>
         </div>
       </div>

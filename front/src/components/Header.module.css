@@ -19,54 +19,62 @@
   width: 100%;
   max-width: 1152px;
   margin: 0 auto;
-  padding: 12px 16px;
+  padding: 10px 16px;
 }
 
 .headerRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
 }
 
 .brandLink {
   display: inline-flex;
-  flex-shrink: 0;
+  min-width: 0;
+  flex: 1;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   color: var(--header-text);
   text-decoration: none;
 }
 
+.brandText {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+  line-height: 1;
+}
+
 .brandBadge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px 10px;
-  border: 1px solid var(--header-logo-border);
-  border-radius: 16px;
-  background: var(--header-logo-bg);
-  color: var(--header-logo-text);
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
-  font-size: 14px;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--header-text-soft);
+  box-shadow: none;
+  font-size: 9px;
   font-weight: 800;
-  letter-spacing: 0.2em;
-  transition:
-    transform 0.2s ease,
-    background-color 0.2s ease,
-    border-color 0.2s ease;
+  line-height: 1.15;
+  letter-spacing: 0.18em;
+  transition: color 0.2s ease;
 }
 
 .brandLink:hover .brandBadge {
-  transform: translateY(-2px);
-  background: var(--header-logo-hover);
+  color: var(--header-logo-text);
 }
 
 .brandTitle {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
   color: var(--header-text);
-  font-size: 18px;
-  font-weight: 650;
-  letter-spacing: 0.025em;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: 0.015em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   transition: color 0.2s ease;
 }
 
@@ -76,17 +84,24 @@
 
 .versionBadge {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  padding: 4px 10px;
+  padding: 3px 8px;
   border: 1px solid var(--header-version-border);
   border-radius: 999px;
   background: var(--header-version-bg);
   color: var(--header-version-text);
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.headerVersion {
+  margin-left: 2px;
 }
 
 .menuButton {
@@ -95,12 +110,12 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   overflow: hidden;
   padding: 0;
   border: 1px solid var(--header-button-border);
-  border-radius: 16px;
+  border-radius: 14px;
   background: var(--header-button-bg);
   color: var(--header-text-soft);
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
@@ -341,7 +356,16 @@
   padding-top: 16px;
 }
 
-.languageSwitcher {
+.menuPreferenceRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.languageSwitcher,
+.themeSwitcher {
   display: inline-flex;
   align-items: center;
   padding: 4px;
@@ -384,18 +408,89 @@
   color: var(--page-bg);
 }
 
+.themeItem {
+  display: inline-flex;
+  width: 40px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--header-text-soft);
+  font-size: 15px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.themeItem:hover {
+  background: var(--header-menu-hover);
+  color: var(--header-text);
+}
+
+.themeItem:active {
+  transform: scale(0.96);
+}
+
+.themeItemActive {
+  background: var(--header-text);
+  color: var(--page-bg);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+}
+
+.themeItemActive:hover {
+  background: var(--header-text);
+  color: var(--page-bg);
+}
+
 .footerVersion {
   box-shadow: none;
 }
 
 @media (max-width: 640px) {
   .headerInner {
-    padding: 10px 14px;
+    padding: 8px 12px;
   }
 
+  .headerRow {
+    gap: 8px;
+  }
+
+  .brandLink {
+    gap: 7px;
+  }
+
+  .brandText {
+    gap: 0;
+  }
+
+  .brandBadge {
+    font-size: 7px;
+    letter-spacing: 0.15em;
+  }
 
   .brandTitle {
-    font-size: 16px;
+    font-size: clamp(14px, 4.4vw, 17px);
+    line-height: 1.25;
+    letter-spacing: 0.005em;
+  }
+
+  .headerVersion {
+    margin-left: 0;
+    padding: 2px 6px;
+    font-size: 8px;
+    letter-spacing: 0.03em;
+  }
+
+  .menuButton {
+    width: 40px;
+    height: 40px;
+    border-radius: 13px;
   }
 
   .menuScroll {
@@ -411,6 +506,25 @@
   .menuLink,
   .logoutButton {
     font-size: 16px;
+  }
+
+  .menuPreferenceRow {
+    gap: 8px;
+  }
+
+  .languageItem {
+    min-width: 40px;
+    padding: 6px 10px;
+  }
+
+  .themeItem {
+    width: 38px;
+  }
+}
+
+@media (max-width: 390px) {
+  .headerVersion {
+    display: none;
   }
 }
 

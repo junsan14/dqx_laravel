@@ -8,7 +8,7 @@ import { FcLike } from "react-icons/fc";
 import { FaMoon } from "react-icons/fa6";
 import { IoSunnyOutline } from "react-icons/io5";
 import { getMonsterAssetUrl } from "@/lib/monsters";
-import moduleStyles from "./MonsterHabitats.module.css";
+import styles from "./MonsterHabitats.module.css";
 
 const GRID_SIZE = 8;
 const ORIGINAL_IMAGE_WIDTH = 490;
@@ -36,7 +36,7 @@ const BUBBLE_HEIGHT_SCALE = 1;
 /**
  * 長方形の角丸
  */
-const BUBBLE_BORDER_RADIUS_PX = 5;
+
 
 /**
  * 長方形の内側余白
@@ -340,53 +340,46 @@ function getBubblePosition(group, spawns = []) {
   };
 }
 
-function StatBlock({ label, value, styles }) {
+
+function cx(...values) {
+  return values.filter(Boolean).join(" ");
+}
+
+function StatBlock({ label, value }) {
   if (!value) return null;
 
   return (
-    <div style={styles.summaryStat}>
-      <span style={styles.summaryStatLabel}>{label}</span>
-      <span style={styles.summaryStatValue}>{value}</span>
+    <div className={styles.summaryStat}>
+      <span className={styles.summaryStatLabel}>{label}</span>
+      <span className={styles.summaryStatValue}>{value}</span>
     </div>
   );
 }
 
-function BubbleInfoContent({ bubble, styles, t }) {
+function BubbleInfoContent({ bubble, t }) {
   if (!bubble) return null;
 
   return (
-    <div style={styles.infoCardContent}>
-      <div style={styles.infoRows}>
+    <div className={styles.infoCardContent}>
+      <div className={styles.infoRows}>
         {bubble.isHuntingGround ? (
-          <div style={styles.huntingBadgeRow}>
-            <span style={styles.huntingBadge}>{t("huntingGround")}</span>
+          <div className={styles.huntingBadgeRow}>
+            <span className={styles.overlayHuntingBadge}>{t("huntingGround")}</span>
           </div>
         ) : null}
 
         {bubble.symbolCount || bubble.spawnCount || bubble.spawnTimes ? (
-          <div style={styles.summaryRow}>
-            <StatBlock
-              label={t("symbolCount")}
-              value={bubble.symbolCount}
-              styles={styles}
-            />
-            <StatBlock
-              label={t("spawnCount")}
-              value={bubble.spawnCount}
-              styles={styles}
-            />
-            <StatBlock
-              label={t("timeZone")}
-              value={bubble.spawnTimes}
-              styles={styles}
-            />
+          <div className={styles.summaryRow}>
+            <StatBlock label={t("symbolCount")} value={bubble.symbolCount} />
+            <StatBlock label={t("spawnCount")} value={bubble.spawnCount} />
+            <StatBlock label={t("timeZone")} value={bubble.spawnTimes} />
           </div>
         ) : null}
 
         {bubble.notes ? (
-          <div style={styles.infoBlock}>
-            <span style={styles.infoLabel}>{t("memo")}</span>
-            <span style={styles.infoValue}>{bubble.notes}</span>
+          <div className={styles.infoBlock}>
+            <span className={styles.infoLabel}>{t("memo")}</span>
+            <span className={styles.infoValue}>{bubble.notes}</span>
           </div>
         ) : null}
       </div>
@@ -394,293 +387,9 @@ function BubbleInfoContent({ bubble, styles, t }) {
   );
 }
 
-function getOverlayStyles() {
-  return {
-    mapCard: {
-      width: "100%",
-      display: "flex",
-      flexDirection: "column",
-      gap: "10px",
-      height: "100%",
-      overflow: "visible",
-    },
-    mapImageFrame: {
-      width: "100%",
-      display: "flex",
-      flexDirection: "column",
-      gap: "10px",
-      overflow: "visible",
-    },
-    linkWrap: {
-      display: "block",
-      textDecoration: "none",
-      height: "100%",
-      overflow: "visible",
-    },
-    mapImageBox: {
-      position: "relative",
-      width: "100%",
-      aspectRatio: "1 / 1",
-      borderRadius: "18px",
-      overflow: "hidden",
-      background: "var(--page-bg)",
-      border: `1px solid var(--panel-border)`,
-      flexShrink: 0,
-    },
-    loadingOverlay: {
-      position: "absolute",
-      inset: 0,
-      zIndex: 3,
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: "10px",
-      background: "color-mix(in srgb, var(--page-bg) 92%, transparent)",
-    },
-    loadingShimmer: {
-      width: "100%",
-      height: "100%",
-      position: "absolute",
-      inset: 0,
-      background:
-        "linear-gradient(90deg, color-mix(in srgb, var(--soft-border) 88%, transparent) 0%, color-mix(in srgb, var(--soft-bg) 100%, white 0%) 50%, color-mix(in srgb, var(--soft-border) 88%, transparent) 100%)",
-      backgroundSize: "200% 100%",
-      animation: "monsterMapShimmer 1.2s ease-in-out infinite",
-    },
-    loadingText: {
-      position: "relative",
-      zIndex: 1,
-      fontSize: "13px",
-      fontWeight: 700,
-      color: "var(--text-sub)",
-      background: "var(--panel-bg)",
-      borderRadius: "999px",
-      padding: "6px 10px",
-      border: `1px solid var(--input-border)`,
-    },
-    imageInner: {
-      position: "absolute",
-      inset: 0,
-      overflow: "hidden",
-      transition: "opacity 0.18s ease",
-      zIndex: 1,
-    },
-    imageCropInner: {
-      position: "absolute",
-      top: 0,
-      left: 0,
-    },
-    mapImage: {
-      display: "block",
-      width: "100%",
-      height: "100%",
-      objectFit: "fill",
-    },
-    bubbleLayer: {
-      position: "absolute",
-      inset: 0,
-      zIndex: 2,
-    },
-    spawnBubble: {
-      position: "absolute",
-      transform: "translate(-50%, -50%)",
-      borderRadius: `${BUBBLE_BORDER_RADIUS_PX}px`,
-      border: "1px solid color-mix(in srgb, var(--page-text) 56%, transparent)",
-      background: "color-mix(in srgb, var(--panel-bg) 24%, transparent)",
-      backdropFilter: "blur(2px)",
-      WebkitBackdropFilter: "blur(2px)",
-      cursor: "pointer",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: 0,
-      transition: "all 0.16s ease",
-    },
-    spawnBubbleSelected: {
-      background: "color-mix(in srgb, var(--selected-border) 26%, transparent)",
-      border: "2px solid var(--selected-border)",
-      boxShadow:
-        "0 0 0 3px color-mix(in srgb, var(--selected-border) 18%, transparent)",
-    },
-    bubbleInner: {
-      position: "relative",
-      display: "inline-flex",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: "4px",
-      pointerEvents: "none",
-    },
-    bubbleText: {
-      fontSize: "11px",
-      fontWeight: 800,
-      color: "var(--text-main)",
-      background: "color-mix(in srgb, var(--panel-bg) 90%, transparent)",
-      borderRadius: "999px",
-      padding: "3px 7px",
-      lineHeight: 1.1,
-      boxShadow:
-        "0 2px 8px color-mix(in srgb, var(--page-text) 10%, transparent)",
-      whiteSpace: "nowrap",
-      border: "1px solid color-mix(in srgb, var(--soft-border) 80%, transparent)",
-    },
-    bubbleHintIcon: {
-      display: "inline-flex",
-      alignItems: "center",
-      justifyContent: "center",
-      width: "18px",
-      height: "18px",
-      borderRadius: "999px",
-      fontSize: "11px",
-      lineHeight: 1,
-      background: "var(--selected-border)",
-      color: "#ffffff",
-      boxShadow:
-        "0 3px 10px color-mix(in srgb, var(--selected-border) 28%, transparent)",
-      transform: "translateY(-1px)",
-    },
-    centerTooltip: {
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      zIndex: 5,
-      pointerEvents: "none",
-      width: "min(420px, calc(100% - 24px), 78vw)",
-    },
-    infoCardContent: {
-      background: "color-mix(in srgb, var(--panel-bg) 96%, transparent)",
-      border: `1px solid var(--panel-border)`,
-      borderRadius: "16px",
-      boxShadow:
-        "0 18px 40px color-mix(in srgb, var(--page-text) 12%, transparent)",
-      padding: "12px",
-      backdropFilter: "blur(6px)",
-      WebkitBackdropFilter: "blur(6px)",
-    },
-    infoRows: {
-      display: "grid",
-      gap: "10px",
-    },
-    huntingBadgeRow: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "flex-start",
-      marginBottom: "2px",
-    },
-    huntingBadge: {
-      display: "inline-flex",
-      alignItems: "center",
-      minHeight: "24px",
-      padding: "4px 10px",
-      borderRadius: "999px",
-      background: "color-mix(in srgb, var(--selected-border) 16%, transparent)",
-      color: "var(--selected-text)",
-      border:
-        "1px solid color-mix(in srgb, var(--selected-border) 40%, transparent)",
-      fontSize: "12px",
-      fontWeight: 900,
-      lineHeight: 1.1,
-      whiteSpace: "nowrap",
-    },
-    summaryRow: {
-      display: "grid",
-      gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-      gap: "10px",
-      alignItems: "center",
-    },
-    summaryStat: {
-      minWidth: 0,
-      display: "grid",
-      gap: "4px",
-      justifyItems: "center",
-      textAlign: "center",
-    },
-    summaryStatLabel: {
-      fontSize: "12px",
-      fontWeight: 900,
-      color: "var(--text-muted)",
-      lineHeight: 1.2,
-      whiteSpace: "nowrap",
-      textAlign: "center",
-    },
-    summaryStatValue: {
-      fontSize: "13px",
-      fontWeight: 700,
-      color: "var(--text-main)",
-      lineHeight: 1.45,
-      paddingLeft: 0,
-      wordBreak: "break-word",
-      whiteSpace: "pre-wrap",
-      textAlign: "center",
-    },
-    infoBlock: {
-      display: "grid",
-      gap: "4px",
-    },
-    infoLabel: {
-      fontSize: "12px",
-      fontWeight: 900,
-      color: "var(--text-muted)",
-      lineHeight: 1.2,
-    },
-    infoValue: {
-      fontSize: "13px",
-      fontWeight: 700,
-      color: "var(--text-main)",
-      lineHeight: 1.5,
-      paddingLeft: "6px",
-      wordBreak: "break-word",
-      whiteSpace: "pre-wrap",
-    },
-    mobileInfoCard: {
-      position: "relative",
-    },
-    mobileInfoClose: {
-      position: "absolute",
-      top: "8px",
-      right: "8px",
-      width: "28px",
-      height: "28px",
-      borderRadius: "999px",
-      border: `1px solid var(--input-border)`,
-      background: "var(--input-bg)",
-      color: "var(--input-text)",
-      fontSize: "16px",
-      fontWeight: 900,
-      cursor: "pointer",
-      zIndex: 2,
-    },
-    mobileInfoTop: {
-      display: "block",
-    },
-    mobileInfoBody: {
-      paddingTop: "6px",
-    },
-    noImageBox: {
-      width: "100%",
-      aspectRatio: "1 / 1",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: "18px",
-      background: "var(--soft-bg)",
-      border: `1px dashed var(--soft-border)`,
-      color: "var(--text-muted)",
-      fontWeight: 700,
-    },
-  };
-}
-
-function MonsterMapOverlay({
-  spawns = [],
-  imagePath,
-  href,
-}) {
+function MonsterMapOverlay({ spawns = [], imagePath, href }) {
   const t = useTranslations("MonsterMapOverlay");
   const isMobile = useOverlayIsMobile();
-  const styles = useMemo(() => getOverlayStyles(), []);
-
   const resolvedImageUrl = useMemo(
     () => getMonsterAssetUrl(imagePath),
     [imagePath]
@@ -697,32 +406,26 @@ function MonsterMapOverlay({
   }, [resolvedImageUrl, spawns]);
 
   const cells = useMemo(() => collectUniqueCells(spawns), [spawns]);
-
-  const bubbles = useMemo(() => {
-    return buildMergedGroups(cells)
-      .map((group) => getBubblePosition(group, spawns))
-      .filter(Boolean);
-  }, [cells, spawns]);
+  const bubbles = useMemo(
+    () =>
+      buildMergedGroups(cells)
+        .map((group) => getBubblePosition(group, spawns))
+        .filter(Boolean),
+    [cells, spawns]
+  );
 
   const activeDesktopBubble = useMemo(() => {
     if (selectedBubbleKey) {
       return bubbles.find((bubble) => bubble.key === selectedBubbleKey) ?? null;
     }
-
     if (!hoveredBubbleKey) return null;
     return bubbles.find((bubble) => bubble.key === hoveredBubbleKey) ?? null;
   }, [bubbles, hoveredBubbleKey, selectedBubbleKey]);
 
   const activeMobileBubble = useMemo(() => {
     if (!bubbles.length) return null;
-
-    if (!selectedBubbleKey) {
-      return bubbles[0];
-    }
-
-    return (
-      bubbles.find((bubble) => bubble.key === selectedBubbleKey) ?? bubbles[0]
-    );
+    if (!selectedBubbleKey) return bubbles[0];
+    return bubbles.find((bubble) => bubble.key === selectedBubbleKey) ?? bubbles[0];
   }, [bubbles, selectedBubbleKey]);
 
   function handleBubbleClick(bubbleKey) {
@@ -732,43 +435,36 @@ function MonsterMapOverlay({
 
   if (!resolvedImageUrl) {
     return (
-      <div style={styles.mapCard}>
-        <div style={styles.noImageBox}>{t("noImage")}</div>
+      <div className={styles.mapCard}>
+        <div className={styles.noImageBox}>{t("noImage")}</div>
       </div>
     );
   }
 
   const content = (
-    <div style={styles.mapCard}>
-      <div style={styles.mapImageFrame}>
+    <div className={styles.mapCard}>
+      <div className={styles.mapImageFrame}>
         <div
-          style={styles.mapImageBox}
+          className={styles.mapImageBox}
           onClick={() => {
-            if (isMobile) {
-              setSelectedBubbleKey("");
-            }
+            if (isMobile) setSelectedBubbleKey("");
           }}
         >
           {!imageLoaded ? (
-            <div style={styles.loadingOverlay}>
-              <div style={styles.loadingShimmer} />
-              <span style={styles.loadingText}>{t("loading")}</span>
+            <div className={styles.loadingOverlay}>
+              <div className={styles.loadingShimmer} />
+              <span className={styles.loadingText}>{t("loading")}</span>
             </div>
           ) : null}
 
-          <div
-            style={{
-              ...styles.imageInner,
-              opacity: imageLoaded ? 1 : 0,
-            }}
-          >
+          <div className={cx(styles.imageInner, imageLoaded && styles.imageInnerLoaded)}>
             <div
+              className={styles.imageCropInner}
               style={{
-                ...styles.imageCropInner,
-                width: `${MAP_CROP.widthPercent}%`,
-                height: `${MAP_CROP.heightPercent}%`,
-                left: `-${MAP_CROP.offsetXPercent}%`,
-                top: `-${MAP_CROP.offsetYPercent}%`,
+                "--crop-width": `${MAP_CROP.widthPercent}%`,
+                "--crop-height": `${MAP_CROP.heightPercent}%`,
+                "--crop-left": `-${MAP_CROP.offsetXPercent}%`,
+                "--crop-top": `-${MAP_CROP.offsetYPercent}%`,
               }}
             >
               <Image
@@ -776,114 +472,79 @@ function MonsterMapOverlay({
                 alt={t("mapAlt")}
                 fill
                 sizes="(max-width: 920px) 100vw, 50vw"
-                style={styles.mapImage}
+                className={styles.mapImage}
                 onLoad={() => setImageLoaded(true)}
                 unoptimized
               />
             </div>
           </div>
 
-          <div style={styles.bubbleLayer}>
-            {bubbles.map((bubble) => {
-              const bubbleStyle = {
-                ...styles.spawnBubble,
-                ...(selectedBubbleKey === bubble.key
-                  ? styles.spawnBubbleSelected
-                  : {}),
-                ...(bubble.isWideArea
-                  ? {
-                      backdropFilter: "none",
-                      WebkitBackdropFilter: "none",
-                    }
-                  : {}),
-                left: `${bubble.left}%`,
-                top: `${bubble.top}%`,
-                width: `${bubble.width}%`,
-                height: `${bubble.height}%`,
-              };
-
-              return (
-                <button
-                  key={bubble.key}
-                  type="button"
-                  style={bubbleStyle}
-                  aria-label={t("bubbleAriaLabel", { area: bubble.shortLabel })}
-                  onMouseEnter={() => {
-                    if (!isMobile) setHoveredBubbleKey(bubble.key);
-                  }}
-                  onMouseLeave={() => {
-                    if (!isMobile && !selectedBubbleKey) {
-                      setHoveredBubbleKey("");
-                    }
-                  }}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleBubbleClick(bubble.key);
-                  }}
-                >
-                  <span style={styles.bubbleInner}>
-                    <span style={styles.bubbleText}>{bubble.shortLabel}</span>
-                    {isMobile ? (
-                      <span style={styles.bubbleHintIcon}>i</span>
-                    ) : null}
-                  </span>
-                </button>
-              );
-            })}
+          <div className={styles.bubbleLayer}>
+            {bubbles.map((bubble) => (
+              <button
+                key={bubble.key}
+                type="button"
+                className={cx(
+                  styles.spawnBubble,
+                  selectedBubbleKey === bubble.key && styles.spawnBubbleSelected,
+                  bubble.isWideArea && styles.spawnBubbleWide
+                )}
+                style={{
+                  "--bubble-left": `${bubble.left}%`,
+                  "--bubble-top": `${bubble.top}%`,
+                  "--bubble-width": `${bubble.width}%`,
+                  "--bubble-height": `${bubble.height}%`,
+                }}
+                aria-label={t("bubbleAriaLabel", { area: bubble.shortLabel })}
+                onMouseEnter={() => {
+                  if (!isMobile) setHoveredBubbleKey(bubble.key);
+                }}
+                onMouseLeave={() => {
+                  if (!isMobile && !selectedBubbleKey) setHoveredBubbleKey("");
+                }}
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  handleBubbleClick(bubble.key);
+                }}
+              >
+                <span className={styles.bubbleInner}>
+                  <span className={styles.bubbleText}>{bubble.shortLabel}</span>
+                  {isMobile ? <span className={styles.bubbleHintIcon}>i</span> : null}
+                </span>
+              </button>
+            ))}
 
             {!isMobile && activeDesktopBubble ? (
-              <div style={styles.centerTooltip}>
-                <BubbleInfoContent
-                  bubble={activeDesktopBubble}
-                  styles={styles}
-                  t={t}
-                />
+              <div className={styles.centerTooltip}>
+                <BubbleInfoContent bubble={activeDesktopBubble} t={t} />
               </div>
             ) : null}
           </div>
         </div>
 
         {isMobile && activeMobileBubble ? (
-          <div style={styles.mobileInfoCard}>
+          <div className={styles.mobileInfoCard}>
             <button
               type="button"
-              style={styles.mobileInfoClose}
+              className={styles.mobileInfoClose}
               aria-label={t("close")}
               onClick={() => setSelectedBubbleKey("")}
             >
               ×
             </button>
-
-            <div style={styles.mobileInfoTop}>
-              <div style={styles.mobileInfoBody}>
-                <BubbleInfoContent
-                  bubble={activeMobileBubble}
-                  styles={styles}
-                  t={t}
-                />
-              </div>
+            <div className={styles.mobileInfoBody}>
+              <BubbleInfoContent bubble={activeMobileBubble} t={t} />
             </div>
           </div>
         ) : null}
       </div>
-
-      <style>{`
-        @keyframes monsterMapShimmer {
-          0% {
-            background-position: 200% 0;
-          }
-          100% {
-            background-position: -200% 0;
-          }
-        }
-      `}</style>
     </div>
   );
 
   if (href) {
     return (
-      <Link href={href} style={styles.linkWrap}>
+      <Link href={href} className={styles.linkWrap}>
         {content}
       </Link>
     );
@@ -891,7 +552,6 @@ function MonsterMapOverlay({
 
   return content;
 }
-
 
 function normalizeSpawnTime(value) {
   const v = String(value ?? "").trim().toLowerCase();
@@ -1010,282 +670,29 @@ function getSpawnTimeFlags(spawns = []) {
   return { hasDay, hasNight };
 }
 
-function getMapCardStyles() {
-  return {
-    card: {
-      width: "100%",
-      maxWidth: "100%",
-      minWidth: 0,
-      boxSizing: "border-box",
-      overflow: "hidden",
-      background: "var(--soft-bg)",
-      borderRadius: "5px",
-      padding: "16px",
-      height: "100%",
-      minHeight: "100%",
-      border: `1px solid var(--card-border)`,
-      display: "flex",
-      flexDirection: "column",
-      gap: "14px",
-    },
-    topRow: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "flex-start",
-      gap: "14px",
-    },
-    topRowMobile: {
-      flexDirection: "column",
-      alignItems: "stretch",
-    },
-    titleWrap: {
-      minWidth: 0,
-      flex: 1,
-    },
-    titleLine: {
-      display: "flex",
-      flexWrap: "wrap",
-      alignItems: "center",
-      gap: "8px 10px",
-    },
-    mapTitle: {
-      margin: 0,
-      fontSize: "18px",
-      lineHeight: 1.35,
-      fontWeight: 900,
-      color: "var(--text-title)",
-      wordBreak: "break-word",
-    },
-    titleMetaRow: {
-      display: "inline-flex",
-      alignItems: "center",
-      flexWrap: "wrap",
-      gap: "8px",
-      minWidth: 0,
-    },
-    continentText: {
-      display: "inline-flex",
-      alignItems: "center",
-      minHeight: "28px",
-      padding: "4px 10px",
-      borderRadius: "999px",
-      fontSize: "12px",
-      fontWeight: 800,
-      background: "var(--badge-bg)",
-      color: "var(--badge-text)",
-      border: `1px solid var(--tag-border)`,
-    },
-    huntingBadge: {
-      display: "inline-flex",
-      alignItems: "center",
-      justifyContent: "center",
-      minHeight: "28px",
-      padding: "4px 10px",
-      borderRadius: "999px",
-      fontSize: "12px",
-      fontWeight: 900,
-      lineHeight: 1,
-      color: "var(--selected-text)",
-      background:
-        "color-mix(in srgb, var(--selected-border) 16%, transparent)",
-      border:
-        "1px solid color-mix(in srgb, var(--selected-border) 38%, transparent)",
-      whiteSpace: "nowrap",
-    },
-    timeIconGroup: {
-      display: "inline-flex",
-      alignItems: "center",
-      gap: "6px",
-      padding: "0 2px",
-    },
-    timeIcon: {
-      width: "18px",
-      height: "18px",
-      display: "block",
-      flexShrink: 0,
-      color: "var(--text-main)",
-    },
-    layerSwitchRow: {
-      display: "flex",
-      flexWrap: "wrap",
-      justifyContent: "flex-end",
-      gap: "8px",
-      flexShrink: 0,
-    },
-    layerSwitchRowMobile: {
-      justifyContent: "flex-start",
-    },
-    layerSwitchButton: {
-      appearance: "none",
-      border: `1px solid var(--panel-border)`,
-      background: "var(--secondary-bg)",
-      color: "var(--secondary-text)",
-      borderRadius: "999px",
-      padding: "8px 12px",
-      fontSize: "12px",
-      fontWeight: 800,
-      cursor: "pointer",
-    },
-    layerSwitchButtonActive: {
-      background: "var(--primary-bg)",
-      color: "var(--primary-text)",
-      border: `1px solid var(--primary-border)`,
-      boxShadow:
-        "0 10px 22px color-mix(in srgb, var(--primary-border) 16%, transparent)",
-    },
-    spawnInfoSection: {
-      display: "grid",
-      gap: "12px",
-      padding: "14px",
-      borderRadius: "16px",
-      background: "var(--panel-bg)",
-      border: `1px solid var(--panel-border)`,
-      boxShadow:
-        "0 14px 30px color-mix(in srgb, var(--page-text) 8%, transparent)",
-    },
-    spawnInfoRow: {
-      display: "flex",
-      justifyContent: "space-between",
-      gap: "12px",
-    },
-    spawnInfoLabel: {
-      minWidth: "42px",
-      paddingTop: "6px",
-      fontSize: "12px",
-      fontWeight: 900,
-      letterSpacing: "0.04em",
-      color: "var(--text-muted)",
-    },
-    spawnInfoLabelSub: {
-      minWidth: "42px",
-      paddingTop: "4px",
-      fontSize: "12px",
-      fontWeight: 900,
-      letterSpacing: "0.04em",
-      color: "var(--text-muted)",
-    },
-    spawnMetaWrap: {
-      minWidth: 0,
-      flex: 1,
-      display: "grid",
-      gap: "8px",
-    },
-    spawnMetaWrapTag: {
-      display: "flex",
-      flexWrap: "wrap",
-      gap: "8px",
-    },
-    timeTagWrap: {
-      display: "flex",
-      flexWrap: "wrap",
-      gap: "8px",
-    },
-    tag: {
-      display: "inline-flex",
-      alignItems: "center",
-      justifyContent: "center",
-      minHeight: "28px",
-      padding: "4px 10px",
-      borderRadius: "999px",
-      fontSize: "12px",
-      fontWeight: 800,
-      lineHeight: 1.2,
-      border: `1px solid var(--tag-border)`,
-    },
-    tagArea: {
-      background: "var(--tag-bg)",
-      color: "var(--tag-text)",
-    },
-    tagNight: {
-      background: "var(--badge-bg)",
-      color: "var(--badge-text)",
-    },
-    tagDay: {
-      background: "var(--selected-bg)",
-      color: "var(--secondary-text)",
-      border: `1px solid var(--selected-border)`,
-    },
-    tagAnytime: {
-      background: "var(--warning-bg)",
-      color: "var(--warning-text)",
-      border: `1px solid var(--warning-border)`,
-    },
-    coordsToggleButton: {
-      appearance: "none",
-      border: `1px solid var(--input-border)`,
-      background: "var(--input-bg)",
-      color: "var(--input-text)",
-      borderRadius: "999px",
-      minHeight: "28px",
-      padding: "4px 10px",
-      fontSize: "12px",
-      fontWeight: 900,
-      cursor: "pointer",
-    },
-    coordsAccordion: {
-      display: "grid",
-      gap: "10px",
-      paddingTop: "4px",
-      borderTop: `1px dashed var(--soft-border)`,
-    },
-    coordsCloseButton: {
-      appearance: "none",
-      alignSelf: "flex-start",
-      border: `1px solid var(--panel-border)`,
-      background: "var(--panel-bg)",
-      color: "var(--text-sub)",
-      borderRadius: "999px",
-      padding: "7px 12px",
-      fontSize: "12px",
-      fontWeight: 800,
-      cursor: "pointer",
-    },
-    mapWrap: {
-      minWidth: 0,
-    },
-  };
-}
 
 function MonsterMapCard({ mapItem }) {
+  const t = useTranslations("MonsterHabitatSection");
   const isMobile = useMapCardIsMobile();
-  const styles = useMemo(() => getMapCardStyles(), []);
-
-  
   const layerGroups = useMemo(() => buildLayerGroups(mapItem), [mapItem]);
-
   const hasLayerSwitch = layerGroups.length > 0;
-
-  const [activeLayerName, setActiveLayerName] = useState(
-    layerGroups[0]?.layerName ?? ""
-  );
+  const [activeLayerName, setActiveLayerName] = useState(layerGroups[0]?.layerName ?? "");
 
   useEffect(() => {
     if (!hasLayerSwitch) {
       setActiveLayerName("");
       return;
     }
-
-    const exists = layerGroups.some(
-      (group) => group.layerName === activeLayerName
-    );
-    if (!exists) {
-      setActiveLayerName(layerGroups[0]?.layerName ?? "");
-    }
+    const exists = layerGroups.some((group) => group.layerName === activeLayerName);
+    if (!exists) setActiveLayerName(layerGroups[0]?.layerName ?? "");
   }, [activeLayerName, hasLayerSwitch, layerGroups]);
 
   const activeLayerGroup = useMemo(() => {
     if (!hasLayerSwitch) return null;
-    return (
-      layerGroups.find((group) => group.layerName === activeLayerName) ??
-      layerGroups[0] ??
-      null
-    );
+    return layerGroups.find((group) => group.layerName === activeLayerName) ?? layerGroups[0] ?? null;
   }, [activeLayerName, hasLayerSwitch, layerGroups]);
 
-  const displaySpawns = hasLayerSwitch
-    ? activeLayerGroup?.spawns ?? []
-    : mapItem?.spawns ?? [];
-
+  const displaySpawns = hasLayerSwitch ? activeLayerGroup?.spawns ?? [] : mapItem?.spawns ?? [];
   const displayImagePath = hasLayerSwitch
     ? activeLayerGroup?.imagePath ?? mapItem?.image_path ?? ""
     : mapItem?.image_path ?? mapItem?.image_url ?? "";
@@ -1301,30 +708,20 @@ function MonsterMapCard({ mapItem }) {
   );
 
   return (
-    <article style={styles.card}>
-      <div
-        style={{
-          ...styles.topRow,
-          ...(isMobile ? styles.topRowMobile : {}),
-        }}
-      >
-        <div style={styles.titleWrap}>
-          <div style={styles.titleLine}>
-            <h3 style={styles.mapTitle}>{mapItem?.name || "マップ"}</h3>
-
-            <div style={styles.titleMetaRow}>
-              {continentName ? (
-                <span style={styles.continentText}>{continentName}</span>
-              ) : null}
-
+    <article className={styles.mapItemCard}>
+      <div className={cx(styles.mapItemTopRow, isMobile && styles.mapItemTopRowMobile)}>
+        <div className={styles.mapItemTitleWrap}>
+          <div className={styles.mapItemTitleLine}>
+            <h3 className={styles.mapItemTitle}>{mapItem?.name || t("unnamedMap")}</h3>
+            <div className={styles.mapItemMetaRow}>
+              {continentName ? <span className={styles.continentText}>{continentName}</span> : null}
               {isHuntingGround ? (
-                <span style={styles.huntingBadge}>狩場</span>
+                <span className={styles.mapHuntingBadge}>{t("huntingGround")}</span>
               ) : null}
-
               {hasDay || hasNight ? (
-                <span style={styles.timeIconGroup}>
-                  {hasDay ? <IoSunnyOutline style={styles.timeIcon} /> : null}
-                  {hasNight ? <FaMoon style={styles.timeIcon} /> : null}
+                <span className={styles.timeIconGroup}>
+                  {hasDay ? <IoSunnyOutline className={styles.timeIcon} aria-label={t("daytime")} /> : null}
+                  {hasNight ? <FaMoon className={styles.timeIcon} aria-label={t("night")} /> : null}
                 </span>
               ) : null}
             </div>
@@ -1332,24 +729,15 @@ function MonsterMapCard({ mapItem }) {
         </div>
 
         {hasLayerSwitch ? (
-          <div
-            style={{
-              ...styles.layerSwitchRow,
-              ...(isMobile ? styles.layerSwitchRowMobile : {}),
-            }}
-          >
+          <div className={cx(styles.layerSwitchRow, isMobile && styles.layerSwitchRowMobile)}>
             {layerGroups.map((group) => {
               const active = group.layerName === activeLayerName;
-
               return (
                 <button
                   key={group.layerName}
                   type="button"
                   onClick={() => setActiveLayerName(group.layerName)}
-                  style={{
-                    ...styles.layerSwitchButton,
-                    ...(active ? styles.layerSwitchButtonActive : {}),
-                  }}
+                  className={cx(styles.layerSwitchButton, active && styles.layerSwitchButtonActive)}
                 >
                   {group.layerName}
                 </button>
@@ -1359,17 +747,12 @@ function MonsterMapCard({ mapItem }) {
         ) : null}
       </div>
 
-      <div style={styles.mapWrap}>
-        <MonsterMapOverlay
-          spawns={displaySpawns}
-          imagePath={displayImagePath}
-          href={mapItem?.url}
-        />
+      <div className={styles.mapWrap}>
+        <MonsterMapOverlay spawns={displaySpawns} imagePath={displayImagePath} href={mapItem?.url} />
       </div>
     </article>
   );
 }
-
 
 function useHabitatsIsMobile(breakpoint = 920) {
   const [isMobile, setIsMobile] = useState(false);
@@ -1422,159 +805,21 @@ function sortMapsByHuntingGround(items = []) {
     .map(({ item }) => item);
 }
 
-function getHabitatsStyles() {
-  return {
-    section: {
-      marginTop: "8px",
-      width: "100%",
-      maxWidth: "100%",
-      minWidth: 0,
-      overflowX: "clip",
-      boxSizing: "border-box",
-    },
-    header: {
-      marginBottom: "12px",
-      minWidth: 0,
-    },
-    title: {
-      margin: 0,
-      fontSize: "18px",
-      fontWeight: 800,
-      color: "var(--text-title)",
-    },
-    tabScroller: {
-      display: "flex",
-      gap: "8px",
-      width: "100%",
-      maxWidth: "100%",
-      minWidth: 0,
-      overflowX: "auto",
-      overflowY: "hidden",
-      WebkitOverflowScrolling: "touch",
-      overscrollBehaviorX: "contain",
-      marginBottom: "14px",
-      paddingBottom: "4px",
-      boxSizing: "border-box",
-      scrollbarWidth: "thin",
-    },
-    tabGroup: {
-      display: "flex",
-      gap: "8px",
-      flex: "0 0 auto",
-      minWidth: 0,
-      maxWidth: "100%",
-    },
-    tabButton: {
-      appearance: "none",
-      border: `1px solid var(--panel-border)`,
-      background: "var(--panel-bg)",
-      color: "var(--text-sub)",
-      padding: "8px 12px",
-      borderRadius: "999px",
-      fontSize: "12px",
-      fontWeight: 700,
-      lineHeight: 1.2,
-      cursor: "pointer",
-      transition: "all 0.2s ease",
-      whiteSpace: "nowrap",
-      flex: "0 0 auto",
-      flexShrink: 0,
-      boxSizing: "border-box",
-      maxWidth: "100%",
-    },
-    tabButtonActive: {
-      background: "var(--primary-bg)",
-      color: "var(--primary-text)",
-      border: `1px solid var(--primary-border)`,
-    },
-    tabButtonContent: {
-      display: "inline-flex",
-      alignItems: "center",
-      gap: "6px",
-      minWidth: 0,
-    },
-    tabButtonText: {
-      display: "inline-block",
-      minWidth: 0,
-    },
-    huntingLikeIcon: {
-      display: "inline-block",
-      width: "14px",
-      height: "14px",
-      flexShrink: 0,
-      color: "var(--warning-text, #f59e0b)",
-      transform: "translateY(-0.5px)",
-    },
-    huntingLikeIconActive: {
-      color: "var(--primary-text)",
-      opacity: 0.92,
-    },
-    emptyCard: {
-      borderRadius: "18px",
-      padding: "18px",
-      background: "var(--soft-bg)",
-      border: `1px dashed var(--soft-border)`,
-      color: "var(--text-muted)",
-      fontWeight: 700,
-    },
-    mobileContentScroller: {
-      display: "flex",
-      overflowX: "auto",
-      scrollSnapType: "x mandatory",
-      WebkitOverflowScrolling: "touch",
-      scrollbarWidth: "none",
-      msOverflowStyle: "none",
-      width: "100%",
-    },
-    mobilePage: {
-      minWidth: "100%",
-      width: "100%",
-      flex: "0 0 100%",
-      scrollSnapAlign: "start",
-      boxSizing: "border-box",
-    },
-    mobilePageInner: {
-      width: "100%",
-      boxSizing: "border-box",
-    },
-    mobileCardWrap: {
-      width: "100%",
-      boxSizing: "border-box",
-    },
-    desktopGrid: {
-      display: "grid",
-      gridTemplateColumns: "repeat(2, minmax(0,1fr))",
-      gap: "14px",
-      width: "100%",
-      minWidth: 0,
-    },
-    desktopCardWrap: {
-      minWidth: 0,
-    },
-  };
-}
 
-function MapTabButton({ mapItem, isActive, onClick, styles }) {
+function MapTabButton({ mapItem, isActive, onClick }) {
+  const t = useTranslations("MonsterHabitatSection");
   const liked = hasHabitatHuntingGround(mapItem);
 
   return (
     <button
       type="button"
       onClick={onClick}
-      style={{
-        ...styles.tabButton,
-        ...(isActive ? styles.tabButtonActive : {}),
-      }}
+      className={cx(styles.tabButton, isActive && styles.tabButtonActive)}
     >
-      <span style={styles.tabButtonContent}>
-        <span style={styles.tabButtonText}>{mapItem?.name || "地名なし"}</span>
+      <span className={styles.tabButtonContent}>
+        <span className={styles.tabButtonText}>{mapItem?.name || t("unnamedMap")}</span>
         {liked ? (
-          <FcLike
-            style={{
-              ...styles.huntingLikeIcon,
-              ...(isActive ? styles.huntingLikeIconActive : {}),
-            }}
-          />
+          <FcLike className={cx(styles.huntingLikeIcon, isActive && styles.huntingLikeIconActive)} />
         ) : null}
       </span>
     </button>
@@ -1582,9 +827,8 @@ function MapTabButton({ mapItem, isActive, onClick, styles }) {
 }
 
 export default function MonsterHabitats({ maps = [] }) {
+  const t = useTranslations("MonsterHabitatSection");
   const isMobile = useHabitatsIsMobile();
-  const styles = useMemo(() => getHabitatsStyles(), []);
-
   const contentScrollerRef = useRef(null);
   const tabScrollerRef = useRef(null);
   const tabRefs = useRef({});
@@ -1594,22 +838,15 @@ export default function MonsterHabitats({ maps = [] }) {
     const filtered = Array.isArray(maps)
       ? maps.filter((item) => item && (item.name || item.id))
       : [];
-
     return sortMapsByHuntingGround(filtered);
   }, [maps]);
 
   const pageSize = isMobile ? 1 : 2;
-
-  const pagedMaps = useMemo(() => {
-    return chunkArray(normalizedMaps, pageSize);
-  }, [normalizedMaps, pageSize]);
-
+  const pagedMaps = useMemo(() => chunkArray(normalizedMaps, pageSize), [normalizedMaps, pageSize]);
   const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
-    if (activeTab > pagedMaps.length - 1) {
-      setActiveTab(0);
-    }
+    if (activeTab > pagedMaps.length - 1) setActiveTab(0);
   }, [pagedMaps, activeTab]);
 
   useEffect(() => {
@@ -1617,85 +854,67 @@ export default function MonsterHabitats({ maps = [] }) {
     const target = tabRefs.current[activeTab];
     if (!scroller || !target) return;
 
-    const nextLeft =
-      target.offsetLeft - (scroller.clientWidth - target.offsetWidth) / 2;
-
-    scroller.scrollTo({
-      left: Math.max(0, nextLeft),
-      behavior: "smooth",
-    });
+    const nextLeft = target.offsetLeft - (scroller.clientWidth - target.offsetWidth) / 2;
+    scroller.scrollTo({ left: Math.max(0, nextLeft), behavior: "smooth" });
   }, [activeTab]);
 
   useEffect(() => {
-    if (!isMobile) return;
+    if (!isMobile) return undefined;
+    const element = contentScrollerRef.current;
+    if (!element) return undefined;
 
-    const el = contentScrollerRef.current;
-    if (!el) return;
-
-    const pageWidth = el.clientWidth;
     isProgrammaticScrollRef.current = true;
-
-    el.scrollTo({
-      left: pageWidth * activeTab,
-      behavior: "auto",
-    });
-
+    element.scrollTo({ left: element.clientWidth * activeTab, behavior: "auto" });
     const timer = setTimeout(() => {
       isProgrammaticScrollRef.current = false;
     }, 300);
-
     return () => clearTimeout(timer);
   }, [activeTab, isMobile]);
 
   useEffect(() => {
-    if (!isMobile) return;
-
-    const el = contentScrollerRef.current;
-    if (!el) return;
+    if (!isMobile) return undefined;
+    const element = contentScrollerRef.current;
+    if (!element) return undefined;
 
     function handleScroll() {
       if (isProgrammaticScrollRef.current) return;
-
-      const pageWidth = el.clientWidth || 1;
-      const nextTab = Math.round(el.scrollLeft / pageWidth);
-
-      if (nextTab !== activeTab && nextTab >= 0 && nextTab < pagedMaps.length) {
+      const nextTab = Math.round(element.scrollLeft / (element.clientWidth || 1));
+      if (nextTab >= 0 && nextTab < pagedMaps.length && nextTab !== activeTab) {
         setActiveTab(nextTab);
       }
     }
 
-    el.addEventListener("scroll", handleScroll, { passive: true });
-    return () => el.removeEventListener("scroll", handleScroll);
+    element.addEventListener("scroll", handleScroll, { passive: true });
+    return () => element.removeEventListener("scroll", handleScroll);
   }, [activeTab, isMobile, pagedMaps.length]);
 
   if (normalizedMaps.length === 0) {
     return (
-      <section className={moduleStyles.root} style={styles.section}>
-        <div style={styles.header}>
-          <h2 style={styles.title}>出現場所</h2>
+      <section className={styles.root}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>{t("title")}</h2>
         </div>
-        <div style={styles.emptyCard}>出現場所データなし</div>
+        <div className={styles.emptyCard}>{t("noData")}</div>
       </section>
     );
   }
 
   return (
-    <section className={moduleStyles.root} style={styles.section}>
-      <div style={styles.header}>
-        <h2 style={styles.title}>出現場所</h2>
+    <section className={styles.root}>
+      <div className={styles.sectionHeader}>
+        <h2 className={styles.sectionTitle}>{t("title")}</h2>
       </div>
 
-      <div ref={tabScrollerRef} style={styles.tabScroller}>
+      <div ref={tabScrollerRef} className={styles.tabScroller}>
         {pagedMaps.map((group, index) => {
           const isActive = index === activeTab;
-
           return (
             <div
               key={`tab-group-${index}`}
-              ref={(el) => {
-                tabRefs.current[index] = el;
+              ref={(element) => {
+                tabRefs.current[index] = element;
               }}
-              style={styles.tabGroup}
+              className={styles.tabGroup}
             >
               {group.map((mapItem) => (
                 <MapTabButton
@@ -1703,7 +922,6 @@ export default function MonsterHabitats({ maps = [] }) {
                   mapItem={mapItem}
                   isActive={isActive}
                   onClick={() => setActiveTab(index)}
-                  styles={styles}
                 />
               ))}
             </div>
@@ -1712,15 +930,12 @@ export default function MonsterHabitats({ maps = [] }) {
       </div>
 
       {isMobile ? (
-        <div ref={contentScrollerRef} style={styles.mobileContentScroller}>
+        <div ref={contentScrollerRef} className={styles.mobileContentScroller}>
           {pagedMaps.map((group, index) => (
-            <div key={`page-${index}`} style={styles.mobilePage}>
-              <div style={styles.mobilePageInner}>
+            <div key={`page-${index}`} className={styles.mobilePage}>
+              <div className={styles.mobilePageInner}>
                 {group.map((mapItem) => (
-                  <div
-                    key={mapItem.id ?? mapItem.name}
-                    style={styles.mobileCardWrap}
-                  >
+                  <div key={mapItem.id ?? mapItem.name} className={styles.mobileCardWrap}>
                     <MonsterMapCard mapItem={mapItem} />
                   </div>
                 ))}
@@ -1729,12 +944,9 @@ export default function MonsterHabitats({ maps = [] }) {
           ))}
         </div>
       ) : (
-        <div style={styles.desktopGrid}>
+        <div className={styles.desktopGrid}>
           {(pagedMaps[activeTab] ?? []).map((mapItem) => (
-            <div
-              key={mapItem.id ?? mapItem.name}
-              style={styles.desktopCardWrap}
-            >
+            <div key={mapItem.id ?? mapItem.name} className={styles.desktopCardWrap}>
               <MonsterMapCard mapItem={mapItem} />
             </div>
           ))}

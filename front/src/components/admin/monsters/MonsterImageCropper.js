@@ -11,60 +11,24 @@ const EXISTING_IMAGE_ZOOM = 1;
 const RESET_EDIT_CROP = { x: 0, y: 0 };
 const RESET_EDIT_ZOOM = 1;
 
-const DEFAULT_FILE_NAME = "accessory.png";
-const CROPPER_SIZE = 260;
+const DEFAULT_FILE_NAME = "monster.png";
+const CROPPER_SIZE = 320;
 
-/**
- * アクセサリ画像用の初期自動切り抜き位置
- *
- * centerXRatio: 横位置。0.5で中央。
- * centerYRatio: 縦位置。0.5で中央。
- * zoom: 大きいほど切り抜き範囲が狭くなる。
- *
- * 今の値は、アクセサリ画像の左上寄りアイコンを狙う設定。
- */
 const DEFAULT_AUTO_CROP = {
-  centerXRatio: 0.237,
-  centerYRatio: 0.243,
+  centerXRatio: 0.345,
+  centerYRatio: 0.48,
   sizeRatio: 1,
-  zoom: 10,
+  zoom: 2.1,
 };
 
-const BACKEND_URL = (
-  process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000"
-).replace(/\/$/, "");
-
-function getImageSrc(src = "") {
-  if (!src) return "";
-
-  if (src.startsWith("blob:")) {
-    return src;
-  }
-
-  if (src.startsWith("data:")) {
-    return src;
-  }
-
-  if (src.startsWith("http://") || src.startsWith("https://")) {
-    return src;
-  }
-
-  const normalized = src.startsWith("/") ? src : `/${src}`;
-
-  if (normalized.startsWith("/storage/")) {
-    return `${BACKEND_URL}${normalized}`;
-  }
-
-  return normalized;
-}
-
-function getDefaultAccessoryAreaPixels(imgWidth, imgHeight) {
+const getDefaultMonsterAreaPixels = (imgWidth, imgHeight) => {
   const centerX = imgWidth * DEFAULT_AUTO_CROP.centerXRatio;
   const centerY = imgHeight * DEFAULT_AUTO_CROP.centerYRatio;
   const zoom = Math.max(1, DEFAULT_AUTO_CROP.zoom || 1);
 
   const baseSize = Math.min(imgWidth, imgHeight) * DEFAULT_AUTO_CROP.sizeRatio;
   const size = baseSize / zoom;
+
   const half = size / 2;
 
   let x = centerX - half;
@@ -79,7 +43,7 @@ function getDefaultAccessoryAreaPixels(imgWidth, imgHeight) {
     width: Math.round(size),
     height: Math.round(size),
   };
-}
+};
 
 const loadImageSize = (src) =>
   new Promise((resolve, reject) => {
@@ -96,19 +60,15 @@ const loadImageSize = (src) =>
     img.src = src;
   });
 
-export default function AccessoryImageCropper({
+export default function MonsterImageCropper({
   value = "",
   onApply,
   aspect = 1,
   disabled = false,
-  title = "アクセサリ画像",
+  title = "モンスター画像",
 }) {
-  const [originalImageUrl, setOriginalImageUrl] = useState(() =>
-    getImageSrc(value || "")
-  );
-  const [previewImageUrl, setPreviewImageUrl] = useState(() =>
-    getImageSrc(value || "")
-  );
+  const [originalImageUrl, setOriginalImageUrl] = useState(value || "");
+  const [previewImageUrl, setPreviewImageUrl] = useState(value || "");
   const [sourceFileName, setSourceFileName] = useState(DEFAULT_FILE_NAME);
 
   const [, setCrop] = useState(EXISTING_IMAGE_CROP);
@@ -179,7 +139,7 @@ export default function AccessoryImageCropper({
         setZoom(nextZoom);
         setCroppedAreaPixels(targetAreaPixels);
 
-        await onApply({
+        onApply({
           file,
           previewUrl,
           crop: nextCrop,
@@ -194,10 +154,8 @@ export default function AccessoryImageCropper({
   );
 
   const syncInitialState = useCallback((nextUrl, nextFileName) => {
-    const resolvedUrl = getImageSrc(nextUrl || "");
-
-    setOriginalImageUrl(resolvedUrl);
-    setPreviewImageUrl(resolvedUrl);
+    setOriginalImageUrl(nextUrl || "");
+    setPreviewImageUrl(nextUrl || "");
     setSourceFileName(nextFileName || DEFAULT_FILE_NAME);
 
     setCrop(EXISTING_IMAGE_CROP);
@@ -261,7 +219,7 @@ export default function AccessoryImageCropper({
 
       try {
         const size = await loadImageSize(nextUrl);
-        const defaultArea = getDefaultAccessoryAreaPixels(
+        const defaultArea = getDefaultMonsterAreaPixels(
           size.width,
           size.height
         );
@@ -274,7 +232,6 @@ export default function AccessoryImageCropper({
           nextZoom: EXISTING_IMAGE_ZOOM,
         });
       } catch (error) {
-        console.error(error);
         setPreviewImageUrl(nextUrl);
       } finally {
         setCropperKey((prev) => prev + 1);
@@ -345,7 +302,7 @@ export default function AccessoryImageCropper({
 
       <div style={controlsStyle}>
         <label
-          htmlFor="accessory-image-input"
+          htmlFor="monster-image-input"
           style={{
             ...fileButtonStyle,
             ...(disabled ? fileButtonDisabledStyle : {}),
@@ -356,7 +313,7 @@ export default function AccessoryImageCropper({
         </label>
 
         <input
-          id="accessory-image-input"
+          id="monster-image-input"
           type="file"
           accept="image/*"
           onChange={handleFileChange}
@@ -374,14 +331,12 @@ export default function AccessoryImageCropper({
           <div style={cropContainerOuterStyle}>
             <div style={cropContainerStyle}>
               <Cropper
-                key={`${cropperKey}-${activeImageUrl}-${
-                  isEditing ? "editing" : "preview"
-                }`}
+                key={`${cropperKey}-${activeImageUrl}-${isEditing ? "editing" : "preview"}`}
                 image={activeImageUrl}
                 crop={isEditing ? draftCrop : EXISTING_IMAGE_CROP}
                 zoom={isEditing ? draftZoom : EXISTING_IMAGE_ZOOM}
                 minZoom={1}
-                maxZoom={5}
+                maxZoom={4}
                 aspect={aspect}
                 cropSize={{ width: CROPPER_SIZE, height: CROPPER_SIZE }}
                 onCropChange={isEditing ? setDraftCrop : () => {}}
@@ -418,7 +373,7 @@ export default function AccessoryImageCropper({
                 <input
                   type="range"
                   min={1}
-                  max={5}
+                  max={4}
                   step={0.01}
                   value={draftZoom}
                   disabled={disabled || isProcessing}
@@ -459,7 +414,7 @@ export default function AccessoryImageCropper({
           ) : (
             <>
               <div style={helperTextStyle}>
-                画像をアップロードすると、アクセサリ用の正方形画像を自動で切り出して保存用プレビューを作成する。必要なら「切り取り範囲を再選択」から元画像に戻って微調整できる。
+                画像をアップロードすると、左側のモンスター表示エリアを自動で切り出して保存用プレビューを作成する。必要なら「切り取り範囲を再選択」から元画像に戻って微調整できる。
               </div>
 
               <div style={buttonRowStyle}>
@@ -481,7 +436,6 @@ export default function AccessoryImageCropper({
       ) : (
         <div style={emptyStyle}>
           <FaImage size={28} style={{ opacity: 0.7 }} />
-          <span>画像を選択してください</span>
         </div>
       )}
     </div>

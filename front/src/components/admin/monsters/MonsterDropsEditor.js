@@ -10,18 +10,13 @@ const TAB_ITEMS = "items";
 const TAB_ORBS = "orbs";
 const TAB_EQUIPMENTS = "equipments";
 
-const NORMAL_ITEM_CATEGORIES = [
-  { value: "scout", label: "スカウトの書" },
-  { value: "consumable", label: "消費アイテム" },
-  { value: "material", label: "素材" },
-];
-
-const RARE_ITEM_CATEGORIES = [
+const DROP_ITEM_CATEGORIES = [
   { value: "scout", label: "スカウトの書" },
   { value: "consumable", label: "消費アイテム" },
   { value: "recipe", label: "レシピ" },
   { value: "material", label: "素材" },
   { value: "accessory", label: "アクセサリー" },
+  { value: "equipment", label: "装備" },
 ];
 
 const ORB_CATEGORIES = [
@@ -56,6 +51,33 @@ const EQUIPMENT_CATEGORIES = [
   { value: "足", label: "足" },
 ];
 
+const optionCache = new Map();
+const pendingOptionRequests = new Map();
+
+async function getCachedOptions(cacheKey, loader) {
+  if (optionCache.has(cacheKey)) {
+    return optionCache.get(cacheKey);
+  }
+
+  if (pendingOptionRequests.has(cacheKey)) {
+    return pendingOptionRequests.get(cacheKey);
+  }
+
+  const request = Promise.resolve()
+    .then(loader)
+    .then((options) => {
+      const safeOptions = Array.isArray(options) ? options : [];
+      optionCache.set(cacheKey, safeOptions);
+      return safeOptions;
+    })
+    .finally(() => {
+      pendingOptionRequests.delete(cacheKey);
+    });
+
+  pendingOptionRequests.set(cacheKey, request);
+  return request;
+}
+
 function getDropKey(drop) {
   return drop.__key ?? drop.id;
 }
@@ -73,6 +95,8 @@ function normalizeOptions(rows = [], type) {
     return rows.map((row) => ({
       id: row.id,
       name: row.name ?? "",
+      nameKana: row.name_kana ?? row.nameKana ?? "",
+      nameEn: row.name_en ?? row.nameEn ?? "",
       rawCategory: row.category ?? "",
       category: normalizeItemCategory(row.category),
     }));
@@ -82,6 +106,8 @@ function normalizeOptions(rows = [], type) {
     return rows.map((row) => ({
       id: row.id,
       name: row.name ?? "",
+      nameKana: row.name_kana ?? row.nameKana ?? "",
+      nameEn: row.name_en ?? row.nameEn ?? "",
       rawCategory: row.color ?? "",
       category: row.color ?? "",
     }));
@@ -91,6 +117,18 @@ function normalizeOptions(rows = [], type) {
     return rows.map((row) => ({
       id: row.id,
       name: row.itemName ?? row.item_name ?? row.name ?? "",
+      nameKana:
+        row.itemNameKana ??
+        row.item_name_kana ??
+        row.name_kana ??
+        row.nameKana ??
+        "",
+      nameEn:
+        row.itemNameEn ??
+        row.item_name_en ??
+        row.name_en ??
+        row.nameEn ??
+        "",
       rawCategory: row.slot ?? "",
       category: row.slot ?? "",
     }));
@@ -100,6 +138,9 @@ function normalizeOptions(rows = [], type) {
     return rows.map((row) => ({
       id: row.id,
       name: row.name ?? row.item_name ?? "",
+      nameKana:
+        row.name_kana ?? row.nameKana ?? row.item_name_kana ?? "",
+      nameEn: row.name_en ?? row.nameEn ?? row.item_name_en ?? "",
       category: "accessory",
       rawCategory: row.accessory_type ?? row.slot ?? "accessory",
     }));
@@ -127,23 +168,92 @@ function makeDrop({
   };
 }
 
-function filterByQuery(options, query) {
-  const q = String(query ?? "").trim().toLowerCase();
+function normalizeSearchText(value = "") {
+  return String(value ?? "")
+    .normalize("NFKC")
+    .trim()
+    .toLowerCase()
+    .replace(/[ァ-ヶ]/g, (char) =>
+      String.fromCharCode(char.charCodeAt(0) - 0x60)
+    )
+    .replace(/\s+/g, "");
+}
 
-  if (!q) {
+function filterByQuery(options, query) {
+  const normalizedQuery = normalizeSearchText(query);
+
+  if (!normalizedQuery) {
     return options.slice(0, 100);
   }
 
   return options
-    .filter((row) => String(row.name ?? "").toLowerCase().includes(q))
+    .filter((row) => {
+      const searchableValues = [row.name, row.nameKana, row.nameEn];
+
+      return searchableValues.some((value) =>
+        normalizeSearchText(value).includes(normalizedQuery)
+      );
+    })
     .slice(0, 100);
 }
 
 function toItemApiCategory(category) {
   if (category === "scout") return "scout";
   if (category === "consumable") return "consumable";
+  if (category === "recipe") return "recipe";
   if (category === "material") return "material";
   return "";
+}
+
+function getDropTargetType(category) {
+  if (category === "accessory") return "accessory";
+  if (category === "equipment") return "equipment";
+  return "item";
+}
+
+async function fetchDropTargetOptions(category, equipmentCategory) {
+  const cacheKey =
+    category === "equipment"
+      ? `drop-target:equipment:${equipmentCategory}`
+      : `drop-target:${category}`;
+
+  return getCachedOptions(cacheKey, async () => {
+    if (category === "accessory") {
+      const rows = await fetchAccessories("");
+      return normalizeOptions(rows, "accessory").map((row) => ({
+        ...row,
+        source_type: "accessory",
+      }));
+    }
+
+    if (category === "equipment") {
+      const rows = await fetchEquipments("", equipmentCategory);
+      return normalizeOptions(rows, "equipment").map((row) => ({
+        ...row,
+        source_type: "equipment",
+      }));
+    }
+
+    const rows = await fetchItems("", toItemApiCategory(category));
+    return normalizeOptions(rows, "item").map((row) => ({
+      ...row,
+      source_type: "item",
+    }));
+  });
+}
+
+async function fetchOrbOptions(category) {
+  return getCachedOptions(`orb:${category}`, async () => {
+    const rows = await fetchOrbs("", category);
+    return normalizeOptions(rows, "orb");
+  });
+}
+
+async function fetchEquipmentOptions(category) {
+  return getCachedOptions(`equipment-tab:${category}`, async () => {
+    const rows = await fetchEquipments("", category);
+    return normalizeOptions(rows, "equipment");
+  });
 }
 
 function SuggestInput({
@@ -222,10 +332,13 @@ export default function MonsterDropsEditor({ drops = [], onChange }) {
   const [activeTab, setActiveTab] = useState(TAB_ITEMS);
 
   const [normalCategory, setNormalCategory] = useState("scout");
+  const [normalEquipmentCategory, setNormalEquipmentCategory] =
+    useState("片手剣");
   const [normalQuery, setNormalQuery] = useState("");
   const [normalSelected, setNormalSelected] = useState(null);
 
   const [rareCategory, setRareCategory] = useState("scout");
+  const [rareEquipmentCategory, setRareEquipmentCategory] = useState("片手剣");
   const [rareQuery, setRareQuery] = useState("");
   const [rareSelected, setRareSelected] = useState(null);
 
@@ -247,20 +360,25 @@ export default function MonsterDropsEditor({ drops = [], onChange }) {
   const [loadingOrbs, setLoadingOrbs] = useState(false);
   const [loadingEquipments, setLoadingEquipments] = useState(false);
 
-  const normalItems = drops.filter(
-    (drop) => drop?.drop_target_type === "item" && drop?.drop_type === "normal"
+  const selectableDropTargetTypes = ["item", "accessory", "equipment"];
+
+  const normalDrops = drops.filter(
+    (drop) =>
+      selectableDropTargetTypes.includes(drop?.drop_target_type) &&
+      drop?.drop_type === "normal"
   );
 
-  const rareItems = drops.filter(
+  const rareDrops = drops.filter(
     (drop) =>
-      (drop?.drop_target_type === "item" ||
-        drop?.drop_target_type === "accessory") &&
+      selectableDropTargetTypes.includes(drop?.drop_target_type) &&
       drop?.drop_type === "rare"
   );
 
   const orbDrops = drops.filter((drop) => drop?.drop_target_type === "orb");
   const equipmentDrops = drops.filter(
-    (drop) => drop?.drop_target_type === "equipment"
+    (drop) =>
+      drop?.drop_target_type === "equipment" &&
+      drop?.drop_type === "equipment"
   );
 
   function rebuildSortOrder(nextDrops) {
@@ -283,13 +401,19 @@ export default function MonsterDropsEditor({ drops = [], onChange }) {
   }
 
   useEffect(() => {
+    if (activeTab !== TAB_ITEMS) return undefined;
+
     let ignore = false;
 
     async function loadNormalItems() {
       try {
         setLoadingNormalItems(true);
-        const rows = await fetchItems("", toItemApiCategory(normalCategory));
-        if (!ignore) setNormalItemOptions(normalizeOptions(rows, "item"));
+        const options = await fetchDropTargetOptions(
+          normalCategory,
+          normalEquipmentCategory
+        );
+
+        if (!ignore) setNormalItemOptions(options);
       } catch (error) {
         console.error(error);
         if (!ignore) setNormalItemOptions([]);
@@ -303,37 +427,22 @@ export default function MonsterDropsEditor({ drops = [], onChange }) {
     return () => {
       ignore = true;
     };
-  }, [normalCategory]);
+  }, [activeTab, normalCategory, normalEquipmentCategory]);
 
   useEffect(() => {
+    if (activeTab !== TAB_ITEMS) return undefined;
+
     let ignore = false;
 
     async function loadRareItems() {
       try {
         setLoadingRareItems(true);
+        const options = await fetchDropTargetOptions(
+          rareCategory,
+          rareEquipmentCategory
+        );
 
-        if (rareCategory === "accessory") {
-          const rows = await fetchAccessories("");
-          if (!ignore) {
-            setRareItemOptions(
-              normalizeOptions(rows, "accessory").map((row) => ({
-                ...row,
-                source_type: "accessory",
-              }))
-            );
-          }
-          return;
-        }
-
-        const rows = await fetchItems("", toItemApiCategory(rareCategory));
-        if (!ignore) {
-          setRareItemOptions(
-            normalizeOptions(rows, "item").map((row) => ({
-              ...row,
-              source_type: "item",
-            }))
-          );
-        }
+        if (!ignore) setRareItemOptions(options);
       } catch (error) {
         console.error(error);
         if (!ignore) setRareItemOptions([]);
@@ -347,16 +456,18 @@ export default function MonsterDropsEditor({ drops = [], onChange }) {
     return () => {
       ignore = true;
     };
-  }, [rareCategory]);
+  }, [activeTab, rareCategory, rareEquipmentCategory]);
 
   useEffect(() => {
+    if (activeTab !== TAB_ORBS) return undefined;
+
     let ignore = false;
 
     async function loadOrbs() {
       try {
         setLoadingOrbs(true);
-        const rows = await fetchOrbs("", orbCategory);
-        if (!ignore) setOrbOptions(normalizeOptions(rows, "orb"));
+        const options = await fetchOrbOptions(orbCategory);
+        if (!ignore) setOrbOptions(options);
       } catch (error) {
         console.error(error);
         if (!ignore) setOrbOptions([]);
@@ -370,16 +481,18 @@ export default function MonsterDropsEditor({ drops = [], onChange }) {
     return () => {
       ignore = true;
     };
-  }, [orbCategory]);
+  }, [activeTab, orbCategory]);
 
   useEffect(() => {
+    if (activeTab !== TAB_EQUIPMENTS) return undefined;
+
     let ignore = false;
 
     async function loadEquipments() {
       try {
         setLoadingEquipments(true);
-        const rows = await fetchEquipments("", equipmentCategory);
-        if (!ignore) setEquipmentOptions(normalizeOptions(rows, "equipment"));
+        const options = await fetchEquipmentOptions(equipmentCategory);
+        if (!ignore) setEquipmentOptions(options);
       } catch (error) {
         console.error(error);
         if (!ignore) setEquipmentOptions([]);
@@ -393,7 +506,7 @@ export default function MonsterDropsEditor({ drops = [], onChange }) {
     return () => {
       ignore = true;
     };
-  }, [equipmentCategory]);
+  }, [activeTab, equipmentCategory]);
 
   const normalFilteredOptions = useMemo(
     () => filterByQuery(normalItemOptions, normalQuery),
@@ -418,11 +531,14 @@ export default function MonsterDropsEditor({ drops = [], onChange }) {
   function handleImmediateAddNormal(option) {
     addDrop(
       makeDrop({
-        targetType: "item",
+        targetType: getDropTargetType(normalCategory),
         targetId: Number(option.id),
         targetName: option.name,
         dropType: "normal",
-        itemFilterCategory: normalCategory,
+        itemFilterCategory:
+          normalCategory === "equipment"
+            ? normalEquipmentCategory
+            : normalCategory,
       })
     );
     setNormalQuery("");
@@ -432,11 +548,12 @@ export default function MonsterDropsEditor({ drops = [], onChange }) {
   function handleImmediateAddRare(option) {
     addDrop(
       makeDrop({
-        targetType: rareCategory === "accessory" ? "accessory" : "item",
+        targetType: getDropTargetType(rareCategory),
         targetId: Number(option.id),
         targetName: option.name,
         dropType: "rare",
-        itemFilterCategory: rareCategory,
+        itemFilterCategory:
+          rareCategory === "equipment" ? rareEquipmentCategory : rareCategory,
       })
     );
     setRareQuery("");
@@ -516,11 +633,16 @@ export default function MonsterDropsEditor({ drops = [], onChange }) {
             </h3>
           </div>
 
-          {renderTagList(normalItems)}
+          {renderTagList(normalDrops)}
 
           <div
             className="monster-drops-editor-category-row"
-            style={styles.categoryRow}
+            style={{
+              ...styles.categoryRow,
+              ...(normalCategory === "equipment"
+                ? styles.categoryRowWithSubcategory
+                : {}),
+            }}
           >
             <label style={styles.field}>
               <span style={styles.label}>種別</span>
@@ -534,13 +656,35 @@ export default function MonsterDropsEditor({ drops = [], onChange }) {
                 className="monster-drops-editor-select"
                 style={styles.input}
               >
-                {NORMAL_ITEM_CATEGORIES.map((option) => (
+                {DROP_ITEM_CATEGORIES.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
                 ))}
               </select>
             </label>
+
+            {normalCategory === "equipment" ? (
+              <label style={styles.field}>
+                <span style={styles.label}>装備種別</span>
+                <select
+                  value={normalEquipmentCategory}
+                  onChange={(e) => {
+                    setNormalEquipmentCategory(e.target.value);
+                    setNormalQuery("");
+                    setNormalSelected(null);
+                  }}
+                  className="monster-drops-editor-select"
+                  style={styles.input}
+                >
+                  {EQUIPMENT_CATEGORIES.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ) : null}
           </div>
 
           <SuggestInput
@@ -557,7 +701,7 @@ export default function MonsterDropsEditor({ drops = [], onChange }) {
               setNormalSelected(option);
               handleImmediateAddNormal(option);
             }}
-            placeholder="名前で検索"
+            placeholder="名前・かな・カナで検索"
             styles={styles}
           />
         </div>
@@ -572,11 +716,16 @@ export default function MonsterDropsEditor({ drops = [], onChange }) {
             </h3>
           </div>
 
-          {renderTagList(rareItems)}
+          {renderTagList(rareDrops)}
 
           <div
             className="monster-drops-editor-category-row"
-            style={styles.categoryRow}
+            style={{
+              ...styles.categoryRow,
+              ...(rareCategory === "equipment"
+                ? styles.categoryRowWithSubcategory
+                : {}),
+            }}
           >
             <label style={styles.field}>
               <span style={styles.label}>種別</span>
@@ -590,13 +739,35 @@ export default function MonsterDropsEditor({ drops = [], onChange }) {
                 className="monster-drops-editor-select"
                 style={styles.input}
               >
-                {RARE_ITEM_CATEGORIES.map((option) => (
+                {DROP_ITEM_CATEGORIES.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
                 ))}
               </select>
             </label>
+
+            {rareCategory === "equipment" ? (
+              <label style={styles.field}>
+                <span style={styles.label}>装備種別</span>
+                <select
+                  value={rareEquipmentCategory}
+                  onChange={(e) => {
+                    setRareEquipmentCategory(e.target.value);
+                    setRareQuery("");
+                    setRareSelected(null);
+                  }}
+                  className="monster-drops-editor-select"
+                  style={styles.input}
+                >
+                  {EQUIPMENT_CATEGORIES.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ) : null}
           </div>
 
           <SuggestInput
@@ -613,7 +784,7 @@ export default function MonsterDropsEditor({ drops = [], onChange }) {
               setRareSelected(option);
               handleImmediateAddRare(option);
             }}
-            placeholder="名前で検索"
+            placeholder="名前・かな・カナで検索"
             styles={styles}
           />
         </div>
@@ -675,7 +846,7 @@ export default function MonsterDropsEditor({ drops = [], onChange }) {
               setOrbSelected(option);
               handleImmediateAddOrb(option);
             }}
-            placeholder="名前で検索"
+            placeholder="名前・かな・カナで検索"
             styles={styles}
           />
         </div>
@@ -737,7 +908,7 @@ export default function MonsterDropsEditor({ drops = [], onChange }) {
               setEquipmentSelected(option);
               handleImmediateAddEquipment(option);
             }}
-            placeholder="名前で検索"
+            placeholder="名前・かな・カナで検索"
             styles={styles}
           />
         </div>
@@ -1004,6 +1175,9 @@ function getComponentStyles() {
       display: "grid",
       gridTemplateColumns: "minmax(220px, 320px)",
       gap: 12,
+    },
+    categoryRowWithSubcategory: {
+      gridTemplateColumns: "repeat(2, minmax(220px, 320px))",
     },
     tagWrap: {
       display: "flex",

@@ -356,6 +356,7 @@ function SpawnMapGrid({
             fill
             sizes="(max-width: 768px) calc(100vw - 56px), 560px"
             style={styles.mapImage}
+            unoptimized
           />
         ) : (
           <div style={styles.mapPlaceholder}>マップ画像なし</div>

@@ -105,6 +105,10 @@ class MonsterController extends Controller
                 ->limit(300)
                 ->get();
 
+            if ($request->boolean('lightweight')) {
+                return response()->json($monsters->values());
+            }
+
             return response()->json(
                 $this->attachDropSummaries($monsters, 'monster', $keyword)->values()
             );

@@ -292,7 +292,8 @@ function normalizeMonsterList(rows = [], locale = "ja") {
 export async function searchMonsters(
   keyword = "",
   searchType = "monster",
-  locale = "ja"
+  locale = "ja",
+  options = {}
 ) {
   try {
     const res = await api.get("/api/monster-search", {
@@ -300,6 +301,7 @@ export async function searchMonsters(
         keyword,
         search_type: searchType,
         locale,
+        ...(options?.lightweight ? { lightweight: 1 } : {}),
       },
     });
 

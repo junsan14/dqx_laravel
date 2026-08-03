@@ -24,6 +24,7 @@ class MonsterController extends Controller
         if ($searchType === 'monster') {
             $monsters = Monster::query()
                 ->leftJoin('monsters as parents', 'parents.id', '=', 'monsters.reincarnation_parent_id')
+        ->leftJoin('monster_system_types as system_types', 'system_types.id', '=', 'monsters.monster_system_type_id')
                 ->selectRaw('
                     monsters.id,
                     monsters.display_order as monster_no,
@@ -31,8 +32,9 @@ class MonsterController extends Controller
                     monsters.name,
                     monsters.name_kana,
                     monsters.name_en,
-                    monsters.system_type,
-                    monsters.system_type_en,
+                    monsters.monster_system_type_id,
+                    system_types.name as system_type,
+                    system_types.name_en as system_type_en,
                     monsters.source_url,
                     monsters.trivia_1,
                     monsters.trivia_2,
@@ -117,6 +119,7 @@ class MonsterController extends Controller
         if ($searchType === 'item') {
             $monsters = Monster::query()
                 ->leftJoin('monsters as parents', 'parents.id', '=', 'monsters.reincarnation_parent_id')
+        ->leftJoin('monster_system_types as system_types', 'system_types.id', '=', 'monsters.monster_system_type_id')
                 ->selectRaw('
                     monsters.id,
                     monsters.display_order as monster_no,
@@ -124,8 +127,9 @@ class MonsterController extends Controller
                     monsters.name,
                     monsters.name_kana,
                     monsters.name_en,
-                    monsters.system_type,
-                    monsters.system_type_en,
+                    monsters.monster_system_type_id,
+                    system_types.name as system_type,
+                    system_types.name_en as system_type_en,
                     monsters.source_url,
                     monsters.trivia_1,
                     monsters.trivia_2,
@@ -203,6 +207,7 @@ class MonsterController extends Controller
         if ($searchType === 'orb') {
             $monsters = Monster::query()
                 ->leftJoin('monsters as parents', 'parents.id', '=', 'monsters.reincarnation_parent_id')
+        ->leftJoin('monster_system_types as system_types', 'system_types.id', '=', 'monsters.monster_system_type_id')
                 ->selectRaw('
                     monsters.id,
                     monsters.display_order as monster_no,
@@ -210,8 +215,9 @@ class MonsterController extends Controller
                     monsters.name,
                     monsters.name_kana,
                     monsters.name_en,
-                    monsters.system_type,
-                    monsters.system_type_en,
+                    monsters.monster_system_type_id,
+                    system_types.name as system_type,
+                    system_types.name_en as system_type_en,
                     monsters.source_url,
                     monsters.trivia_1,
                     monsters.trivia_2,
@@ -290,6 +296,7 @@ class MonsterController extends Controller
 if ($searchType === 'equipment') {
     $monsters = Monster::query()
         ->leftJoin('monsters as parents', 'parents.id', '=', 'monsters.reincarnation_parent_id')
+        ->leftJoin('monster_system_types as system_types', 'system_types.id', '=', 'monsters.monster_system_type_id')
         ->selectRaw('
             monsters.id,
             monsters.display_order as monster_no,
@@ -297,8 +304,9 @@ if ($searchType === 'equipment') {
             monsters.name,
             monsters.name_kana,
             monsters.name_en,
-            monsters.system_type,
-            monsters.system_type_en,
+            monsters.monster_system_type_id,
+            system_types.name as system_type,
+            system_types.name_en as system_type_en,
             monsters.source_url,
             monsters.trivia_1,
             monsters.trivia_2,
@@ -370,8 +378,10 @@ if ($searchType === 'equipment') {
             'monsters.name',
             'monsters.name_kana',
             'monsters.name_en',
-            'monsters.system_type',
-            'monsters.system_type_en',
+            'monsters.monster_system_type_id',
+            'system_types.id',
+            'system_types.name',
+            'system_types.name_en',
             'monsters.source_url',
             'monsters.trivia_1',
             'monsters.trivia_2',
@@ -394,6 +404,7 @@ if ($searchType === 'equipment') {
         if ($searchType === 'accessory') {
             $monsters = Monster::query()
                 ->leftJoin('monsters as parents', 'parents.id', '=', 'monsters.reincarnation_parent_id')
+        ->leftJoin('monster_system_types as system_types', 'system_types.id', '=', 'monsters.monster_system_type_id')
                 ->selectRaw('
                     monsters.id,
                     monsters.display_order as monster_no,
@@ -401,8 +412,9 @@ if ($searchType === 'equipment') {
                     monsters.name,
                     monsters.name_kana,
                     monsters.name_en,
-                    monsters.system_type,
-                    monsters.system_type_en,
+                    monsters.monster_system_type_id,
+                    system_types.name as system_type,
+                    system_types.name_en as system_type_en,
                     monsters.source_url,
                     monsters.trivia_1,
                     monsters.trivia_2,
@@ -484,6 +496,7 @@ if ($searchType === 'equipment') {
     {
         $monster = Monster::query()
             ->leftJoin('monsters as parents', 'parents.id', '=', 'monsters.reincarnation_parent_id')
+        ->leftJoin('monster_system_types as system_types', 'system_types.id', '=', 'monsters.monster_system_type_id')
             ->selectRaw('
                 monsters.id,
                 monsters.display_order as monster_no,
@@ -491,8 +504,9 @@ if ($searchType === 'equipment') {
                 monsters.name,
                 monsters.name_kana,
                 monsters.name_en,
-                monsters.system_type,
-                monsters.system_type_en,
+                monsters.monster_system_type_id,
+                system_types.name as system_type,
+                system_types.name_en as system_type_en,
                 monsters.source_url,
                 monsters.trivia_1,
                 monsters.trivia_2,
@@ -741,6 +755,7 @@ if ($searchType === 'equipment') {
             'name' => $monster->name,
             'name_kana' => $monster->name_kana,
             'name_en' => $monster->name_en,
+            'monster_system_type_id' => !empty($monster->monster_system_type_id) ? (int) $monster->monster_system_type_id : null,
             'system_type' => $monster->system_type,
             'system_type_en' => $monster->system_type_en,
             'source_url' => $monster->source_url,
@@ -781,14 +796,14 @@ if ($searchType === 'equipment') {
             $parentId = !empty($validated['reincarnation_parent_id'])
                 ? (int) $validated['reincarnation_parent_id']
                 : null;
+            $systemTypeId = $this->resolveMonsterSystemTypeId($validated);
 
             $monster = Monster::create([
                 'display_order' => $newOrder,
                 'name' => $validated['name'],
                 'name_kana' => $validated['name_kana'] ?? null,
                 'name_en' => $validated['name_en'] ?? null,
-                'system_type' => $validated['system_type'] ?? null,
-                'system_type_en' => $validated['system_type_en'] ?? null,
+                'monster_system_type_id' => $systemTypeId,
                 'source_url' => $validated['source_url'] ?? null,
                 'trivia_1' => $validated['trivia_1'] ?? null,
                 'trivia_2' => $validated['trivia_2'] ?? null,
@@ -834,14 +849,14 @@ if ($searchType === 'equipment') {
             $parentId = !empty($validated['reincarnation_parent_id'])
                 ? (int) $validated['reincarnation_parent_id']
                 : null;
+            $systemTypeId = $this->resolveMonsterSystemTypeId($validated);
 
             $payload = [
                 'display_order' => $newOrder,
                 'name' => $validated['name'],
                 'name_kana' => $validated['name_kana'] ?? null,
                 'name_en' => $validated['name_en'] ?? null,
-                'system_type' => $validated['system_type'] ?? null,
-                'system_type_en' => $validated['system_type_en'] ?? null,
+                'monster_system_type_id' => $systemTypeId,
                 'source_url' => $validated['source_url'] ?? null,
                 'trivia_1' => $validated['trivia_1'] ?? null,
                 'trivia_2' => $validated['trivia_2'] ?? null,
@@ -920,28 +935,35 @@ if ($searchType === 'equipment') {
         $range = max(1, min($range, 20));
 
         $query = Monster::query()
-            ->select([
-                'id',
-                'display_order',
-                'name',
-                'name_kana',
-                'name_en',
-                'system_type',
-                'system_type_en',
-                'source_url',
-                'trivia_1',
-                'trivia_2',
-                'image_path',
-            ])
-            ->whereBetween('display_order', [
+            ->leftJoin(
+                'monster_system_types as system_types',
+                'system_types.id',
+                '=',
+                'monsters.monster_system_type_id'
+            )
+            ->selectRaw('
+                monsters.id,
+                monsters.display_order,
+                monsters.name,
+                monsters.name_kana,
+                monsters.name_en,
+                monsters.monster_system_type_id,
+                system_types.name as system_type,
+                system_types.name_en as system_type_en,
+                monsters.source_url,
+                monsters.trivia_1,
+                monsters.trivia_2,
+                monsters.image_path
+            ')
+            ->whereBetween('monsters.display_order', [
                 max(1, $displayOrder - $range),
                 $displayOrder + $range,
             ])
-            ->orderBy('display_order')
-            ->orderBy('id');
+            ->orderBy('monsters.display_order')
+            ->orderBy('monsters.id');
 
         if ($excludeId > 0) {
-            $query->where('id', '!=', $excludeId);
+            $query->where('monsters.id', '!=', $excludeId);
         }
 
         return response()->json([
@@ -956,6 +978,7 @@ if ($searchType === 'equipment') {
 
         $query = Monster::query()
             ->leftJoin('monsters as parents', 'parents.id', '=', 'monsters.reincarnation_parent_id')
+        ->leftJoin('monster_system_types as system_types', 'system_types.id', '=', 'monsters.monster_system_type_id')
             ->selectRaw('
                 monsters.id,
                 monsters.display_order as monster_no,
@@ -963,8 +986,9 @@ if ($searchType === 'equipment') {
                 monsters.name,
                 monsters.name_kana,
                 monsters.name_en,
-                monsters.system_type,
-                monsters.system_type_en,
+                monsters.monster_system_type_id,
+                system_types.name as system_type,
+                system_types.name_en as system_type_en,
                 monsters.source_url,
                 monsters.trivia_1,
                 monsters.trivia_2,
@@ -996,6 +1020,7 @@ if ($searchType === 'equipment') {
                 'name' => $monster->name,
                 'name_kana' => $monster->name_kana,
                 'name_en' => $monster->name_en,
+                'monster_system_type_id' => !empty($monster->monster_system_type_id) ? (int) $monster->monster_system_type_id : null,
                 'system_type' => $monster->system_type,
                 'system_type_en' => $monster->system_type_en,
                 'source_url' => $monster->source_url ?? null,
@@ -1021,6 +1046,56 @@ if ($searchType === 'equipment') {
         ]);
     }
 
+    /**
+     * 新フロントは monster_system_type_id を送信する。
+     * 移行期間中は旧フロントの system_type / system_type_en も受け付け、
+     * マスターに存在しなければ新規作成する。
+     */
+    private function resolveMonsterSystemTypeId(array $validated): ?int
+    {
+        if (!empty($validated['monster_system_type_id'])) {
+            return (int) $validated['monster_system_type_id'];
+        }
+
+        $name = trim((string) ($validated['system_type'] ?? ''));
+
+        if ($name === '') {
+            return null;
+        }
+
+        $nameEn = trim((string) ($validated['system_type_en'] ?? ''));
+        $existing = DB::table('monster_system_types')
+            ->where('name', $name)
+            ->first();
+
+        if ($existing) {
+            if (
+                empty($existing->name_en)
+                && $nameEn !== ''
+            ) {
+                DB::table('monster_system_types')
+                    ->where('id', $existing->id)
+                    ->update([
+                        'name_en' => $nameEn,
+                        'updated_at' => now(),
+                    ]);
+            }
+
+            return (int) $existing->id;
+        }
+
+        $nextDisplayOrder =
+            (int) DB::table('monster_system_types')->max('display_order') + 1;
+
+        return (int) DB::table('monster_system_types')->insertGetId([
+            'display_order' => max(1, $nextDisplayOrder),
+            'name' => $name,
+            'name_en' => $nameEn !== '' ? $nameEn : null,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    }
+
     private function validateMonsterPayload(Request $request, ?int $monsterId = null): array
     {
         return $request->validate([
@@ -1028,6 +1103,13 @@ if ($searchType === 'equipment') {
             'name' => ['required', 'string', 'max:255'],
             'name_kana' => ['nullable', 'string', 'max:255'],
             'name_en' => ['nullable', 'string', 'max:255'],
+            'monster_system_type_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('monster_system_types', 'id'),
+            ],
+
+            // 旧フロントとの互換用。ID送信へ切り替え後に削除できます。
             'system_type' => ['nullable', 'string', 'max:255'],
             'system_type_en' => ['nullable', 'string', 'max:255'],
             'source_url' => ['nullable', 'string'],
@@ -1221,6 +1303,7 @@ if ($searchType === 'equipment') {
                 'name' => $monster->name,
                 'name_kana' => $monster->name_kana,
                 'name_en' => $monster->name_en,
+                'monster_system_type_id' => !empty($monster->monster_system_type_id) ? (int) $monster->monster_system_type_id : null,
                 'system_type' => $monster->system_type,
                 'system_type_en' => $monster->system_type_en,
                 'source_url' => $monster->source_url,

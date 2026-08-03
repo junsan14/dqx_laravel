@@ -52,8 +52,7 @@ export function emptyMonster() {
     name: "",
     name_kana: "",
     name_en: "",
-    system_type: "",
-    system_type_en: "",
+    monster_system_type_id: null,
     source_url: "",
     trivia_1: "",
     trivia_2: "",
@@ -83,8 +82,8 @@ export function normalizeMonster(row = {}) {
     name: row?.name ?? "",
     name_kana: row?.name_kana ?? row?.nameKana ?? "",
     name_en: row?.name_en ?? row?.nameEn ?? "",
-    system_type: row?.system_type ?? "",
-    system_type_en: row?.system_type_en ?? row?.systemTypeEn ?? "",
+    monster_system_type_id:
+      Number(row?.monster_system_type_id ?? 0) || null,
     source_url: row?.source_url ?? "",
     trivia_1: row?.trivia_1 ?? "",
     trivia_2: row?.trivia_2 ?? "",
@@ -165,8 +164,9 @@ export function buildMonsterPayload(monster = {}) {
       monster?.name_kana ?? monster?.nameKana ?? ""
     ).trim(),
     name_en: String(monster?.name_en ?? "").trim(),
-    system_type: String(monster?.system_type ?? "").trim(),
-    system_type_en: String(monster?.system_type_en ?? "").trim(),
+   
+    monster_system_type_id:
+      Number(monster?.monster_system_type_id ?? 0) || null,
     source_url: String(monster?.source_url ?? "").trim(),
     trivia_1: String(monster?.trivia_1 ?? "").trim(),
     trivia_2: String(monster?.trivia_2 ?? "").trim(),

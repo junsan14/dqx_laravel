@@ -40,8 +40,11 @@ function buildMonsterFormData(payload = {}) {
     appendIfPresent(formData, "name_kana", payload.name_kana ?? "");
   }
   appendIfPresent(formData, "name_en", payload.name_en ?? "");
-  appendIfPresent(formData, "system_type", payload.system_type ?? "");
-  appendIfPresent(formData, "system_type_en", payload.system_type_en ?? "");
+  appendIfPresent(
+    formData,
+    "monster_system_type_id",
+    payload.monster_system_type_id ?? ""
+  );
   appendIfPresent(formData, "source_url", payload.source_url ?? "");
   appendIfPresent(formData, "trivia_1", payload.trivia_1 ?? "");
   appendIfPresent(formData, "trivia_2", payload.trivia_2 ?? "");
@@ -211,6 +214,8 @@ function normalizeMonster(row = {}, locale = "ja") {
     monster_name_ja: row?.monster_name ?? row?.name ?? "",
     monster_name_en: row?.monster_name_en ?? row?.name_en ?? "",
 
+    monster_system_type_id:
+      Number(row?.monster_system_type_id ?? 0) || null,
     systemTypeJa: row?.system_type ?? "",
     systemTypeEn: row?.system_type_en ?? "",
     system_type_en: row?.system_type_en ?? "",
@@ -287,6 +292,37 @@ function normalizeMonster(row = {}, locale = "ja") {
 function normalizeMonsterList(rows = [], locale = "ja") {
   if (!Array.isArray(rows)) return [];
   return rows.map((row) => normalizeMonster(row, locale));
+}
+
+export async function fetchMonsterSystemTypes() {
+  try {
+    const res = await api.get("/api/monster-system-types");
+    const rows = res.data?.data ?? res.data ?? [];
+
+    if (!Array.isArray(rows)) return [];
+
+    return rows
+      .map((row) => ({
+        id: Number(row?.id ?? 0),
+        name: String(row?.name ?? "").trim(),
+        name_en: String(row?.name_en ?? "").trim(),
+        display_order: Number(row?.display_order ?? 0),
+      }))
+      .filter((row) => row.id > 0 && row.name)
+      .sort((a, b) => {
+        const orderDiff = a.display_order - b.display_order;
+        if (orderDiff !== 0) return orderDiff;
+        return a.id - b.id;
+      });
+  } catch (error) {
+    console.error(error);
+
+    if (error.response) {
+      throw new Error(`モンスター系統取得失敗: ${error.response.status}`);
+    }
+
+    throw new Error("モンスター系統取得失敗");
+  }
 }
 
 export async function searchMonsters(

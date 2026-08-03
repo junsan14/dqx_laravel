@@ -26,6 +26,8 @@ const appendCacheBust = (url, version) => {
 export default function MonsterForm({
   monster,
   onChange,
+  systemTypes = [],
+  systemTypesLoading = false,
   parentCandidates = [],
   onSearchParents,
   disabled = false,
@@ -41,6 +43,22 @@ export default function MonsterForm({
   const [parentOpen, setParentOpen] = useState(false);
   const [loadingParents, setLoadingParents] = useState(false);
   const [open, setOpen] = useState(defaultOpen);
+
+  const normalizedSystemTypes = useMemo(() => {
+    return (Array.isArray(systemTypes) ? systemTypes : [])
+      .map((row) => ({
+        id: Number(row?.id ?? 0),
+        name: String(row?.name ?? "").trim(),
+        name_en: String(row?.name_en ?? "").trim(),
+        display_order: Number(row?.display_order ?? 0),
+      }))
+      .filter((row) => row.id > 0 && row.name)
+      .sort((a, b) => {
+        const orderDiff = a.display_order - b.display_order;
+        if (orderDiff !== 0) return orderDiff;
+        return a.id - b.id;
+      });
+  }, [systemTypes]);
 
   const imageValue = useMemo(() => {
     if (monster?.image_preview_url) {
@@ -267,28 +285,41 @@ export default function MonsterForm({
 
             <label style={fieldStyle}>
               <span style={labelStyle()}>系統</span>
-              <input
-                type="text"
-                value={monster?.system_type ?? ""}
-                disabled={disabled}
-                onChange={(e) => patch("system_type", e.target.value)}
-                style={inputStyle(disabled)}
-                onFocus={selectAllInput}
-                onClick={selectAllInput}
-              />
-            </label>
+              <select
+                value={
+                  monster?.monster_system_type_id
+                    ? String(monster.monster_system_type_id)
+                    : ""
+                }
+                disabled={disabled || systemTypesLoading}
+                onChange={(event) => {
+                  if (disabled) return;
 
-            <label style={fieldStyle}>
-              <span style={labelStyle()}>系統(en)</span>
-              <input
-                type="text"
-                value={monster?.system_type_en ?? ""}
-                disabled={disabled}
-                onChange={(e) => patch("system_type_en", e.target.value)}
-                style={inputStyle(disabled)}
-                onFocus={selectAllInput}
-                onClick={selectAllInput}
-              />
+                  const nextId = Number(event.target.value || 0);
+                  const selectedType =
+                    normalizedSystemTypes.find((row) => row.id === nextId) ??
+                    null;
+
+                  onChange((prev) => ({
+                    ...prev,
+                    monster_system_type_id: selectedType?.id ?? null,
+                    system_type: selectedType?.name ?? "",
+                    system_type_en: selectedType?.name_en ?? "",
+                  }));
+                }}
+                style={inputStyle(disabled || systemTypesLoading)}
+              >
+                <option value="">
+                  {systemTypesLoading ? "系統を読み込み中..." : "系統を選択"}
+                </option>
+
+                {normalizedSystemTypes.map((type) => (
+                  <option key={type.id} value={type.id}>
+                    {type.name}
+                    {type.name_en ? ` / ${type.name_en}` : ""}
+                  </option>
+                ))}
+              </select>
             </label>
 
             <label style={fieldStyle}>

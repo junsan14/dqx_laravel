@@ -26,6 +26,8 @@ use App\Http\Controllers\Api\UpdateItemMarketPricesController;
 use App\Http\Controllers\Api\ContentReportController;
 
 use App\Http\Controllers\Api\AdminContentReportController;
+use App\Http\Controllers\Api\MonsterSystemTypeController;
+
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
@@ -142,3 +144,8 @@ Route::get(
     '/content-reports/summary',
     [ContentReportController::class, 'summary']
 )->middleware('throttle:120,1');
+
+Route::get('/monster-system-types', [
+    MonsterSystemTypeController::class,
+    'index',
+]);

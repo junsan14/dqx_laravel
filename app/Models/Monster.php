@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Monster extends Model
 {
     protected $fillable = [
@@ -14,6 +14,7 @@ class Monster extends Model
         'name_en',
         'system_type',
         'system_type_en',
+        'monster_system_type_id',
         'source_url',
         'is_reincarnated',
         'reincarnation_parent_id',
@@ -44,5 +45,12 @@ class Monster extends Model
     public function reincarnations()
     {
         return $this->hasMany(self::class, 'reincarnation_parent_id');
+    }
+    public function systemType(): BelongsTo
+    {
+        return $this->belongsTo(
+            MonsterSystemType::class,
+            'monster_system_type_id'
+        );
     }
 }

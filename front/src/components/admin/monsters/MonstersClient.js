@@ -17,6 +17,7 @@ import {
   updateMonster,
   deleteMonster,
   fetchMonstersAroundDisplayOrder,
+  fetchMonsterSystemTypes,
 } from "@/lib/monsters";
 import { fetchMaps } from "@/lib/maps";
 import {
@@ -41,6 +42,7 @@ export default function MonstersClient() {
   const [loadingDetail, setLoadingDetail] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loadingAround, setLoadingAround] = useState(false);
+  const [loadingSystemTypes, setLoadingSystemTypes] = useState(false);
 
   const [keyword, setKeyword] = useState("");
   const [monsters, setMonsters] = useState([]);
@@ -49,6 +51,7 @@ export default function MonstersClient() {
   const [aroundMonsters, setAroundMonsters] = useState([]);
 
   const [maps, setMaps] = useState([]);
+  const [systemTypes, setSystemTypes] = useState([]);
 
   const [parentCandidates, setParentCandidates] = useState([]);
   const selectAllObserverRef = useRef(null);
@@ -147,6 +150,20 @@ export default function MonstersClient() {
     }
   }
 
+  async function loadSystemTypes() {
+    try {
+      setLoadingSystemTypes(true);
+      const rows = await fetchMonsterSystemTypes();
+      setSystemTypes(Array.isArray(rows) ? rows : []);
+    } catch (error) {
+      console.error(error);
+      setSystemTypes([]);
+      showToast(error.message || "モンスター系統取得失敗", "error");
+    } finally {
+      setLoadingSystemTypes(false);
+    }
+  }
+
   async function searchReincarnationParents(nextKeyword = "") {
     const next = String(nextKeyword ?? "").trim();
 
@@ -176,6 +193,7 @@ export default function MonstersClient() {
 
   useEffect(() => {
     loadMaps();
+    loadSystemTypes();
   }, []);
 
   useEffect(() => {
@@ -316,7 +334,11 @@ export default function MonstersClient() {
 
   async function handleSave() {
     try {
-      const payload = buildMonsterPayload(selectedMonster);
+      const payload = {
+        ...buildMonsterPayload(selectedMonster),
+        monster_system_type_id:
+          selectedMonster?.monster_system_type_id ?? null,
+      };
 
       if (!selectedMonster?.id && !isAdmin) {
         showToast("新規追加は管理者のみ", "error");
@@ -480,6 +502,8 @@ export default function MonstersClient() {
             <MonsterForm
               monster={selectedMonster}
               onChange={setSelectedMonster}
+              systemTypes={systemTypes}
+              systemTypesLoading={loadingSystemTypes}
               parentCandidates={parentCandidates}
               onSearchParents={searchReincarnationParents}
               disabled={!isAdmin}

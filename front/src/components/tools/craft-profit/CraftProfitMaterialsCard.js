@@ -619,9 +619,41 @@ export default function CraftProfitMaterialsCard({
 
   const [selectedTab, setSelectedTab] = useState("");
 
+  const selectedSetKey = useMemo(() => {
+    if (!selectedSet) return "";
+
+    const items = Array.isArray(selectedSet.items) ? selectedSet.items : [];
+    const itemKey = items
+      .map((item) =>
+        String(
+          item?.id ??
+            item?.itemId ??
+            item?.item_id ??
+            item?.slotKey ??
+            item?.slot ??
+            item?.name ??
+            ""
+        )
+      )
+      .join("|");
+
+    return String(
+      selectedSet.id ??
+        selectedSet.setId ??
+        selectedSet.set_id ??
+        selectedSet.groupId ??
+        selectedSet.group_id ??
+        selectedSet.name ??
+        itemKey
+    );
+  }, [selectedSet]);
+
+  const previousSelectedSetKeyRef = useRef("");
+
   useEffect(() => {
     // 初期ロード中・装備未選択時はタブを空にする。
     if (!selectedSet || sortedSlots.length === 0) {
+      previousSelectedSetKeyRef.current = "";
       setSelectedTab("");
       return;
     }
@@ -629,22 +661,46 @@ export default function CraftProfitMaterialsCard({
     const availableTabs = equipmentIsSet
       ? [ALL_SLOT, ...sortedSlots]
       : sortedSlots;
+    const selectedSetChanged =
+      previousSelectedSetKeyRef.current !== selectedSetKey;
 
-    // 親側で有効な部位が選択されている場合は優先する。
-    if (activeSlot && sortedSlots.includes(activeSlot)) {
-      setSelectedTab(activeSlot);
-      return;
-    }
+    previousSelectedSetKeyRef.current = selectedSetKey;
 
     setSelectedTab((currentTab) => {
+      // 装備を選び直したときは、セット装備なら「全て」を初期選択する。
+      if (selectedSetChanged) {
+        if (equipmentIsSet) return ALL_SLOT;
+
+        if (activeSlot && sortedSlots.includes(activeSlot)) {
+          return activeSlot;
+        }
+
+        return sortedSlots[0] ?? "";
+      }
+
+      // ユーザーが選択した有効なタブはそのまま維持する。
       if (availableTabs.includes(currentTab)) {
         return currentTab;
       }
 
-      // 初期表示は最初の部位を選択する。
-      return sortedSlots[0] ?? "";
+      // 単体装備のみ、親側の有効な部位を優先する。
+      if (
+        !equipmentIsSet &&
+        activeSlot &&
+        sortedSlots.includes(activeSlot)
+      ) {
+        return activeSlot;
+      }
+
+      return equipmentIsSet ? ALL_SLOT : sortedSlots[0] ?? "";
     });
-  }, [selectedSet, equipmentIsSet, activeSlot, sortedSlots]);
+  }, [
+    selectedSet,
+    selectedSetKey,
+    equipmentIsSet,
+    activeSlot,
+    sortedSlots,
+  ]);
 
   // 選択中タブを親へ通知する。
   // 「全て」も通知することで、レポート対象名をセット名へ切り替える。

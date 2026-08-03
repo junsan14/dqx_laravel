@@ -217,18 +217,46 @@ function normalizeMetaValue(value) {
 }
 
 function joinUniqueMonsterNames(spawns = [], monstersById = {}) {
-  const result = [];
-  const seen = new Set();
+  const unique = new Map();
 
-  for (const spawn of spawns) {
-    const name = normalizeMetaValue(monstersById?.[spawn?.monster_id]?.name);
+  for (const spawn of Array.isArray(spawns) ? spawns : []) {
+    const monsterId = Number(spawn?.monster_id);
+    const monster = monstersById?.[monsterId] ?? {};
+    const name = normalizeMetaValue(monster?.name ?? spawn?.monster_name);
+
     if (!name) continue;
-    if (seen.has(name)) continue;
-    seen.add(name);
-    result.push(name);
+
+    const key = monsterId > 0 ? `id-${monsterId}` : `name-${name}`;
+    if (unique.has(key)) continue;
+
+    const rawOrder = Number(
+      monster?.display_order ??
+        monster?.monster_no ??
+        spawn?.monster_display_order
+    );
+
+    unique.set(key, {
+      id: monsterId,
+      name,
+      displayOrder:
+        Number.isFinite(rawOrder) && rawOrder > 0
+          ? rawOrder
+          : Number.MAX_SAFE_INTEGER,
+    });
   }
 
-  return result;
+  return Array.from(unique.values())
+    .sort((a, b) => {
+      if (a.displayOrder !== b.displayOrder) {
+        return a.displayOrder - b.displayOrder;
+      }
+
+      const nameDiff = a.name.localeCompare(b.name, "ja");
+      if (nameDiff !== 0) return nameDiff;
+
+      return a.id - b.id;
+    })
+    .map((row) => row.name);
 }
 
 function bubbleContainsSpawn(group, spawn) {

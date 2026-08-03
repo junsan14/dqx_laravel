@@ -76,6 +76,16 @@ function fetchMonsterIndexCached(locale) {
   );
 }
 
+const UNKNOWN_MONSTER_DISPLAY_ORDER = Number.MAX_SAFE_INTEGER;
+
+function normalizeMonsterDisplayOrder(value) {
+  const number = Number(value);
+
+  return Number.isFinite(number) && number > 0
+    ? number
+    : null;
+}
+
 function mergeMonsterRows(previous = {}, rows = []) {
   const next = { ...previous };
 
@@ -84,16 +94,36 @@ function mergeMonsterRows(previous = {}, rows = []) {
     if (!id) continue;
 
     const existing = next[id] ?? {};
+    const isSeedRow = row?.__spawnSeed === true;
+
+    // 出現情報は仮データとして扱う。
+    // モンスター一覧・詳細が先に取得済みなら、仮データで上書きしない。
+    const merged = isSeedRow
+      ? { ...row, ...existing }
+      : { ...existing, ...row };
+
+    const incomingOrder = normalizeMonsterDisplayOrder(
+      row?.display_order ?? row?.monster_display_order
+    );
+    const existingOrder = normalizeMonsterDisplayOrder(
+      existing?.display_order ?? existing?.monster_no
+    );
+
     const monsterName =
-      normalizeText(row?.monster_name) ||
-      normalizeText(row?.name) ||
+      normalizeText(merged?.monster_name) ||
+      normalizeText(merged?.name) ||
       normalizeText(existing?.monster_name) ||
       normalizeText(existing?.name);
 
+    delete merged.__spawnSeed;
+
     next[id] = {
-      ...existing,
-      ...row,
+      ...merged,
       id,
+      display_order:
+        isSeedRow && existingOrder !== null
+          ? existingOrder
+          : incomingOrder ?? existingOrder ?? UNKNOWN_MONSTER_DISPLAY_ORDER,
       name: monsterName,
       monster_name: monsterName,
     };
@@ -110,14 +140,19 @@ function buildMonsterSeedsFromSpawns(spawns = []) {
     const id = Number(spawn?.monster_id);
     if (!id || seen.has(id)) continue;
 
+    const displayOrder = normalizeMonsterDisplayOrder(
+      spawn?.monster_display_order
+    );
+
     seen.add(id);
     rows.push({
+      __spawnSeed: true,
       id,
       name: spawn?.monster_name ?? "",
       monster_name: spawn?.monster_name ?? "",
       system_type: spawn?.system_type ?? "",
       system_type_en: spawn?.system_type_en ?? "",
-      display_order: spawn?.monster_display_order ?? 999999,
+      ...(displayOrder !== null ? { display_order: displayOrder } : {}),
       is_reincarnated: Boolean(spawn?.is_reincarnated),
       reincarnation_parent_id: spawn?.reincarnation_parent_id ?? null,
     });
@@ -199,6 +234,38 @@ function parseAreaList(area) {
 
 function sortJa(a, b) {
   return String(a ?? "").localeCompare(String(b ?? ""), "ja");
+}
+
+function compareSpawnsByMonsterDisplayOrder(a, b, monstersById = {}) {
+  const aMonster = monstersById?.[a?.monster_id] ?? {};
+  const bMonster = monstersById?.[b?.monster_id] ?? {};
+
+  const aOrder =
+    normalizeMonsterDisplayOrder(
+      aMonster?.display_order ??
+        aMonster?.monster_no ??
+        a?.monster_display_order
+    ) ?? UNKNOWN_MONSTER_DISPLAY_ORDER;
+  const bOrder =
+    normalizeMonsterDisplayOrder(
+      bMonster?.display_order ??
+        bMonster?.monster_no ??
+        b?.monster_display_order
+    ) ?? UNKNOWN_MONSTER_DISPLAY_ORDER;
+
+  if (aOrder !== bOrder) return aOrder - bOrder;
+
+  const nameDiff = sortJa(
+    getDisplayValue(aMonster, ["monster_name", "name"], a?.monster_name ?? ""),
+    getDisplayValue(bMonster, ["monster_name", "name"], b?.monster_name ?? "")
+  );
+
+  if (nameDiff !== 0) return nameDiff;
+
+  const idDiff = Number(a?.monster_id ?? 0) - Number(b?.monster_id ?? 0);
+  if (idDiff !== 0) return idDiff;
+
+  return Number(a?.id ?? 0) - Number(b?.id ?? 0);
 }
 
 function useIsMobile(breakpoint = 1200) {
@@ -642,6 +709,14 @@ function MonsterSpawnCarousel({
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
+  const orderedSpawns = useMemo(
+    () =>
+      [...(Array.isArray(spawns) ? spawns : [])].sort((a, b) =>
+        compareSpawnsByMonsterDisplayOrder(a, b, monstersById)
+      ),
+    [spawns, monstersById]
+  );
+
   useEffect(() => {
     const element = scrollerRef.current;
     if (!element) return;
@@ -663,11 +738,11 @@ function MonsterSpawnCarousel({
       element.removeEventListener("scroll", updateScrollState);
       window.removeEventListener("resize", updateScrollState);
     };
-  }, [spawns, mobile]);
+  }, [orderedSpawns, mobile]);
 
-  if (!spawns.length) return null;
+  if (!orderedSpawns.length) return null;
 
-  const showSwipeHint = spawns.length > 1;
+  const showSwipeHint = orderedSpawns.length > 1;
 
   let HintIcon = MdOutlineSwipe;
 
@@ -686,15 +761,20 @@ function MonsterSpawnCarousel({
         mobile ? styles.cardsMobileScroller : styles.cardsDesktopScroller
       }
     >
-      {spawns.map((spawn, index) => {
+      {orderedSpawns.map((spawn) => {
         const monster = monstersById[spawn.monster_id];
+        const spawnKey =
+          spawn.__key ||
+          (spawn.id
+            ? `spawn-${spawn.id}`
+            : `spawn-${spawn.monster_id}-${spawn.map_layer_id ?? "none"}-${normalizeText(spawn.area)}`);
         const emphasized =
           normalizeText(selectedSystemType) &&
           normalizeText(monster?.system_type) === normalizeText(selectedSystemType);
 
         return (
           <MonsterSpawnCard
-            key={spawn.__key || `${spawn.monster_id}-${index}`}
+            key={spawnKey}
             spawn={spawn}
             monster={monster}
             emphasized={Boolean(emphasized)}
@@ -1830,7 +1910,7 @@ export default function MapMonsterBrowser() {
   }, [monstersMatchingPrimarySearch]);
 
   const filteredSpawns = useMemo(() => {
-    return candidateSpawns.filter((spawn) => {
+    const rows = candidateSpawns.filter((spawn) => {
       const monster = monsterMaster[spawn.monster_id];
 
       if (
@@ -1857,6 +1937,10 @@ export default function MapMonsterBrowser() {
 
       return true;
     });
+
+    return [...rows].sort((a, b) =>
+      compareSpawnsByMonsterDisplayOrder(a, b, monsterMaster)
+    );
   }, [
     candidateSpawns,
     monsterMaster,
@@ -1881,9 +1965,11 @@ export default function MapMonsterBrowser() {
 
         return {
           layer,
-          spawns: layerSpawns.map((spawn, index) => ({
+          spawns: layerSpawns.map((spawn) => ({
             ...spawn,
-            __key: `${layer.id}-${spawn.monster_id}-${index}`,
+            __key: spawn?.id
+              ? `spawn-${spawn.id}`
+              : `${layer.id}-${spawn.monster_id}-${normalizeText(spawn?.area)}`,
           })),
         };
       })

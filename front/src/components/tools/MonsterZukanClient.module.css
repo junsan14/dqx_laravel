@@ -1,33 +1,3 @@
-.zukanControls {
-  position: relative;
-  z-index: 10;
-  display: grid;
-  width: min(920px, 100%);
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  align-items: center;
-  gap: 12px;
-  margin: 0 auto 16px;
-}
-
-.systemTypeFilter {
-  grid-column: 3;
-  justify-self: end;
-  width: 150px;
-  
-  min-width: 0;
-}
-
-.systemTypeSelect {
-  width: 100%;
-}
-
-.systemTypeInput {
-  min-height: 38px;
-  padding-top: 7px;
-  padding-bottom: 7px;
-  font-size: 13px;
-}
-
 .summaryText {
   margin-top: 20px;
   margin-bottom: 16px;
@@ -145,9 +115,8 @@
 
 .sortTabWrap {
   display: flex;
-  grid-column: 2;
   justify-content: center;
-  margin-bottom: 0;
+  margin-bottom: 16px;
 }
 
 .sortTabInner {
@@ -340,27 +309,6 @@
 }
 
 @media (max-width: 639px) {
-  .zukanControls {
-    grid-template-columns: 150px minmax(0, 1fr);
-    gap: 8px;
-  }
-
-  .sortTabWrap {
-    grid-column: 1;
-  }
-
-  .systemTypeFilter {
-    grid-column: 2;
-    width: 100%;
-    max-width: 170px;
-  }
-
-  .systemTypeInput {
-    min-height: 32px;
-    padding: 5px 9px;
-    font-size: 11px;
-  }
-
   .sortTabInner {
     width: 150px;
   }

@@ -25,6 +25,15 @@ export default async function Page({ params, searchParams }) {
 
   const page = Number(resolvedSearchParams?.page ?? 1) || 1;
   const sort = resolvedSearchParams?.sort === "kana" ? "kana" : "no";
+  const systemTypeId =
+    Number(resolvedSearchParams?.systemTypeId ?? 0) || null;
 
-  return <MonsterZukanServer params={params} page={page} sort={sort} />;
+  return (
+    <MonsterZukanServer
+      params={params}
+      page={page}
+      sort={sort}
+      systemTypeId={systemTypeId}
+    />
+  );
 }

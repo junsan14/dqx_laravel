@@ -486,12 +486,15 @@ export async function fetchMonsterZukanPage(
   page = 1,
   perPage = 16,
   sort = "no",
-  locale = "ja"
+  locale = "ja",
+  systemTypeId = null
 ) {
   try {
     const safePage = Math.max(1, Number(page) || 1);
     const safePerPage = Math.max(1, Number(perPage) || 16);
     const safeSort = sort === "kana" ? "kana" : "no";
+    const safeSystemTypeId =
+      Number(systemTypeId) > 0 ? Number(systemTypeId) : null;
 
     const res = await api.get("/api/monsters/zukan", {
       params: {
@@ -499,6 +502,9 @@ export async function fetchMonsterZukanPage(
         per_page: safePerPage,
         sort: safeSort,
         locale,
+        ...(safeSystemTypeId
+          ? { system_type_id: safeSystemTypeId }
+          : {}),
       },
     });
 
@@ -518,7 +524,9 @@ export async function fetchMonsterZukanPage(
     console.error(error);
 
     if (error.response) {
-      throw new Error(`モンスター図鑑取得失敗: ${error.response.status}`);
+      throw new Error(
+        `モンスター図鑑取得失敗: ${error.response.status}`
+      );
     }
 
     throw new Error("モンスター図鑑取得失敗");

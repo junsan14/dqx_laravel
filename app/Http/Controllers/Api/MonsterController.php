@@ -973,12 +973,31 @@ if ($searchType === 'equipment') {
 
     public function zukan(Request $request)
     {
-        $perPage = max(1, min((int) $request->query('per_page', 16), 100));
+        $perPage = max(
+            1,
+            min((int) $request->query('per_page', 16), 100)
+        );
+
         $sort = $request->query('sort', 'no');
 
+        $systemTypeId = (int) $request->query(
+            'system_type_id',
+            0
+        );
+
         $query = Monster::query()
-            ->leftJoin('monsters as parents', 'parents.id', '=', 'monsters.reincarnation_parent_id')
-        ->leftJoin('monster_system_types as system_types', 'system_types.id', '=', 'monsters.monster_system_type_id')
+            ->leftJoin(
+                'monsters as parents',
+                'parents.id',
+                '=',
+                'monsters.reincarnation_parent_id'
+            )
+            ->leftJoin(
+                'monster_system_types as system_types',
+                'system_types.id',
+                '=',
+                'monsters.monster_system_type_id'
+            )
             ->selectRaw('
                 monsters.id,
                 monsters.display_order as monster_no,
@@ -1000,9 +1019,18 @@ if ($searchType === 'equipment') {
                 parents.name_en as reincarnation_parent_name_en
             ');
 
+        if ($systemTypeId > 0) {
+            $query->where(
+                'monsters.monster_system_type_id',
+                $systemTypeId
+            );
+        }
+
         if ($sort === 'kana') {
             $query
-                ->orderByRaw('COALESCE(monsters.name_kana, monsters.name)')
+                ->orderByRaw(
+                    'COALESCE(monsters.name_kana, monsters.name)'
+                )
                 ->orderBy('monsters.id');
         } else {
             $query

@@ -1,32 +1,21 @@
 import MonsterZukanClient from "@/components/tools/monster-zukan/MonsterZukanClient";
-import {
-  fetchMonsterSystemTypes,
-  fetchMonsterZukanPage,
-} from "@/lib/monsters";
+import { fetchMonsterZukanPage } from "@/lib/monsters";
 
 export default async function MonsterZukanServer({
   params,
   page = 1,
   sort = "no",
-  systemTypeId = null,
 }) {
   const locale = params?.locale ?? "ja";
   const safePage = Math.max(1, Number(page) || 1);
   const safeSort = sort === "kana" ? "kana" : "no";
-  const safeSystemTypeId = Number(systemTypeId) > 0
-    ? Number(systemTypeId)
-    : null;
 
-  const [monsterPage, systemTypes] = await Promise.all([
-    fetchMonsterZukanPage(
-      safePage,
-      16,
-      safeSort,
-      locale,
-      safeSystemTypeId
-    ),
-    fetchMonsterSystemTypes(locale),
-  ]);
+  const monsterPage = await fetchMonsterZukanPage(
+    safePage,
+    16,
+    safeSort,
+    locale
+  );
 
   return (
     <MonsterZukanClient
@@ -36,8 +25,6 @@ export default async function MonsterZukanServer({
       total={monsterPage.total}
       perPage={monsterPage.per_page}
       sort={safeSort}
-      systemTypes={systemTypes}
-      systemTypeId={safeSystemTypeId}
     />
   );
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import ProgressIntlLink from "@/components/common/ProgressIntlLink";
-import SearchableSelect from "@/components/common/SearchableSelect";
 import { useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -36,25 +35,6 @@ function withLocalePath(locale, path) {
   if (!path) return `/${locale}`;
   if (path === "/") return `/${locale}`;
   return `/${locale}${path.startsWith("/") ? path : `/${path}`}`;
-}
-
-function buildZukanHref(
-  locale,
-  { page = 1, sort = "no", systemTypeId = "" } = {}
-) {
-  const params = new URLSearchParams();
-
-  params.set("page", String(Math.max(1, Number(page) || 1)));
-  params.set("sort", sort === "kana" ? "kana" : "no");
-
-  if (Number(systemTypeId) > 0) {
-    params.set("systemTypeId", String(Number(systemTypeId)));
-  }
-
-  return `${withLocalePath(
-    locale,
-    "/tools/monster-zukan"
-  )}?${params.toString()}`;
 }
 
 function MonsterCard({ monster, backHref, t }) {
@@ -95,13 +75,7 @@ function MonsterCard({ monster, backHref, t }) {
   );
 }
 
-function ZukanControls({
-  sort,
-  locale,
-  t,
-  systemTypes,
-  systemTypeId,
-}) {
+function SortTabs({ sort, locale, t }) {
   const router = useRouter();
 
   const tabs = [
@@ -109,130 +83,50 @@ function ZukanControls({
     { key: "kana", label: t("sort.kana"), soon: false },
   ];
 
-  const systemTypeOptions = useMemo(() => {
-    const isEnglish = String(locale).toLowerCase().startsWith("en");
-
-    const allOption = {
-      id: "",
-      label: isEnglish ? "All families" : "すべて",
-      searchText: isEnglish ? "All families" : "すべて",
-    };
-
-    const rows = (Array.isArray(systemTypes) ? systemTypes : [])
-      .filter((row) => Number(row?.id ?? 0) > 0)
-      .map((row) => {
-        const nameJa = String(row?.name ?? "").trim();
-        const nameEn = String(row?.name_en ?? "").trim();
-        const label = isEnglish ? nameEn || nameJa : nameJa || nameEn;
-
-        return {
-          ...row,
-          id: String(row.id),
-          label,
-          searchText: [nameJa, nameEn].filter(Boolean).join(" "),
-        };
-      });
-
-    return [allOption, ...rows];
-  }, [locale, systemTypes]);
-
   const moveSort = (nextSort, soon = false) => {
     if (soon) return;
 
     router.push(
-      buildZukanHref(locale, {
-        page: 1,
-        sort: nextSort,
-        systemTypeId,
-      }),
-      { scroll: false }
-    );
-  };
-
-  const moveSystemType = (nextValue) => {
-    router.push(
-      buildZukanHref(locale, {
-        page: 1,
-        sort,
-        systemTypeId: nextValue,
-      }),
+      `${withLocalePath(locale, "/tools/monster-zukan")}?page=1&sort=${nextSort}`,
       { scroll: false }
     );
   };
 
   return (
-    <div className={styles.zukanControls}>
-      <div className={styles.sortTabWrap}>
-        <div className={styles.sortTabInner}>
-          {tabs.map((tab) => {
-            const isActive = sort === tab.key;
+    <div className={styles.sortTabWrap}>
+      <div className={styles.sortTabInner}>
+        {tabs.map((tab) => {
+          const isActive = sort === tab.key;
 
-            return (
-              <button
-                key={tab.key}
-                type="button"
-                onClick={() => moveSort(tab.key, tab.soon)}
-                className={`${styles.sortTabButton} ${
-                  isActive ? styles.sortTabButtonActive : ""
-                }`}
-                disabled={tab.soon}
-                title={tab.soon ? t("sort.kanaSoonTitle") : ""}
-              >
-                <span className={styles.sortTabLabel}>
-                  <span>{tab.label}</span>
+          return (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => moveSort(tab.key, tab.soon)}
+              className={`${styles.sortTabButton} ${
+                isActive ? styles.sortTabButtonActive : ""
+              }`}
+              disabled={tab.soon}
+              title={tab.soon ? t("sort.kanaSoonTitle") : ""}
+            >
+              <span className={styles.sortTabLabel}>
+                <span>{tab.label}</span>
 
-                  {tab.soon && (
-                    <span className={styles.sortSoonBadge}>
-                      {t("sort.comingSoon")}
-                    </span>
-                  )}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-      <div className={styles.systemTypeFilter}>
-        <SearchableSelect
-          value={systemTypeId ? String(systemTypeId) : ""}
-          onChange={moveSystemType}
-          options={systemTypeOptions}
-          selectOnFocus
-          placeholder={
-            String(locale).toLowerCase().startsWith("en")
-              ? "Select family"
-              : "系統で選ぶ"
-          }
-          emptyText={
-            String(locale).toLowerCase().startsWith("en")
-              ? "No families"
-              : "系統がありません"
-          }
-          getOptionValue={(option) => option.id}
-          getOptionLabel={(option) => option.label}
-          getOptionSearchText={(option) => option.searchText}
-          maxResults={30}
-          className={styles.systemTypeSelect}
-          inputClassName={styles.systemTypeInput}
-          ariaLabel={
-            String(locale).toLowerCase().startsWith("en")
-              ? "Select monster family"
-              : "モンスター系統で絞り込む"
-          }
-        />
+                {tab.soon && (
+                  <span className={styles.sortSoonBadge}>
+                    {t("sort.comingSoon")}
+                  </span>
+                )}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
 }
 
-function Pagination({
-  currentPage,
-  lastPage,
-  sort,
-  systemTypeId,
-  locale,
-  t,
-}) {
+function Pagination({ currentPage, lastPage, sort, locale, t }) {
   const router = useRouter();
   const [inputPage, setInputPage] = useState(String(currentPage));
 
@@ -293,11 +187,7 @@ function Pagination({
     const safePage = Math.max(1, Math.min(Number(page) || 1, safeLastPage));
 
     router.push(
-      buildZukanHref(locale, {
-        page: safePage,
-        sort,
-        systemTypeId,
-      }),
+      `${withLocalePath(locale, "/tools/monster-zukan")}?page=${safePage}&sort=${sort}`,
       { scroll: false }
     );
 
@@ -393,8 +283,6 @@ export default function MonsterZukanClient({
   total = 0,
   perPage = 16,
   sort = "no",
-  systemTypes = [],
-  systemTypeId = null,
 }) {
   const t = useTranslations("MonsterZukan");
   const locale = useLocale();
@@ -420,13 +308,8 @@ export default function MonsterZukanClient({
     <main>
       <PageHeroTitle kicker="DQX MONSTER ZUKAN" title={t("title")} />
 
-      <ZukanControls
-        sort={sort}
-        locale={locale}
-        t={t}
-        systemTypes={systemTypes}
-        systemTypeId={systemTypeId}
-      />
+      <SortTabs sort={sort} locale={locale} t={t} />
+
 
       {safeMonsters.length === 0 ? (
         <div className={styles.emptyBox}>{t("empty")}</div>
@@ -451,7 +334,6 @@ export default function MonsterZukanClient({
         currentPage={safeCurrentPage}
         lastPage={safeLastPage}
         sort={sort}
-        systemTypeId={systemTypeId}
         locale={locale}
         t={t}
       />

@@ -200,7 +200,11 @@ class DqxSoubaMaterialScraper
                 continue;
             }
             //1.5倍で更新
-            $result[$this->normalizeName($name)] = (int) ceil($price * 1.21);
+            $normalizedName = $this->normalizeName($name);
+
+            $result[$normalizedName] = $normalizedName === '汗と涙の結晶'
+                ? $price
+                : (int) ceil($price * 1.21);
         }
 
         return $result;

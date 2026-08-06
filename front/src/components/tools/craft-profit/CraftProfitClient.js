@@ -40,7 +40,10 @@ const MIN_SEARCH_LENGTH = 2;
 const SEARCH_DEBOUNCE_MS = 300;
 const ALL_SLOT = "__all__";
 const FAVORITES_STORAGE_KEY = "dqx-tool:craft-profit:favorites:v1";
+const SHARED_MATERIAL_PRICES_STORAGE_KEY =
+  "dqx-tool:craft-profit:shared-material-prices:v1";
 const FAVORITES_LIMIT = 100;
+const SHARED_MATERIAL_PRICES_LIMIT = 2000;
 
 function getSelectionType(selection) {
   const groupKind = String(
@@ -59,6 +62,210 @@ function getFavoriteKey(favorite) {
   return id ? `${type}:${id}` : "";
 }
 
+function normalizeSavedMaterialPrice(value) {
+  if (!value || typeof value !== "object") return null;
+
+  const itemId =
+    value.itemId ?? value.item_id ?? value.materialId ?? value.material_id ?? null;
+  const materialKey = String(
+    value.materialKey ?? value.material_key ?? ""
+  ).trim();
+  const materialName = String(
+    value.materialName ?? value.material_name ?? value.name ?? ""
+  ).trim();
+  const unitCost = Number(
+    value.unitCost ?? value.unit_cost ?? value.price ?? 0
+  );
+
+  if (
+    (itemId == null || itemId === "") &&
+    !materialKey &&
+    !materialName
+  ) {
+    return null;
+  }
+
+  if (!Number.isFinite(unitCost) || unitCost < 0) return null;
+
+  return {
+    itemId:
+      itemId == null || itemId === ""
+        ? null
+        : Number.isFinite(Number(itemId))
+        ? Number(itemId)
+        : String(itemId),
+    materialKey,
+    materialName,
+    unitCost,
+  };
+}
+
+function normalizeSavedMaterialPrices(value) {
+  if (Array.isArray(value)) {
+    return value.map(normalizeSavedMaterialPrice).filter(Boolean);
+  }
+
+  // 旧形式や試作版で単価マップを保存していた場合にも対応する。
+  if (value && typeof value === "object") {
+    return Object.entries(value)
+      .map(([materialKey, unitCost]) =>
+        normalizeSavedMaterialPrice({
+          materialKey,
+          unitCost,
+        })
+      )
+      .filter(Boolean);
+  }
+
+  return [];
+}
+
+function getSavedMaterialPriceIdentity(value) {
+  const item = normalizeSavedMaterialPrice(value);
+  if (!item) return "";
+
+  if (item.itemId != null && item.itemId !== "") {
+    return `item:${String(item.itemId)}`;
+  }
+
+  if (item.materialName) {
+    return `name:${item.materialName.trim().toLocaleLowerCase("ja")}`;
+  }
+
+  return item.materialKey ? `key:${item.materialKey}` : "";
+}
+
+function mergeSavedMaterialPrices(current, incoming) {
+  const merged = new Map();
+
+  for (const item of [
+    ...normalizeSavedMaterialPrices(current),
+    ...normalizeSavedMaterialPrices(incoming),
+  ]) {
+    const key = getSavedMaterialPriceIdentity(item);
+    if (key) merged.set(key, item);
+  }
+
+  return Array.from(merged.values()).slice(
+    -SHARED_MATERIAL_PRICES_LIMIT
+  );
+}
+
+function readSharedMaterialPrices() {
+  if (typeof window === "undefined") return [];
+
+  try {
+    return normalizeSavedMaterialPrices(
+      JSON.parse(
+        window.localStorage.getItem(
+          SHARED_MATERIAL_PRICES_STORAGE_KEY
+        ) || "[]"
+      )
+    );
+  } catch (error) {
+    console.warn("Failed to read shared material prices", error);
+    return [];
+  }
+}
+
+function writeSharedMaterialPrices(prices) {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.localStorage.setItem(
+      SHARED_MATERIAL_PRICES_STORAGE_KEY,
+      JSON.stringify(
+        normalizeSavedMaterialPrices(prices).slice(
+          -SHARED_MATERIAL_PRICES_LIMIT
+        )
+      )
+    );
+  } catch (error) {
+    console.warn("Failed to save shared material prices", error);
+  }
+}
+
+function buildSavedMaterialPrices(rows, unitCostMap) {
+  return (Array.isArray(rows) ? rows : [])
+    .map((row) => {
+      const materialKey = String(row?.materialKey ?? "").trim();
+      const materialName = String(row?.materialName ?? "").trim();
+      const itemId = row?.itemId ?? row?.item_id ?? null;
+      const unitCost = Number(
+        unitCostMap?.[materialKey] ?? row?.defaultUnitCost ?? 0
+      );
+
+      return normalizeSavedMaterialPrice({
+        itemId,
+        materialKey,
+        materialName,
+        unitCost,
+      });
+    })
+    .filter(Boolean);
+}
+
+function applySavedMaterialPrices(
+  selection,
+  locale,
+  savedMaterialPrices,
+  baseUnitCostMap = null
+) {
+  const initialMap = baseUnitCostMap
+    ? { ...baseUnitCostMap }
+    : buildInitialUnitCostMap(selection, locale);
+  const saved = normalizeSavedMaterialPrices(savedMaterialPrices);
+
+  if (!saved.length) return initialMap;
+
+  const matrix = buildMatrix(selection, locale);
+  const materialRows = Array.isArray(matrix?.rows) ? matrix.rows : [];
+
+  const byKey = new Map();
+  const byItemId = new Map();
+  const byName = new Map();
+
+  for (const item of saved) {
+    if (item.materialKey) {
+      byKey.set(item.materialKey, item.unitCost);
+    }
+
+    if (item.itemId != null && item.itemId !== "") {
+      byItemId.set(String(item.itemId), item.unitCost);
+    }
+
+    if (item.materialName) {
+      byName.set(item.materialName, item.unitCost);
+    }
+  }
+
+  for (const row of materialRows) {
+    const materialKey = String(row?.materialKey ?? "").trim();
+    const materialName = String(row?.materialName ?? "").trim();
+    const itemId = row?.itemId ?? row?.item_id ?? null;
+
+    let savedCost;
+
+    if (materialKey && byKey.has(materialKey)) {
+      savedCost = byKey.get(materialKey);
+    } else if (
+      itemId != null &&
+      itemId !== "" &&
+      byItemId.has(String(itemId))
+    ) {
+      savedCost = byItemId.get(String(itemId));
+    } else if (materialName && byName.has(materialName)) {
+      savedCost = byName.get(materialName);
+    }
+
+    if (savedCost != null) {
+      initialMap[materialKey] = savedCost;
+    }
+  }
+
+  return initialMap;
+}
+
 function normalizeFavorite(value) {
   if (!value || typeof value !== "object") return null;
 
@@ -73,6 +280,12 @@ function normalizeFavorite(value) {
     id,
     name,
     groupKind: String(value.groupKind ?? value.group_kind ?? "").trim(),
+    materialPrices: normalizeSavedMaterialPrices(
+      value.materialPrices ??
+        value.material_prices ??
+        value.unitCostMap ??
+        value.unit_cost_map
+    ),
     savedAt: Number(value.savedAt ?? 0) || 0,
   };
 }
@@ -119,7 +332,11 @@ function writeFavoriteEquipments(favorites) {
   }
 }
 
-function createFavoriteFromSelection(selection) {
+function createFavoriteFromSelection(
+  selection,
+  rows = [],
+  unitCostMap = {}
+) {
   const id = String(selection?.id ?? "").trim();
   const name = String(selection?.name ?? "").trim();
 
@@ -132,6 +349,7 @@ function createFavoriteFromSelection(selection) {
     groupKind: String(
       selection?.groupKind ?? selection?.group_kind ?? ""
     ).trim(),
+    materialPrices: buildSavedMaterialPrices(rows, unitCostMap),
     savedAt: Date.now(),
   };
 }
@@ -410,6 +628,8 @@ export default function CraftProfitClient() {
   const locale = useLocale();
   const selectionRequestRef = useRef(0);
   const selectingNameRef = useRef("");
+  const pendingFavoriteMaterialPricesRef = useRef(null);
+  const sharedMaterialPricesRef = useRef([]);
 
   const [sets, setSets] = useState([]);
   const [selectedSet, setSelectedSet] = useState(null);
@@ -438,6 +658,7 @@ export default function CraftProfitClient() {
 
   useEffect(() => {
     setFavoriteEquipments(readFavoriteEquipments());
+    sharedMaterialPricesRef.current = readSharedMaterialPrices();
   }, []);
 
   useEffect(() => {
@@ -540,7 +761,27 @@ export default function CraftProfitClient() {
   useEffect(() => {
     if (selectedSet?.name) {
       setSetQuery(selectedSet.name);
-      setUnitCostMap(buildInitialUnitCostMap(selectedSet, locale));
+
+      const pendingMaterialPrices =
+        pendingFavoriteMaterialPricesRef.current;
+      const sharedUnitCostMap = applySavedMaterialPrices(
+        selectedSet,
+        locale,
+        sharedMaterialPricesRef.current
+      );
+
+      setUnitCostMap(
+        pendingMaterialPrices
+          ? applySavedMaterialPrices(
+              selectedSet,
+              locale,
+              pendingMaterialPrices,
+              sharedUnitCostMap
+            )
+          : sharedUnitCostMap
+      );
+
+      pendingFavoriteMaterialPricesRef.current = null;
     } else {
       setUnitCostMap({});
     }
@@ -747,7 +988,7 @@ export default function CraftProfitClient() {
   }, [slots, activeSlot]);
 
   const loadEquipmentSelection = async (selection) => {
-    if (!selection?.id) return;
+    if (!selection?.id) return null;
 
     const requestId = selectionRequestRef.current + 1;
     selectionRequestRef.current = requestId;
@@ -821,17 +1062,19 @@ export default function CraftProfitClient() {
         throw new Error("Equipment detail could not be built");
       }
 
-      if (selectionRequestRef.current !== requestId) return;
+      if (selectionRequestRef.current !== requestId) return null;
       setSelectedEquipmentRows(equipmentRows);
       setSelectedSet(resolvedSet);
+      return resolvedSet;
     } catch (error) {
-      if (selectionRequestRef.current !== requestId) return;
+      if (selectionRequestRef.current !== requestId) return null;
       console.error("Equipment detail load error:", error);
       setSearchError(
         locale === "en"
           ? "Failed to load equipment details"
           : "装備詳細の取得に失敗しました"
       );
+      return null;
     } finally {
       if (selectionRequestRef.current === requestId) {
         selectingNameRef.current = "";
@@ -849,6 +1092,7 @@ export default function CraftProfitClient() {
       return;
     }
 
+    pendingFavoriteMaterialPricesRef.current = null;
     await loadEquipmentSelection(nextSet);
   };
 
@@ -872,18 +1116,64 @@ export default function CraftProfitClient() {
   );
 
   const toggleSelectedFavorite = () => {
-    if (!selectedFavorite) return;
+    if (!selectedFavorite || typeof window === "undefined") return;
+
+    const currentKey = getFavoriteKey(selectedFavorite);
+    const exists = favoriteEquipments.some(
+      (favorite) => getFavoriteKey(favorite) === currentKey
+    );
+
+    if (exists) {
+      const confirmed = window.confirm(
+        locale === "en"
+          ? `Remove "${selectedSet?.name ?? selectedFavorite.name}" from favorites?`
+          : `「${selectedSet?.name ?? selectedFavorite.name}」をお気に入りから削除しますか？`
+      );
+
+      if (!confirmed) return;
+
+      setFavoriteEquipments((previous) => {
+        const next = previous.filter(
+          (favorite) => getFavoriteKey(favorite) !== currentKey
+        );
+
+        writeFavoriteEquipments(next);
+        return next;
+      });
+
+      return;
+    }
+
+    const confirmed = window.confirm(
+      locale === "en"
+        ? `Add "${selectedSet?.name ?? selectedFavorite.name}" to favorites?\n\nMaterial prices entered now will also be saved.`
+        : `「${selectedSet?.name ?? selectedFavorite.name}」をお気に入りにしますか？\n\n※現在入力されている素材の金額も保存され、同じ素材を使うほかの装備にも反映されます。`
+    );
+
+    if (!confirmed) return;
+
+    const favoriteSnapshot = createFavoriteFromSelection(
+      selectedSet,
+      rows,
+      unitCostMap
+    );
+
+    if (!favoriteSnapshot) return;
+
+    sharedMaterialPricesRef.current = mergeSavedMaterialPrices(
+      sharedMaterialPricesRef.current,
+      favoriteSnapshot.materialPrices
+    );
+    writeSharedMaterialPrices(sharedMaterialPricesRef.current);
 
     setFavoriteEquipments((previous) => {
-      const currentKey = getFavoriteKey(selectedFavorite);
-      const exists = previous.some(
-        (favorite) => getFavoriteKey(favorite) === currentKey
-      );
-      const next = exists
-        ? previous.filter(
-            (favorite) => getFavoriteKey(favorite) !== currentKey
-          )
-        : [selectedFavorite, ...previous].slice(0, FAVORITES_LIMIT);
+      const next = [
+        favoriteSnapshot,
+        ...previous.filter(
+          (favorite) =>
+            getFavoriteKey(favorite) !== getFavoriteKey(favoriteSnapshot)
+        ),
+      ].slice(0, FAVORITES_LIMIT);
 
       writeFavoriteEquipments(next);
       return next;
@@ -896,14 +1186,50 @@ export default function CraftProfitClient() {
     );
 
     if (!favorite) return;
-    await loadEquipmentSelection(favorite);
+
+    pendingFavoriteMaterialPricesRef.current =
+      favorite.materialPrices ?? [];
+
+    sharedMaterialPricesRef.current = mergeSavedMaterialPrices(
+      sharedMaterialPricesRef.current,
+      favorite.materialPrices ?? []
+    );
+    writeSharedMaterialPrices(sharedMaterialPricesRef.current);
+
+    const resolvedSet = await loadEquipmentSelection(favorite);
+
+    if (!resolvedSet) {
+      pendingFavoriteMaterialPricesRef.current = null;
+    }
   };
 
   const updateUnitCost = (materialKey, value) => {
+    const unitCost = Number(value);
+
     setUnitCostMap((previous) => ({
       ...previous,
-      [materialKey]: Number(value),
+      [materialKey]: unitCost,
     }));
+
+    const materialRow = rows.find(
+      (row) => String(row?.materialKey ?? "") === String(materialKey)
+    );
+
+    const savedPrice = normalizeSavedMaterialPrice({
+      itemId: materialRow?.itemId ?? materialRow?.item_id ?? null,
+      materialKey,
+      materialName:
+        materialRow?.materialName ?? materialRow?.name ?? "",
+      unitCost,
+    });
+
+    if (!savedPrice) return;
+
+    sharedMaterialPricesRef.current = mergeSavedMaterialPrices(
+      sharedMaterialPricesRef.current,
+      [savedPrice]
+    );
+    writeSharedMaterialPrices(sharedMaterialPricesRef.current);
   };
 
   const materialCost = useMemo(

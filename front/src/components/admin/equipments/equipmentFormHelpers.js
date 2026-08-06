@@ -6,118 +6,62 @@ export const GROUP_KIND_OPTIONS = [
   "shield_set",
   "weapon_set",
   "craft_tool_set",
+  "other_set",
   "single",
 ];
 
-export const SLOT_OPTIONS = [
-  "頭",
-  "体上",
-  "体下",
-  "腕",
-  "足",
-  "盾",
-  "武器",
-  "その他",
-];
-
-export const GRID_TYPE_PRESETS = {
-  鎧頭: { rows: 2, cols: 2, disabledCells: [] },
-  鎧上: { rows: 3, cols: 2, disabledCells: [] },
-  鎧下: { rows: 4, cols: 2, disabledCells: [] },
-  鎧腕: { rows: 3, cols: 1, disabledCells: [] },
-  鎧足: { rows: 3, cols: 2, disabledCells: [[0, 0], [1, 0]] },
-
-  裁縫頭: { rows: 2, cols: 3, disabledCells: [[0, 0], [0, 2]] },
-  裁縫上: { rows: 3, cols: 3, disabledCells: [] },
-  裁縫下: { rows: 3, cols: 2, disabledCells: [] },
-  裁縫腕: { rows: 2, cols: 3, disabledCells: [] },
-  裁縫足: { rows: 2, cols: 2, disabledCells: [] },
-
-  盾: { rows: 2, cols: 2, disabledCells: [] },
-
-  片手剣: { rows: 3, cols: 1, disabledCells: [] },
-  両手剣: { rows: 4, cols: 2, disabledCells: [] },
-  短剣: { rows: 2, cols: 1, disabledCells: [] },
-  ヤリ: { rows: 4, cols: 1, disabledCells: [] },
-  オノ: { rows: 4, cols: 2, disabledCells: [[2, 1], [3, 1]] },
-  ハンマー: { rows: 3, cols: 2, disabledCells: [] },
-  ツメ: { rows: 2, cols: 2, disabledCells: [] },
-  ムチ: { rows: 4, cols: 2, disabledCells: [[3, 1]] },
-  ブーメラン: { rows: 3, cols: 2, disabledCells: [[1, 0]] },
-  スティック: { rows: 2, cols: 1, disabledCells: [] },
-  両手杖: { rows: 3, cols: 1, disabledCells: [] },
-  棍: { rows: 3, cols: 2, disabledCells: [] },
-  扇: { rows: 2, cols: 2, disabledCells: [] },
-  弓: { rows: 3, cols: 2, disabledCells: [[1, 1]] },
-  鎌: { rows: 4, cols: 2, disabledCells: [[1, 1], [2, 1], [3, 1]] },
-
-  道具ハンマー: { rows: 3, cols: 2, disabledCells: [[2, 1]] },
-  道具木工刀: { rows: 3, cols: 1, disabledCells: [] },
-  道具錬金ツボ: { rows: 3, cols: 2, disabledCells: [] },
-  道具錬金ランプ: { rows: 2, cols: 2, disabledCells: [] },
-  道具さいほう針: { rows: 2, cols: 1, disabledCells: [] },
-  道具フライパン: { rows: 4, cols: 2, disabledCells: [[3, 1]] },
-};
-
-export const GRID_TYPE_OPTIONS = Object.keys(GRID_TYPE_PRESETS);
-
 export const GROUP_MEMBER_PRESETS = {
   armor_set: [
-    { key: "head", label: "鎧頭", slot: "頭", slotGridType: "鎧頭" },
-    { key: "bodyTop", label: "鎧上", slot: "体上", slotGridType: "鎧上" },
-    { key: "bodyBottom", label: "鎧下", slot: "体下", slotGridType: "鎧下" },
-    { key: "arm", label: "鎧腕", slot: "腕", slotGridType: "鎧腕" },
-    { key: "foot", label: "鎧足", slot: "足", slotGridType: "鎧足" },
+    { key: "head", label: "鎧頭", craftProductTypeKey: "armor_head" },
+    { key: "bodyTop", label: "鎧上", craftProductTypeKey: "armor_upper" },
+    { key: "bodyBottom", label: "鎧下", craftProductTypeKey: "armor_lower" },
+    { key: "arm", label: "鎧腕", craftProductTypeKey: "armor_arms" },
+    { key: "foot", label: "鎧足", craftProductTypeKey: "armor_feet" },
   ],
   tailoring_set: [
-    { key: "head", label: "裁縫頭", slot: "頭", slotGridType: "裁縫頭" },
-    { key: "bodyTop", label: "裁縫上", slot: "体上", slotGridType: "裁縫上" },
-    { key: "bodyBottom", label: "裁縫下", slot: "体下", slotGridType: "裁縫下" },
-    { key: "arm", label: "裁縫腕", slot: "腕", slotGridType: "裁縫腕" },
-    { key: "foot", label: "裁縫足", slot: "足", slotGridType: "裁縫足" },
+    { key: "head", label: "裁縫頭", craftProductTypeKey: "tailoring_head" },
+    { key: "bodyTop", label: "裁縫上", craftProductTypeKey: "tailoring_upper" },
+    { key: "bodyBottom", label: "裁縫下", craftProductTypeKey: "tailoring_lower" },
+    { key: "arm", label: "裁縫腕", craftProductTypeKey: "tailoring_arms" },
+    { key: "foot", label: "裁縫足", craftProductTypeKey: "tailoring_feet" },
   ],
   shield_set: [
-    { key: "shield", label: "盾", slot: "盾", slotGridType: "盾" },
+    { key: "shield", label: "盾", craftProductTypeKey: "shield_small" },
   ],
   weapon_set: [
-    { key: "weapon", label: "武器", slot: "武器", slotGridType: "" },
+    { key: "weapon", label: "武器", craftProductTypeKey: "" },
   ],
+  other_set: [],
   craft_tool_set: [
     {
       key: "needle",
       label: "さいほう針",
-      slot: "その他",
-      slotGridType: "道具さいほう針",
+      craftProductTypeKey: "tool_sewing_needle",
     },
     {
       key: "wood",
       label: "木工刀",
-      slot: "その他",
-      slotGridType: "道具木工刀",
+      craftProductTypeKey: "tool_woodworking_knife",
     },
     {
       key: "lamp",
       label: "錬金ランプ",
-      slot: "その他",
-      slotGridType: "道具錬金ランプ",
+      craftProductTypeKey: "tool_alchemy_lamp",
     },
     {
       key: "pot",
       label: "錬金ツボ",
-      slot: "その他",
-      slotGridType: "道具錬金ツボ",
+      craftProductTypeKey: "tool_alchemy_pot",
     },
     {
       key: "pan",
       label: "フライパン",
-      slot: "その他",
-      slotGridType: "道具フライパン",
+      craftProductTypeKey: "tool_frying_pan",
     },
     {
       key: "hammer",
       label: "鍛冶ハンマー",
-      slot: "その他",
-      slotGridType: "道具ハンマー",
+      craftProductTypeKey: "tool_hammer",
     },
   ],
 };
@@ -126,14 +70,15 @@ export function cx(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export function str(v) {
-  return v == null ? "" : String(v);
+export function str(value) {
+  return value == null ? "" : String(value);
 }
 
 export function safeJsonParse(value, fallback) {
   if (value == null || value === "") return fallback;
   if (Array.isArray(value)) return value;
   if (typeof value === "object") return value;
+
   try {
     return JSON.parse(value);
   } catch {
@@ -153,6 +98,7 @@ export function makeKey() {
   if (typeof crypto !== "undefined" && crypto.randomUUID) {
     return crypto.randomUUID();
   }
+
   return `k_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 }
 
@@ -161,100 +107,138 @@ export function slugify(text) {
     .trim()
     .toLowerCase()
     .replace(/\s+/g, "_")
-    .replace(/[ ]+/g, "_")
     .replace(/[^\p{L}\p{N}_-]/gu, "");
 }
 
-export function makeItemId(row, equipmentTypes = []) {
-  const itemName = str(row?.itemName).trim();
-  const equipLevel = str(row?.equipLevel).trim();
-  const slot = str(row?.slot).trim();
-  const equipmentTypeId = str(row?.equipmentTypeId).trim();
+export function getCraftProductType(row) {
+  return row?.craftProductType ?? row?.craft_product_type ?? null;
+}
 
-  const currentType =
-    row?.equipmentType ??
-    equipmentTypes.find((t) => String(t.id) === String(equipmentTypeId)) ??
+export function getCraftProductTypeName(row) {
+  const craftProductType = getCraftProductType(row);
+  return str(craftProductType?.name).trim();
+}
+
+export function getCraftTypeFromProductType(craftProductType) {
+  return (
+    craftProductType?.craftType ??
+    craftProductType?.craft_type ??
+    null
+  );
+}
+
+export function getCraftTypeIdFromProductType(craftProductType) {
+  const craftType = getCraftTypeFromProductType(craftProductType);
+
+  return str(
+    craftProductType?.craftTypeId ??
+      craftProductType?.craft_type_id ??
+      craftType?.id
+  ).trim();
+}
+
+export function getCraftTypeNameFromProductType(craftProductType) {
+  const craftType = getCraftTypeFromProductType(craftProductType);
+
+  return str(
+    craftProductType?.craftTypeName ??
+      craftProductType?.craft_type_name ??
+      craftType?.name
+  ).trim();
+}
+
+export function buildCraftTypeOptions(craftProductTypes = []) {
+  const map = new Map();
+
+  (Array.isArray(craftProductTypes) ? craftProductTypes : []).forEach((type) => {
+    const id = getCraftTypeIdFromProductType(type);
+    if (!id) return;
+
+    const name = getCraftTypeNameFromProductType(type) || `#${id}`;
+
+    if (!map.has(id)) {
+      map.set(id, { id, name });
+    }
+  });
+
+  return Array.from(map.values()).sort((a, b) =>
+    str(a.name).localeCompare(str(b.name), "ja")
+  );
+}
+
+export function filterCraftProductTypesByCraftType(
+  craftProductTypes = [],
+  craftTypeId = ""
+) {
+  const targetId = str(craftTypeId).trim();
+  if (!targetId) return [];
+
+  return (Array.isArray(craftProductTypes) ? craftProductTypes : []).filter(
+    (type) => getCraftTypeIdFromProductType(type) === targetId
+  );
+}
+
+export function getCraftProductGrid(craftProductTypeLike) {
+  const craftProductType =
+    craftProductTypeLike?.craftProductType ??
+    craftProductTypeLike?.craft_product_type ??
+    craftProductTypeLike ??
     null;
 
-  const typeKey = str(currentType?.key).trim().toLowerCase();
-  const kind = str(currentType?.kind).trim().toLowerCase();
-  const craftTypeId = String(currentType?.craft_type_id ?? "");
+  const raw = craftProductType?.gridJson ?? craftProductType?.grid_json ?? null;
+  const parsed = safeJsonParse(raw, null);
 
-  const slotMap = {
-    頭: "head",
-    からだ上: "bodyup",
-    体上: "bodyup",
-    からだ下: "bodydown",
-    体下: "bodydown",
-    腕: "arm",
-    足: "leg",
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+    return null;
+  }
+
+  const rows = Number(parsed.rows ?? 0);
+  const cols = Number(parsed.cols ?? 0);
+  const disabledCells = Array.isArray(parsed.disabledCells)
+    ? parsed.disabledCells
+    : Array.isArray(parsed.disabled_cells)
+    ? parsed.disabled_cells
+    : [];
+
+  if (!Number.isFinite(rows) || rows <= 0 || !Number.isFinite(cols) || cols <= 0) {
+    return null;
+  }
+
+  return {
+    rows,
+    cols,
+    disabledCells: disabledCells
+      .filter((cell) => Array.isArray(cell) && cell.length >= 2)
+      .map((cell) => [Number(cell[0]), Number(cell[1])]),
   };
-
-  const slotKey = slotMap[slot] ?? "";
-
-  const craftPrefixMap = {
-    "3": "armor",
-    "4": "tailor",
-  };
-
-  const craftPrefix = craftPrefixMap[craftTypeId] ?? "armor";
-
-  if (kind === "weapon" && typeKey && equipLevel) {
-    return `${typeKey}_${equipLevel}`;
-  }
-
-  if (kind === "shield" && typeKey && equipLevel) {
-    return `${typeKey}_${equipLevel}`;
-  }
-
-  if (kind === "armor" && equipLevel && slotKey && equipmentTypeId) {
-    return `${craftPrefix}_${equipLevel}_${slotKey}_${equipmentTypeId}`;
-  }
-
-  if (itemName) {
-    return itemName
-      .toLowerCase()
-      .replace(/\s+/g, "_")
-      .replace(/[^\w-]/g, "");
-  }
-
-  return "";
 }
 
-
-
-
-
-
-
-
-
-
-export function getGridPreset(gridType) {
-  const type = str(gridType).trim();
-  return GRID_TYPE_PRESETS[type] ?? null;
-}
-
-export function isDisabledCell(gridType, r, c) {
-  const preset = getGridPreset(gridType);
+export function isDisabledCraftProductCell(craftProductType, rowIndex, colIndex) {
+  const preset = getCraftProductGrid(craftProductType);
   if (!preset) return false;
-  return preset.disabledCells.some(([rr, cc]) => rr === r && cc === c);
+
+  return preset.disabledCells.some(
+    ([row, col]) => row === rowIndex && col === colIndex
+  );
 }
 
 export function normalizeGrid(gridLike, colsHint = 0) {
   if (!gridLike) return { grid: [], rows: 0, cols: colsHint };
 
-  if (Array.isArray(gridLike) && gridLike.every((x) => Array.isArray(x))) {
+  if (Array.isArray(gridLike) && gridLike.every((item) => Array.isArray(item))) {
     const rows = gridLike.length;
     const cols = Math.max(
       colsHint,
-      ...gridLike.map((r) => (Array.isArray(r) ? r.length : 0)),
+      ...gridLike.map((row) => (Array.isArray(row) ? row.length : 0)),
       0
     );
 
     return {
-      grid: Array.from({ length: rows }, (_, r) =>
-        Array.from({ length: cols }, (_, c) => gridLike?.[r]?.[c] ?? "")
+      grid: Array.from({ length: rows }, (_, rowIndex) =>
+        Array.from(
+          { length: cols },
+          (_, colIndex) => gridLike?.[rowIndex]?.[colIndex] ?? ""
+        )
       ),
       rows,
       cols,
@@ -263,8 +247,9 @@ export function normalizeGrid(gridLike, colsHint = 0) {
 
   if (Array.isArray(gridLike)) {
     const cols = Math.max(colsHint, gridLike.length, 0);
+
     return {
-      grid: [Array.from({ length: cols }, (_, c) => gridLike?.[c] ?? "")],
+      grid: [Array.from({ length: cols }, (_, index) => gridLike?.[index] ?? "")],
       rows: 1,
       cols,
     };
@@ -273,24 +258,29 @@ export function normalizeGrid(gridLike, colsHint = 0) {
   return { grid: [], rows: 0, cols: colsHint };
 }
 
-export function ensureGridSize(curGrid, rowsCount, colsCount) {
-  return Array.from({ length: rowsCount }, (_, r) =>
-    Array.from({ length: colsCount }, (_, c) => curGrid?.[r]?.[c] ?? "")
+export function ensureGridSize(currentGrid, rowsCount, colsCount) {
+  return Array.from({ length: rowsCount }, (_, rowIndex) =>
+    Array.from(
+      { length: colsCount },
+      (_, colIndex) => currentGrid?.[rowIndex]?.[colIndex] ?? ""
+    )
   );
 }
 
 export function denormalizeGrid(grid2d) {
   if (!Array.isArray(grid2d) || grid2d.length === 0) return null;
+
   const rows = grid2d.length;
-  const cols = Math.max(...grid2d.map((r) => r.length), 0);
-  const normalized = grid2d.map((r) =>
-    Array.from({ length: cols }, (_, c) => r?.[c] ?? "")
+  const cols = Math.max(...grid2d.map((row) => row.length), 0);
+  const normalized = grid2d.map((row) =>
+    Array.from({ length: cols }, (_, index) => row?.[index] ?? "")
   );
+
   return rows === 1 ? normalized[0] : normalized;
 }
 
 export function getGroupDisplayName(row) {
-  return str(row.groupName).trim() || str(row.itemName).trim();
+  return str(row?.groupName).trim() || str(row?.itemName).trim();
 }
 
 export function buildGroupedRows(rows) {
@@ -298,14 +288,15 @@ export function buildGroupedRows(rows) {
   const counts = new Map();
 
   for (const row of rows) {
-    const gid = str(row.groupId).trim();
-    if (!gid) continue;
-    counts.set(gid, (counts.get(gid) ?? 0) + 1);
+    const groupId = str(row?.groupId).trim();
+    if (!groupId) continue;
+    counts.set(groupId, (counts.get(groupId) ?? 0) + 1);
   }
 
   for (const row of rows) {
-    const gid = str(row.groupId).trim();
-    const grouped = gid && (counts.get(gid) ?? 0) > 1;
+    const groupId = str(row?.groupId).trim();
+    const grouped = groupId && (counts.get(groupId) ?? 0) > 1;
+    const craftProductTypeName = getCraftProductTypeName(row);
 
     if (!grouped) {
       map.set(`single:${row.__key}`, {
@@ -315,7 +306,7 @@ export function buildGroupedRows(rows) {
         searchText: [
           row.itemName,
           row.groupName,
-          row.slot,
+          craftProductTypeName,
           row.recipeBook,
           row.recipePlace,
           row.equipmentTypeName,
@@ -327,13 +318,12 @@ export function buildGroupedRows(rows) {
       continue;
     }
 
-    const groupKey = gid;
     const existing =
-      map.get(`group:${groupKey}`) ??
+      map.get(`group:${groupId}`) ??
       {
         __kind: "group",
-        __key: `group:${groupKey}`,
-        groupId: groupKey,
+        __key: `group:${groupId}`,
+        groupId,
         label: getGroupDisplayName(row),
         groupKind: row.groupKind,
         rows: [],
@@ -345,18 +335,20 @@ export function buildGroupedRows(rows) {
     existing.items.push({
       __key: row.__key,
       itemName: row.itemName,
-      slot: row.slot,
+      craftProductTypeName,
     });
 
     existing.searchText = [
       existing.label,
       existing.groupKind,
-      ...existing.items.map((x) => `${x.itemName} ${x.slot}`),
+      ...existing.items.map(
+        (item) => `${item.itemName} ${item.craftProductTypeName}`
+      ),
     ]
       .filter(Boolean)
       .join(" ");
 
-    map.set(`group:${groupKey}`, existing);
+    map.set(`group:${groupId}`, existing);
   }
 
   return Array.from(map.values());
@@ -364,13 +356,14 @@ export function buildGroupedRows(rows) {
 
 export function buildEmptyGroupMembers(groupKind) {
   const preset = GROUP_MEMBER_PRESETS[groupKind] ?? [];
-  return preset.map((x) => ({
-    key: x.key,
+
+  return preset.map((item) => ({
+    key: item.key,
     enabled: true,
-    slotLabel: x.label,
-    slot: x.slot,
-    slotGridType: x.slotGridType,
-    itemName: x.label,
+    slotLabel: item.label,
+    craftProductTypeKey: item.craftProductTypeKey,
+    craftProductTypeId: "",
+    itemName: item.label,
   }));
 }
 
@@ -378,8 +371,8 @@ export function makeGroupId(groupName) {
   return slugify(groupName);
 }
 
-export function getDefaultGroupItemName(groupName, slotLabel) {
-  return `${str(groupName).trim()}${slotLabel}`.trim();
+export function getDefaultGroupItemName(groupName, productTypeLabel) {
+  return `${str(groupName).trim()}${str(productTypeLabel).trim()}`.trim();
 }
 
 export function findEquipmentTypeById(equipmentTypes = [], equipmentTypeId) {
@@ -390,154 +383,58 @@ export function findEquipmentTypeById(equipmentTypes = [], equipmentTypeId) {
   );
 }
 
-export function getCraftGridTypeByBaseSlot(baseSlot, groupKind) {
-  const slot = str(baseSlot).trim();
-
-  if (groupKind === "armor_set") {
-    const map = {
-      頭: "鎧頭",
-      体上: "鎧上",
-      からだ上: "鎧上",
-      体下: "鎧下",
-      からだ下: "鎧下",
-      腕: "鎧腕",
-      足: "鎧足",
-    };
-    return map[slot] ?? "";
-  }
-
-  if (groupKind === "tailoring_set") {
-    const map = {
-      頭: "裁縫頭",
-      体上: "裁縫上",
-      からだ上: "裁縫上",
-      体下: "裁縫下",
-      からだ下: "裁縫下",
-      腕: "裁縫腕",
-      足: "裁縫足",
-    };
-    return map[slot] ?? "";
-  }
-
-  return "";
-}
-
-export function getAutoSlotGridType(
-  slot,
-  equipmentType,
-  groupKind = null,
-  member = null
+export function findCraftProductTypeById(
+  craftProductTypes = [],
+  craftProductTypeId
 ) {
-  const rawSlot = str(slot).trim();
-
-  if (groupKind === "craft_tool_set") {
-    return str(member?.slotGridType).trim();
-  }
-
-  if (!rawSlot) return "";
-
-  if (groupKind === "armor_set" || groupKind === "tailoring_set") {
-    return getCraftGridTypeByBaseSlot(rawSlot, groupKind);
-  }
-
-  const typeName = str(equipmentType?.name ?? equipmentType?.label).trim();
-
-  if (rawSlot === "盾") return "盾";
-  if (rawSlot === "武器") return typeName || "武器";
-
-  return "";
+  return (
+    craftProductTypes.find(
+      (type) => String(type.id) === String(craftProductTypeId ?? "")
+    ) ?? null
+  );
 }
 
-export function inferSingleSlotFromEquipmentType(equipmentType) {
-  const typeName = str(equipmentType?.name ?? equipmentType?.label).trim();
-  const craftTypeId = String(equipmentType?.craft_type_id ?? "");
-  const normalized = typeName.toLowerCase();
+export function findCraftProductTypeByKey(craftProductTypes = [], key) {
+  const normalizedKey = str(key).trim();
 
-  const matchers = [
-    {
-      keywords: ["頭", "ぼうし", "helmet", "hat", "cap", "hood", "circlet"],
-      slot: "頭",
-    },
-    {
-      keywords: ["からだ上", "体上", "upper", "top"],
-      slot: "体上",
-    },
-    {
-      keywords: ["からだ下", "体下", "lower", "bottom", "pants"],
-      slot: "体下",
-    },
-    {
-      keywords: ["腕", "うで", "glove", "gloves", "gauntlet"],
-      slot: "腕",
-    },
-    {
-      keywords: ["足", "あし", "shoe", "shoes", "boots", "boot"],
-      slot: "足",
-    },
-    { keywords: ["盾", "shield"], slot: "盾" },
-    {
-      keywords: [
-        "武器",
-        "剣",
-        "片手剣",
-        "両手剣",
-        "短剣",
-        "ヤリ",
-        "オノ",
-        "ハンマー",
-        "ツメ",
-        "ムチ",
-        "ブーメラン",
-        "スティック",
-        "両手杖",
-        "棍",
-        "扇",
-        "弓",
-        "鎌",
-        "sword",
-        "axe",
-        "wand",
-        "staff",
-        "hammer",
-        "spear",
-        "bow",
-        "dagger",
-        "claw",
-      ],
-      slot: "武器",
-    },
-  ];
-
-  const matched = matchers.find((item) =>
-    item.keywords.some((keyword) =>
-      normalized.includes(String(keyword).toLowerCase())
-    )
+  return (
+    craftProductTypes.find(
+      (type) => str(type?.key).trim() === normalizedKey
+    ) ?? null
   );
+}
 
-  const slot = matched?.slot ?? "";
+export function getCraftProductPartKey(craftProductTypeLike) {
+  const type =
+    craftProductTypeLike?.craftProductType ??
+    craftProductTypeLike?.craft_product_type ??
+    craftProductTypeLike ??
+    null;
+  const key = str(type?.key).trim();
 
-  let inferredGroupKind = null;
-  if (craftTypeId === "3") inferredGroupKind = "armor_set";
-  if (craftTypeId === "4") inferredGroupKind = "tailoring_set";
-
-  if (!inferredGroupKind) {
-    if (
-      typeName.includes("ローブ") ||
-      typeName.includes("服") ||
-      typeName.includes("裁縫")
-    ) {
-      inferredGroupKind = "tailoring_set";
-    } else if (
-      typeName.includes("鎧") ||
-      typeName.includes("よろい") ||
-      typeName.includes("アーマー")
-    ) {
-      inferredGroupKind = "armor_set";
-    }
-  }
-
-  return {
-    slot,
-    slotGridType: getAutoSlotGridType(slot, equipmentType, inferredGroupKind),
+  const map = {
+    armor_head: "head",
+    tailoring_head: "head",
+    armor_upper: "body_top",
+    tailoring_upper: "body_top",
+    armor_lower: "body_bottom",
+    tailoring_lower: "body_bottom",
+    armor_arms: "arm",
+    tailoring_arms: "arm",
+    armor_feet: "foot",
+    tailoring_feet: "foot",
   };
+
+  return map[key] ?? "";
+}
+
+export function isArmorCraftProductType(craftProductTypeLike) {
+  const type =
+    craftProductTypeLike?.craftProductType ??
+    craftProductTypeLike?.craft_product_type ??
+    craftProductTypeLike ??
+    null;
+  const key = str(type?.key).trim();
+
+  return key.startsWith("armor_") || key.startsWith("tailoring_");
 }

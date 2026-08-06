@@ -30,16 +30,16 @@ class EquipmentController extends Controller
                     'group_name',
                     'group_kind',
                     'equipment_type_id',
+                    'craft_product_type_id',
                     'craft_level',
                     'equip_level',
-                    'slot',
                 ])
                 ->with([
-                    'equipmentType.craftType:id,name',
+                    'craftProductType.craftType:id,key,name,great_success_rate',
                 ]);
         } else {
             $query->with([
-                'equipmentType.craftType:id,name',
+                'craftProductType.craftType:id,key,name,great_success_rate',
                 'equipmentType.equipableTypes.gameJob:id,name,key',
                 'jobOverrides.gameJob:id,name,key',
             ]);
@@ -116,6 +116,10 @@ class EquipmentController extends Controller
             $query->where('equipment_type_id', $request->equipment_type_id);
         }
 
+        if ($request->filled('craft_product_type_id')) {
+            $query->where('craft_product_type_id', $request->craft_product_type_id);
+        }
+
         if ($request->filled('craft_level')) {
             $query->where('craft_level', $request->craft_level);
         }
@@ -132,9 +136,6 @@ class EquipmentController extends Controller
             $query->where('group_kind', $request->group_kind);
         }
 
-        if ($request->filled('slot')) {
-            $query->where('slot', $request->slot);
-        }
 
         if ($request->boolean('has_slot_grid')) {
             $query->whereNotNull('slot_grid_json')
@@ -144,7 +145,7 @@ class EquipmentController extends Controller
         if ($request->filled('craft_type')) {
             $craftType = trim((string) $request->craft_type);
 
-            $query->whereHas('equipmentType.craftType', function ($sub) use ($craftType) {
+            $query->whereHas('craftProductType.craftType', function ($sub) use ($craftType) {
                 $sub->where('name', $craftType);
             });
         }
@@ -168,7 +169,7 @@ class EquipmentController extends Controller
     public function show($id): JsonResponse
     {
         $equipment = Equipment::with([
-            'equipmentType.craftType:id,name',
+            'craftProductType.craftType:id,key,name,great_success_rate',
             'equipmentType.equipableTypes.gameJob:id,name,key',
             'jobOverrides.gameJob:id,name,key',
         ])->find($id);
@@ -215,7 +216,7 @@ class EquipmentController extends Controller
         $this->syncJobOverrides($equipment, $jobOverrides);
 
         $equipment->load([
-            'equipmentType.craftType:id,name',
+            'craftProductType.craftType:id,key,name,great_success_rate',
             'equipmentType.equipableTypes.gameJob:id,name,key',
             'jobOverrides.gameJob:id,name,key',
         ]);
@@ -275,7 +276,7 @@ class EquipmentController extends Controller
 
         return response()->json([
             'data' => $equipment->load([
-                'equipmentType.craftType:id,name',
+                'craftProductType.craftType:id,key,name,great_success_rate',
                 'equipmentType.equipableTypes.gameJob:id,name,key',
                 'jobOverrides.gameJob:id,name,key',
             ]),
@@ -285,7 +286,7 @@ class EquipmentController extends Controller
     public function destroy($id): JsonResponse
     {
         $equipment = Equipment::with([
-            'equipmentType.craftType:id,name',
+            'craftProductType.craftType:id,key,name,great_success_rate',
             'equipmentType.equipableTypes.gameJob:id,name,key',
             'jobOverrides.gameJob:id,name,key',
         ])->find($id);
@@ -326,6 +327,7 @@ class EquipmentController extends Controller
             'weight' => ['nullable', 'integer', 'min:0'],
 
             'equipment_type_id' => ['nullable', 'integer', 'exists:equipment_types,id'],
+            'craft_product_type_id' => ['required', 'integer', 'exists:craft_product_types,id'],
             'job_override_mode' => ['nullable', Rule::in(['inherit', 'add', 'replace'])],
 
             'job_overrides' => ['nullable', 'array'],
@@ -337,11 +339,8 @@ class EquipmentController extends Controller
             'recipe_book' => ['nullable', 'string', 'max:255'],
             'recipe_place' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'fabric_type' => ['nullable', 'string', 'max:255'],
+            'craft_material_trait' => ['nullable', 'string', 'max:255'],
 
-            'slot' => ['nullable', 'string', 'max:255'],
-            'slot_grid_type' => ['nullable', 'string', 'max:255'],
-            'slot_grid_cols' => ['nullable', 'integer', 'min:0'],
 
             'group_kind' => ['nullable', 'string', 'max:255'],
             'group_id' => ['nullable', 'string', 'max:255'],

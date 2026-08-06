@@ -39,27 +39,23 @@ export default function EquipmentTypeList({
                     : styles.armorBadge),
                 }}
               >
-                {getKindLabel(item.kind)}
+                {getCraftTypeName(item)}
               </span>
             </div>
 
-
-            <div style={styles.meta}>
-              {getCraftTypeName(item)}
-            </div>
           </button>
         );
       })}
     </div>
   );
 }
-
+/*
 function getKindLabel(kind) {
   if (kind === "weapon") return "武器";
   if (kind === "armor") return "防具";
   return "未設定";
 }
-
+*/
 function getCraftTypeName(item) {
   if (item?.craftType?.name) {
     return item.craftType.name;

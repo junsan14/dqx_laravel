@@ -1,7 +1,7 @@
 "use client";
 
-import ProgressIntlLink from "@/components/common/ProgressIntlLink";
-import SearchableSelect from "@/components/common/SearchableSelect";
+import ProgressIntlLink from "@/components/common/route-progress/ProgressIntlLink";
+import DropdownSelect from "@/components/common/form/DropdownSelect";
 import { useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -115,7 +115,6 @@ function ZukanControls({
     const allOption = {
       id: "",
       label: isEnglish ? "All families" : "すべて",
-      searchText: isEnglish ? "All families" : "すべて",
     };
 
     const rows = (Array.isArray(systemTypes) ? systemTypes : [])
@@ -129,12 +128,35 @@ function ZukanControls({
           ...row,
           id: String(row.id),
           label,
-          searchText: [nameJa, nameEn].filter(Boolean).join(" "),
         };
       });
 
     return [allOption, ...rows];
   }, [locale, systemTypes]);
+
+  const systemTypePlaceholder = String(locale)
+    .toLowerCase()
+    .startsWith("en")
+    ? "Select family"
+    : "系統で選ぶ";
+
+  const selectedSystemTypeLabel =
+    systemTypeOptions.find(
+      (option) => String(option.id) === String(systemTypeId ?? "")
+    )?.label || systemTypePlaceholder;
+
+    const systemTypeWidth = useMemo(() => {
+      const displayUnits = Array.from(selectedSystemTypeLabel).reduce(
+        (total, character) =>
+          total + (character.codePointAt(0) <= 0x7f ? 0.58 : 1),
+        0
+      );
+
+      return {
+        pc: Math.min(220, Math.max(104, Math.ceil(displayUnits * 13 + 42))),
+        sp: Math.min(172, Math.max(96, Math.ceil(displayUnits * 12 + 36))),
+      };
+    }, [selectedSystemTypeLabel]);
 
   const moveSort = (nextSort, soon = false) => {
     if (soon) return;
@@ -192,17 +214,18 @@ function ZukanControls({
           })}
         </div>
       </div>
-      <div className={styles.systemTypeFilter}>
-        <SearchableSelect
+      <div
+        className={styles.systemTypeFilter}
+        style={{
+          "--system-type-width-pc": `${systemTypeWidth.pc}px`,
+          "--system-type-width-sp": `${systemTypeWidth.sp}px`,
+        }}
+      >
+        <DropdownSelect
           value={systemTypeId ? String(systemTypeId) : ""}
           onChange={moveSystemType}
           options={systemTypeOptions}
-          selectOnFocus
-          placeholder={
-            String(locale).toLowerCase().startsWith("en")
-              ? "Select family"
-              : "系統で選ぶ"
-          }
+          placeholder={systemTypePlaceholder}
           emptyText={
             String(locale).toLowerCase().startsWith("en")
               ? "No families"
@@ -210,10 +233,8 @@ function ZukanControls({
           }
           getOptionValue={(option) => option.id}
           getOptionLabel={(option) => option.label}
-          getOptionSearchText={(option) => option.searchText}
-          maxResults={30}
           className={styles.systemTypeSelect}
-          inputClassName={styles.systemTypeInput}
+          triggerClassName={styles.systemTypeTrigger}
           ariaLabel={
             String(locale).toLowerCase().startsWith("en")
               ? "Select monster family"

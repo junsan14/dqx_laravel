@@ -178,13 +178,35 @@ export default function CraftTypesClient() {
 
   async function handleSave() {
     try {
+      const rawGreatSuccessRate = selectedCraftType?.greatSuccessRate;
+      const hasGreatSuccessRate =
+        rawGreatSuccessRate != null && rawGreatSuccessRate !== "";
+      const greatSuccessRate = hasGreatSuccessRate
+        ? Number(rawGreatSuccessRate)
+        : null;
+
+      if (
+        hasGreatSuccessRate &&
+        (!Number.isFinite(greatSuccessRate) ||
+          greatSuccessRate < 0 ||
+          greatSuccessRate > 100)
+      ) {
+        showToast("大成功率は0〜100で入力してください", "error");
+        return;
+      }
+
       setSaving(true);
+
+      const payload = {
+        ...selectedCraftType,
+        greatSuccessRate,
+      };
 
       const isEdit = Boolean(selectedId && selectedCraftType?.id);
 
       const saved = isEdit
-        ? await updateCraftType(selectedCraftType.id, selectedCraftType)
-        : await createCraftType(selectedCraftType);
+        ? await updateCraftType(selectedCraftType.id, payload)
+        : await createCraftType(payload);
 
       await handleSaved(saved, { isEdit });
     } catch (error) {

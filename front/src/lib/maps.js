@@ -68,15 +68,24 @@ function normalizeLayer(row = {}, locale = "ja") {
 
 function normalizeContinent(row = {}, locale = "ja") {
   const continentName = pickLocalizedValue(row, "name", "name_en", locale);
+  const mapImageFolder = String(
+    row?.map_image_folder ??
+      row?.continent_folder ??
+      row?.folder ??
+      ""
+  ).trim();
 
   return {
     ...row,
     id: row?.id ?? null,
-    display_id: Number(row?.display_id ?? 0),
+    display_id: Number(row?.display_id ?? row?.display_order ?? 0),
     name: continentName,
     continent_name: continentName,
     name_ja: row?.name ?? "",
     name_en: row?.name_en ?? "",
+    map_image_folder: mapImageFolder,
+    continent_folder: mapImageFolder,
+    folder: mapImageFolder,
   };
 }
 
@@ -118,10 +127,16 @@ function normalizeMap(row = {}, locale = "ja") {
     continent_name: continentName,
     continent_name_ja: row?.continent_name ?? row?.continent ?? "",
     continent_name_en: row?.continent_name_en ?? "",
-    continent_folder: row?.continent_folder ?? "",
+    continent_folder: String(
+      row?.continent_folder ??
+        row?.map_image_folder ??
+        ""
+    ).trim(),
     name: mapName,
     map_name: mapName,
     name_ja: row?.name ?? "",
+    name_kana: row?.name_kana ?? "",
+    map_name_kana: row?.name_kana ?? "",
     name_en: row?.name_en ?? "",
     map_type: row?.map_type ?? "",
     source_url: row?.source_url ?? "",
@@ -148,6 +163,7 @@ function buildMapFormData(payload = {}) {
   formData.append("continent_id", String(payload?.continent_id ?? ""));
   formData.append("continent_folder", String(payload?.continent_folder ?? ""));
   formData.append("name", String(payload?.name ?? ""));
+  formData.append("name_kana", String(payload?.name_kana ?? ""));
   formData.append("name_en", String(payload?.name_en ?? ""));
   formData.append("map_type", String(payload?.map_type ?? ""));
   formData.append("source_url", String(payload?.source_url ?? ""));

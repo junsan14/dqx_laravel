@@ -12,6 +12,7 @@ export default function ContinentList({
   return (
     <div style={styles.wrap}>
       {continents.map((continent) => {
+        
         const active = selectedId === continent.id;
 
         return (
@@ -30,10 +31,6 @@ export default function ContinentList({
               </span>
               <span style={styles.name}>{continent.name || "名称未設定"}</span>
             </div>
-
-            {continent.name_en ? (
-              <div style={styles.subText}>{continent.name_en}</div>
-            ) : null}
           </button>
         );
       })}
@@ -98,5 +95,13 @@ const styles = {
     fontSize: 12,
     color: "var(--text-muted)",
     wordBreak: "break-word",
+  },
+
+  folderText: {
+    marginTop: 6,
+    fontSize: 11,
+    color: "var(--text-muted)",
+    fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+    wordBreak: "break-all",
   },
 };

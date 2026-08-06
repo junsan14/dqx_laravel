@@ -109,6 +109,7 @@ function createEmptyMap() {
     continent: "",
     continent_folder: "",
     name: "",
+    name_kana: "",
     name_en: "",
     map_type: "",
     source_url: "",
@@ -172,9 +173,19 @@ export default function MapsClient() {
     try {
       const data = await fetchMapOptions();
 
-      setContinentOptions(
-        Array.isArray(data?.continents) ? data.continents : []
-      );
+      const nextContinents = Array.isArray(data?.continents)
+        ? data.continents.map((continent) => ({
+            ...continent,
+            folder: String(
+              continent?.map_image_folder ??
+                continent?.continent_folder ??
+                continent?.folder ??
+                ""
+            ).trim(),
+          }))
+        : [];
+
+      setContinentOptions(nextContinents);
       setMapTypeOptions(Array.isArray(data?.map_types) ? data.map_types : []);
     } catch (error) {
       console.error(error);
@@ -465,6 +476,7 @@ export default function MapsClient() {
             : "",
         continent_folder: currentMap.continent_folder?.trim() ?? "",
         name: currentMap.name?.trim() ?? "",
+        name_kana: currentMap.name_kana?.trim() ?? "",
         name_en: currentMap.name_en?.trim() ?? "",
         map_type: currentMap.map_type?.trim() ?? "",
         source_url: currentMap.source_url?.trim() ?? "",
@@ -623,7 +635,7 @@ export default function MapsClient() {
             createLabel="新規追加"
             loading={loadingList}
             title="マップ編集"
-            searchPlaceholder="マップ名 / マップID で検索"
+            searchPlaceholder="マップ名・かな / マップID で検索"
           >
             <MapListPane
               maps={maps}

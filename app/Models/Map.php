@@ -11,6 +11,7 @@ class Map extends Model
         'continent_id',
         'name',
         'name_en',
+        'name_kana',
         'map_type',
         'source_url',
     ];

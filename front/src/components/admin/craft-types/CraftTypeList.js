@@ -18,6 +18,15 @@ export default function CraftTypeList({
     <div style={styles.list}>
       {craftTypes.map((item) => {
         const active = Number(selectedId) === Number(item.id);
+        const greatSuccessRate =
+          item?.greatSuccessRate == null || item?.greatSuccessRate === ""
+            ? null
+            : Number(item.greatSuccessRate);
+        const rateLabel = Number.isFinite(greatSuccessRate)
+          ? `大成功 ${greatSuccessRate.toLocaleString("ja-JP", {
+              maximumFractionDigits: 2,
+            })}%`
+          : "大成功率 未設定";
 
         return (
           <button
@@ -31,6 +40,7 @@ export default function CraftTypeList({
           >
             <div style={styles.topRow}>
               <span style={styles.name}>{item.name || "名称未設定"}</span>
+              <span style={styles.rateBadge}>{rateLabel}</span>
             </div>
 
             <div style={styles.meta}>key: {item.key || "-"}</div>
@@ -75,6 +85,18 @@ const styles = {
     fontWeight: 800,
     fontSize: 14,
     lineHeight: 1.4,
+  },
+
+  rateBadge: {
+    flexShrink: 0,
+    border: "1px solid var(--soft-border)",
+    background: "var(--soft-bg)",
+    color: "var(--text-sub)",
+    borderRadius: 999,
+    padding: "3px 7px",
+    fontSize: 11,
+    fontWeight: 800,
+    whiteSpace: "nowrap",
   },
 
   meta: {

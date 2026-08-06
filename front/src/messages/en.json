@@ -248,7 +248,7 @@
     "title": "Map Monster Browser",
     "continent": "Continent",
     "loadingContinentData": "Loading continent data...",
-    "continentPlaceholder": "Type a continent",
+    "continentPlaceholder": "Type a continent name",
     "mapSearch": "Map Search",
     "mapPlaceholder": "Type a map name",
     "selectContinentFirst": "Please select a continent first",
@@ -275,7 +275,40 @@
     "loadFailed": "Failed to load data",
     "emptyGuide": "Select a continent and map to view monsters",
     "selectMap": "Please select a map",
-    "noMatchedMonster": "No monsters match this condition"
+    "noMatchedMonster": "No monsters match this condition",
+    "search": {
+      "method": "Search method",
+      "byMap": "Search by map",
+      "bySystem": "Search by monster family",
+      "byDrop": "Search by drop",
+      "systemSearch": "Monster family",
+      "dropSearch": "Drop item",
+      "selectSystem": "Select a monster family",
+      "selectDrop": "Enter a drop item",
+      "dropMinLength": "Enter at least 2 characters",
+      "loadingSystems": "Loading monster families...",
+      "loadingDrops": "Searching drops...",
+      "noSystems": "No monster family data is available for this continent",
+      "noDrops": "No matching drops",
+      "filteredMapSearch": "Matching maps",
+      "selectSystemFirst": "Select a monster family first",
+      "selectDropFirst": "Enter a drop item first",
+      "matchedMaps": "{count} matching maps",
+      "selectedSystem": "Showing only maps where “{systemType}” appears",
+      "selectedDrop": "Showing only monsters that drop “{dropName}”"
+    },
+    "report": {
+      "fields": {
+        "mapName": "Map name",
+        "continentName": "Continent / region",
+        "layerName": "Layer / floor name",
+        "floorNo": "Layer order / floor number",
+        "image": "Map image",
+        "other": "Other"
+      },
+      "layerFallback": "Map layer #{id}",
+      "description": "Report an incorrect map name, continent, layer name, floor number, or map image."
+    }
   },
   "MonsterDetailPage": {
     "fetchError": "Failed to load monster details",

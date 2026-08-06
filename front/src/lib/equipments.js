@@ -39,7 +39,6 @@ export const EQUIPMENT_NUMBER_FIELDS = [
   "healingPower",
   "craftLevel",
   "equipLevel",
-  "slotGridCols",
   "defaultPrice",
   "weight",
 ];
@@ -109,14 +108,19 @@ export function createEmptyEquipmentRow() {
 
     itemId: "",
     itemName: "",
-    itemNameKana: "",
+    itemNameKana: "", // 追加
 
     itemNameEn: "",
 
     equipmentTypeId: "",
     equipmentType: null,
     equipmentTypeName: "",
-    fabricType: "",
+
+    craftProductTypeId: "",
+    craftProductType: null,
+    craftProductTypeName: "",
+    craftProductTypeDisplayName: "",
+    craftMaterialTrait: "",
 
     jobOverrideMode: "inherit",
     jobOverrides: [],
@@ -127,10 +131,6 @@ export function createEmptyEquipmentRow() {
     recipeBook: "",
     recipePlace: "",
     description: "",
-
-    slot: "",
-    slotGridType: "",
-    slotGridCols: "",
 
     groupKind: "",
     groupId: "",
@@ -303,6 +303,20 @@ export function normalizeEquipmentRow(row = {}) {
     : [];
 
   const equipmentType = row?.equipment_type ?? row?.equipmentType ?? null;
+  const craftProductType =
+    row?.craft_product_type ?? row?.craftProductType ?? null;
+  const craftProductTypeName = str(
+    craftProductType?.name ??
+      row?.craft_product_type_name ??
+      row?.craftProductTypeName
+  ).trim();
+  const craftProductTypeDisplayName = str(
+    craftProductType?.display_name ??
+      craftProductType?.displayName ??
+      row?.craft_product_type_display_name ??
+      row?.craftProductTypeDisplayName ??
+      craftProductTypeName
+  ).trim();
 
   const normalizedJobOverrides = jobOverrides
     .map((override) => {
@@ -341,7 +355,7 @@ export function normalizeEquipmentRow(row = {}) {
 
     itemId: str(row?.item_id ?? row?.itemId),
     itemName: str(row?.item_name ?? row?.itemName),
-    itemNameKana: str(row?.item_name_kana ?? row?.itemNameKana),
+    itemNameKana: str(row?.item_name_kana ?? row?.itemNameKana), // 追加
 
     itemNameEn: str(row?.item_name_en ?? row?.itemNameEn),
 
@@ -352,7 +366,20 @@ export function normalizeEquipmentRow(row = {}) {
 
     equipmentType,
     equipmentTypeName: str(equipmentType?.name ?? row?.equipmentTypeName),
-    fabricType: str(row?.fabric_type ?? row?.fabricType),
+
+    craftProductTypeId:
+      row?.craft_product_type_id == null && row?.craftProductTypeId == null
+        ? ""
+        : String(row?.craft_product_type_id ?? row?.craftProductTypeId),
+    craftProductType,
+    craftProductTypeName,
+    craftProductTypeDisplayName,
+    craftMaterialTrait: str(
+      row?.craft_material_trait ??
+        row?.craftMaterialTrait ??
+        row?.fabric_type ??
+        row?.fabricType
+    ),
 
     jobOverrideMode:
       str(row?.job_override_mode ?? row?.jobOverrideMode) || "inherit",
@@ -364,10 +391,6 @@ export function normalizeEquipmentRow(row = {}) {
     recipeBook: str(row?.recipe_book ?? row?.recipeBook),
     recipePlace: str(row?.recipe_place ?? row?.recipePlace),
     description: str(row?.description),
-
-    slot: str(row?.slot),
-    slotGridType: str(row?.slot_grid_type ?? row?.slotGridType),
-    slotGridCols: normalizeNumberInput(row?.slot_grid_cols ?? row?.slotGridCols),
 
     groupKind: str(row?.group_kind ?? row?.groupKind),
     groupId: str(row?.group_id ?? row?.groupId),
@@ -439,7 +462,7 @@ export function buildEquipmentPayload(row = {}) {
 
     item_id: str(row.itemId).trim() || null,
     item_name: str(row.itemName).trim(),
-    item_name_kana: str(row.itemNameKana).trim() || null,
+    item_name_kana: str(row.itemNameKana).trim() || null, // 追加
 
     item_name_en: str(row.itemNameEn).trim() || null,
 
@@ -448,7 +471,12 @@ export function buildEquipmentPayload(row = {}) {
         ? null
         : Number(row.equipmentTypeId),
 
-    fabric_type: str(row.fabricType).trim() || null,
+    craft_product_type_id:
+      str(row.craftProductTypeId).trim() === ""
+        ? null
+        : Number(row.craftProductTypeId),
+
+    craft_material_trait: str(row.craftMaterialTrait).trim() || null,
 
     job_override_mode: str(row.jobOverrideMode).trim() || "inherit",
 
@@ -470,10 +498,6 @@ export function buildEquipmentPayload(row = {}) {
     recipe_book: str(row.recipeBook).trim() || null,
     recipe_place: str(row.recipePlace).trim() || null,
     description: str(row.description).trim() || null,
-
-    slot: str(row.slot).trim() || null,
-    slot_grid_type: str(row.slotGridType).trim() || null,
-    slot_grid_cols: toNullableNumber(row.slotGridCols),
 
     group_kind: str(row.groupKind).trim() || null,
     group_id: str(row.groupId).trim() || null,

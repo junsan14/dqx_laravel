@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import Image from "next/image";
@@ -494,6 +495,7 @@ export default function MonsterMapOverlay({
   monstersById = {},
   showMonsterNameInBubble = false,
 }) {
+  const t = useTranslations("MonsterMapOverlay");
   const isMobile = useIsMobile();
   const resolvedImageUrl = useMemo(
     () => getMonsterAssetUrl(imagePath),
@@ -521,7 +523,7 @@ export default function MonsterMapOverlay({
   if (!resolvedImageUrl) {
     return (
       <div className={styles.mapCard}>
-        <div className={styles.noImageBox}>画像なし</div>
+        <div className={styles.noImageBox}>{t("noImage")}</div>
       </div>
     );
   }
@@ -534,7 +536,7 @@ export default function MonsterMapOverlay({
             {!imageLoaded ? (
               <div className={styles.loadingOverlay}>
                 <div className={styles.loadingShimmer} />
-                <span className={styles.loadingText}>読み込み中...</span>
+                <span className={styles.loadingText}>{t("loading")}</span>
               </div>
             ) : null}
 
@@ -553,7 +555,7 @@ export default function MonsterMapOverlay({
               >
                 <Image
                   src={resolvedImageUrl}
-                  alt="map"
+                  alt={t("mapAlt")}
                   fill
                   sizes="(max-width: 920px) 100vw, 430px"
                   className={styles.mapImage}
@@ -585,7 +587,15 @@ export default function MonsterMapOverlay({
 
               return (
                 <div key={bubble.key} className={styles.bubbleWrap} style={wrapperStyle}>
-                  <div className={styles.spawnBubble}>
+                  <div
+                    className={styles.spawnBubble}
+                    aria-label={t("bubbleAriaLabel", {
+                      area: bubble.label,
+                    })}
+                    title={t("bubbleAriaLabel", {
+                      area: bubble.label,
+                    })}
+                  >
                     <span className={styles.bubbleInner}>
                       {isMobile ? <span className={styles.bubbleHintIcon}>i</span> : null}
                     </span>

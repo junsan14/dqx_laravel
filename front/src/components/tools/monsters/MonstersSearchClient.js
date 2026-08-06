@@ -8,8 +8,8 @@ import { fetchMonsterDetail, searchMonsters } from "@/lib/monsters";
 import MonsterDetailClient from "./detail/MonsterDetailClient";
 import MonsterInfo from "./detail/MonsterInfo";
 import PageHeroTitle from "@/components/PageHeroTitle";
-import SearchableSelect from "@/components/common/SearchableSelect";
-import DropdownSelect from "@/components/common/DropdownSelect";
+import SearchableSelect from "@/components/common/form/SearchableSelect";
+import DropdownSelect from "@/components/common/form/DropdownSelect";
 import styles from "./MonstersSearchClient.module.css";
 
 function cx(...values) {

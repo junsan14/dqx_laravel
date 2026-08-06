@@ -1,12 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import LabeledField from "./LabeledField";
 import SlotGridEditor from "./SlotGridEditor";
 import {
   JOB_OVERRIDE_MODE_OPTIONS,
+  buildCraftTypeOptions,
+  filterCraftProductTypesByCraftType,
+  findCraftProductTypeById,
+  getCraftTypeIdFromProductType,
   str,
-  GRID_TYPE_OPTIONS,
 } from "./equipmentFormHelpers";
 import { EQUIPMENT_BASE_EFFECT_FIELDS } from "@/lib/equipments";
 
@@ -19,14 +22,17 @@ const JOB_OVERRIDE_MODE_LABELS = {
 const GROUP_KIND_OPTIONS = [
   { value: "armor_set", label: "鎧(防具鍛冶系)" },
   { value: "tailoring_set", label: "ローブ(裁縫系)" },
-  { value: "craft_tool_set", label: "その他" },
+  { value: "craft_tool_set", label: "職人道具" },
+  { value: "other_set", label: "その他" },
 ];
 
-const FABRIC_TYPE_OPTIONS = ["通常布", "再生布", "虹布","ピンク布"];
+const TAILORING_TRAIT_OPTIONS = ["通常布", "再生布", "虹布", "ピンク布"];
+const SMITHING_TRAIT_OPTIONS = ["戻り", "集中変化", "倍半", "威力会心"];
 
 export default function EquipmentEditorPanel({
   row,
   equipmentTypes = [],
+  craftProductTypes = [],
   allJobs = [],
   syncGroup,
   setSyncGroup,
@@ -49,8 +55,11 @@ export default function EquipmentEditorPanel({
   const [singleToGroupOpen, setSingleToGroupOpen] = useState(false);
   const [createGroupOpen, setCreateGroupOpen] = useState(false);
 
-  const isCraftToolSet = str(safeRow.groupKind).trim() === "craft_tool_set";
-  const hasRealGroup = !!str(safeRow.groupKind).trim();
+  const currentGroupKind = str(safeRow.groupKind).trim();
+  const isCraftToolSet = currentGroupKind === "craft_tool_set";
+  const isOtherSet = currentGroupKind === "other_set";
+  const hideEquipmentType = isCraftToolSet || isOtherSet;
+  const hasRealGroup = !!currentGroupKind;
   const canShowJoinGroup = !hasRealGroup;
 
   const recipeBookListId = `recipe-book-list-${
@@ -74,16 +83,87 @@ export default function EquipmentEditorPanel({
     );
   }, [equipmentTypes, safeRow.equipmentTypeId, safeRow.equipmentType, row]);
 
+  const selectedCraftProductType = useMemo(() => {
+    if (!row) return null;
+
+    return (
+      findCraftProductTypeById(
+        craftProductTypes,
+        safeRow.craftProductTypeId
+      ) ||
+      safeRow.craftProductType ||
+      safeRow.craft_product_type ||
+      null
+    );
+  }, [
+    craftProductTypes,
+    safeRow.craftProductTypeId,
+    safeRow.craftProductType,
+    safeRow.craft_product_type,
+    row,
+  ]);
+
+  const craftTypeOptions = useMemo(
+    () => buildCraftTypeOptions(craftProductTypes),
+    [craftProductTypes]
+  );
+
+  const selectedProductCraftTypeId =
+    getCraftTypeIdFromProductType(selectedCraftProductType);
+
+  const [craftTypeFilterId, setCraftTypeFilterId] = useState(
+    selectedProductCraftTypeId
+  );
+
+  useEffect(() => {
+    setCraftTypeFilterId(selectedProductCraftTypeId);
+  }, [safeRow.__key, safeRow.id, selectedProductCraftTypeId]);
+
+  const filteredCraftProductTypes = useMemo(
+    () =>
+      filterCraftProductTypesByCraftType(
+        craftProductTypes,
+        craftTypeFilterId
+      ),
+    [craftProductTypes, craftTypeFilterId]
+  );
+
   const selectedCraftTypeName = str(
-    selectedEquipmentType?.craftType?.name ??
-      selectedEquipmentType?.craft_type?.name ??
-      selectedEquipmentType?.craftTypeName ??
-      selectedEquipmentType?.craft_type_name
+    selectedCraftProductType?.craftType?.name ??
+      selectedCraftProductType?.craft_type?.name ??
+      selectedCraftProductType?.craftTypeName ??
+      selectedCraftProductType?.craft_type_name
   ).trim();
+
+  const filteredCraftTypeName = str(
+    craftTypeOptions.find(
+      (craftType) => String(craftType.id) === String(craftTypeFilterId)
+    )?.name
+  ).trim();
+
+  const activeCraftTypeName =
+    selectedCraftTypeName || filteredCraftTypeName;
 
   const isTailoringEquipment =
     str(safeRow.groupKind).trim() === "tailoring_set" ||
-    /裁縫|さいほう|tailor/i.test(selectedCraftTypeName);
+    /裁縫|さいほう|tailor/i.test(activeCraftTypeName);
+
+  const isSmithingEquipment =
+    /武器鍛冶|防具鍛冶|道具鍛冶|weapon smith|armor smith|tool smith/i.test(
+      activeCraftTypeName
+    );
+
+  const craftMaterialTraitOptions = isTailoringEquipment
+    ? TAILORING_TRAIT_OPTIONS
+    : isSmithingEquipment
+    ? SMITHING_TRAIT_OPTIONS
+    : [];
+
+  const craftMaterialTraitLabel = isTailoringEquipment
+    ? "布タイプ"
+    : isSmithingEquipment
+    ? "地金特性"
+    : "素材特性";
 
   const selectableJobs = useMemo(() => {
     return (Array.isArray(allJobs) ? allJobs : []).map((job) => ({
@@ -226,16 +306,9 @@ export default function EquipmentEditorPanel({
     const selectedType =
       equipmentTypes.find((type) => String(type.id) === String(value)) ?? null;
 
-    const nextSlotGridType =
-      selectedType?.slotGridType ??
-      selectedType?.slot_grid_type ??
-      selectedType?.gridType ??
-      selectedType?.grid_type ??
-      "";
-
     const payload = {
       equipmentTypeId: value,
-      slotGridType: nextSlotGridType,
+      equipmentType: selectedType,
     };
 
     if (syncGroup && isSelectedGrouped) {
@@ -244,6 +317,54 @@ export default function EquipmentEditorPanel({
     }
 
     onPatch?.(payload);
+  }
+
+  function handleCraftTypeFilterChange(value) {
+    if (!row) return;
+
+    setCraftTypeFilterId(value);
+    onPatch?.({
+      craftProductTypeId: "",
+      craftProductType: null,
+      craftMaterialTrait: "",
+    });
+  }
+
+  function handleGroupKindChange(value) {
+    if (!row) return;
+
+    const withoutEquipmentType = ["craft_tool_set", "other_set"].includes(
+      value
+    );
+    const payload = {
+      groupKind: value,
+      ...(withoutEquipmentType
+        ? {
+            equipmentTypeId: "",
+            equipmentType: null,
+            jobOverrideMode: "inherit",
+            jobOverrides: [],
+          }
+        : {}),
+    };
+
+    if (syncGroup && isSelectedGrouped) {
+      onGroupPatch?.(payload);
+      return;
+    }
+
+    onPatch?.(payload);
+  }
+
+  function handleCraftProductTypeChange(value) {
+    if (!row) return;
+
+    const selectedType = findCraftProductTypeById(craftProductTypes, value);
+
+    onPatch?.({
+      craftProductTypeId: value,
+      craftProductType: selectedType,
+    });
   }
 
   function setOverrideJobs(jobs) {
@@ -520,99 +641,107 @@ export default function EquipmentEditorPanel({
               </LabeledField>
             ) : null}
 
-            <LabeledField label="装備タイプ（作成可能な職人）">
-              <select
-                style={styles.input}
-                value={row.equipmentTypeId ?? ""}
-                onChange={(e) => handleEquipmentTypeChange(e.target.value)}
-              >
-                <option value="">未選択</option>
-                {equipmentTypes.map((type) => (
-                  <option key={type.id} value={type.id}>
-                    {type.name ?? type.label ?? `#${type.id}`}
-                  </option>
-                ))}
-              </select>
-            </LabeledField>
-
-            <LabeledField label="装備設定">
-              <select
-                style={styles.input}
-                value={row.jobOverrideMode ?? "inherit"}
-                onChange={(e) =>
-                  patchGroupAware("jobOverrideMode", e.target.value)
-                }
-              >
-                {JOB_OVERRIDE_MODE_OPTIONS.map((mode) => (
-                  <option key={mode} value={mode}>
-                    {JOB_OVERRIDE_MODE_LABELS[mode] ?? mode}
-                  </option>
-                ))}
-              </select>
-            </LabeledField>
-
-            <div style={styles.jobSection}>
-              <div style={styles.label}>現在の装備可能職業</div>
-
-              <div style={styles.tagList}>
-                {displayJobs.length ? (
-                  displayJobs.map((job) => (
-                    <span
-                      key={job.key}
-                      style={jobTagStyle(job.source === "override")}
-                      title={
-                        job.source === "override"
-                          ? "追加・置き換え職業"
-                          : "装備タイプ由来"
-                      }
-                    >
-                      {job.name}
-                    </span>
-                  ))
-                ) : (
-                  <span style={styles.mutedText}>職業データなし</span>
-                )}
-              </div>
-            </div>
-
-            {row.jobOverrideMode !== "inherit" ? (
-              <div style={styles.jobSection}>
-                <div style={styles.inlineBetween}>
-                  <div style={styles.label}>
-                    {row.jobOverrideMode === "add"
-                      ? "追加する職業"
-                      : "置き換え後の職業"}
-                  </div>
-
-                  <button
-                    type="button"
-                    style={secondaryButtonStyle()}
-                    onClick={clearOverrideJobs}
+            {!hideEquipmentType ? (
+              <>
+                <LabeledField label="装備タイプ（装備可能職）">
+                  <select
+                    style={styles.input}
+                    value={row.equipmentTypeId ?? ""}
+                    onChange={(e) => handleEquipmentTypeChange(e.target.value)}
                   >
-                    クリア
-                  </button>
+                    <option value="">未選択</option>
+                    {equipmentTypes.map((type) => (
+                      <option key={type.id} value={type.id}>
+                        {type.name ?? type.label ?? `#${type.id}`}
+                      </option>
+                    ))}
+                  </select>
+                </LabeledField>
+
+                <LabeledField label="装備設定">
+                  <select
+                    style={styles.input}
+                    value={row.jobOverrideMode ?? "inherit"}
+                    onChange={(e) =>
+                      patchGroupAware("jobOverrideMode", e.target.value)
+                    }
+                  >
+                    {JOB_OVERRIDE_MODE_OPTIONS.map((mode) => (
+                      <option key={mode} value={mode}>
+                        {JOB_OVERRIDE_MODE_LABELS[mode] ?? mode}
+                      </option>
+                    ))}
+                  </select>
+                </LabeledField>
+
+                <div style={styles.jobSection}>
+                  <div style={styles.label}>現在の装備可能職業</div>
+
+                  <div style={styles.tagList}>
+                    {displayJobs.length ? (
+                      displayJobs.map((job) => (
+                        <span
+                          key={job.key}
+                          style={jobTagStyle(job.source === "override")}
+                          title={
+                            job.source === "override"
+                              ? "追加・置き換え職業"
+                              : "装備タイプ由来"
+                          }
+                        >
+                          {job.name}
+                        </span>
+                      ))
+                    ) : (
+                      <span style={styles.mutedText}>職業データなし</span>
+                    )}
+                  </div>
                 </div>
 
-                <div style={styles.tagList}>
-                  {selectableJobs.map((job) => {
-                    const selected = overrideJobKeySet.has(String(job.key));
+                {row.jobOverrideMode !== "inherit" ? (
+                  <div style={styles.jobSection}>
+                    <div style={styles.inlineBetween}>
+                      <div style={styles.label}>
+                        {row.jobOverrideMode === "add"
+                          ? "追加する職業"
+                          : "置き換え後の職業"}
+                      </div>
 
-                    return (
                       <button
-                        key={job.id ?? job.key}
                         type="button"
-                        style={jobToggleStyle(selected)}
-                        onClick={() => toggleOverrideJob(job)}
-                        title={selected ? "クリックで削除" : "クリックで追加"}
+                        style={secondaryButtonStyle()}
+                        onClick={clearOverrideJobs}
                       >
-                        {job.name}
-                        {selected ? " ×" : ""}
+                        クリア
                       </button>
-                    );
-                  })}
-                </div>
+                    </div>
+
+                    <div style={styles.tagList}>
+                      {selectableJobs.map((job) => {
+                        const selected = overrideJobKeySet.has(String(job.key));
+
+                        return (
+                          <button
+                            key={job.id ?? job.key}
+                            type="button"
+                            style={jobToggleStyle(selected)}
+                            onClick={() => toggleOverrideJob(job)}
+                            title={selected ? "クリックで削除" : "クリックで追加"}
+                          >
+                            {job.name}
+                            {selected ? " ×" : ""}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : null}
+              </>
+            ) : (
+              <div style={styles.hiddenEquipmentTypeNote}>
+                「その他」は装備可能職を設定しません
               </div>
-            ) : null}
+            )}
 
             <LabeledField label="基準価格">
               <input
@@ -628,13 +757,17 @@ export default function EquipmentEditorPanel({
             {hasRealGroup ? (
               <div style={styles.groupFields}>
                 <LabeledField label="セット種類">
-                  <input
+                  <select
                     style={styles.input}
                     value={row.groupKind ?? ""}
-                    onChange={(e) =>
-                      patchGroupAware("groupKind", e.target.value)
-                    }
-                  />
+                    onChange={(e) => handleGroupKindChange(e.target.value)}
+                  >
+                    {GROUP_KIND_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
                 </LabeledField>
 
                 <LabeledField label="セットID">
@@ -696,7 +829,7 @@ export default function EquipmentEditorPanel({
             <div>
               <h2 style={styles.panelTitle}>職人情報</h2>
               <p style={styles.panelLead}>
-                作成レベル・コマタイプ・大成功数値・レシピ情報
+                作成レベル・職人作成タイプ・大成功数値・レシピ情報
               </p>
             </div>
           </div>
@@ -715,16 +848,18 @@ export default function EquipmentEditorPanel({
                   />
                 </LabeledField>
 
-                {isTailoringEquipment ? (
-                  <LabeledField label="布タイプ">
+                {craftMaterialTraitOptions.length ? (
+                  <LabeledField label={craftMaterialTraitLabel}>
                     <select
                       style={styles.input}
-                      value={row.fabricType ?? ""}
-                      onChange={(e) => patch("fabricType", e.target.value)}
+                      value={row.craftMaterialTrait ?? ""}
+                      onChange={(e) =>
+                        patch("craftMaterialTrait", e.target.value)
+                      }
                     >
                       <option value="">未選択</option>
 
-                      {FABRIC_TYPE_OPTIONS.map((name) => (
+                      {craftMaterialTraitOptions.map((name) => (
                         <option key={name} value={name}>
                           {name}
                         </option>
@@ -733,16 +868,38 @@ export default function EquipmentEditorPanel({
                   </LabeledField>
                 ) : null}
 
-                <LabeledField label="作成コマタイプ">
+                <LabeledField label="職人">
                   <select
                     style={styles.input}
-                    value={row.slotGridType || ""}
-                    onChange={(e) => patch("slotGridType", e.target.value)}
+                    value={craftTypeFilterId}
+                    onChange={(e) =>
+                      handleCraftTypeFilterChange(e.target.value)
+                    }
                   >
-                    <option value="">未選択</option>
-                    {GRID_TYPE_OPTIONS.map((type) => (
-                      <option key={type} value={type}>
-                        {type}
+                    <option value="">先に職人を選択</option>
+                    {craftTypeOptions.map((craftType) => (
+                      <option key={craftType.id} value={craftType.id}>
+                        {craftType.name}
+                      </option>
+                    ))}
+                  </select>
+                </LabeledField>
+
+                <LabeledField label="職人作成タイプ">
+                  <select
+                    style={styles.input}
+                    value={row.craftProductTypeId || ""}
+                    disabled={!craftTypeFilterId}
+                    onChange={(e) =>
+                      handleCraftProductTypeChange(e.target.value)
+                    }
+                  >
+                    <option value="">
+                      {craftTypeFilterId ? "未選択" : "先に職人を選択"}
+                    </option>
+                    {filteredCraftProductTypes.map((type) => (
+                      <option key={type.id} value={type.id}>
+                        {type.name ?? type.key}
                       </option>
                     ))}
                   </select>
@@ -1175,6 +1332,15 @@ effectColumn: {
     display: "flex",
     flexWrap: "wrap",
     gap: 8,
+  },
+
+  hiddenEquipmentTypeNote: {
+    border: "1px solid var(--soft-border)",
+    background: "var(--soft-bg)",
+    color: "var(--text-muted)",
+    borderRadius: 10,
+    padding: "10px 12px",
+    fontSize: 12,
   },
 
   mutedText: {

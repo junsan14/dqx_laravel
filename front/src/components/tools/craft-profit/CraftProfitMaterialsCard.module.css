@@ -29,6 +29,29 @@
   min-width: 0;
 }
 
+.mobileSlotSelect,
+.mobileSlotTabs {
+  display: none;
+}
+
+.mobileSlotSelectControl {
+  width: 100%;
+}
+
+.mobileSlotTabs {
+  width: 100%;
+  min-width: 0;
+}
+
+.mobileTabButton {
+  min-width: 0;
+  width: 100%;
+}
+
+.desktopSlotTabs {
+  display: block;
+}
+
 .tabsScroller {
   display: flex;
   gap: 0.5rem;
@@ -201,9 +224,12 @@
 }
 
 .detailTag {
+  display: inline-flex;
   flex: 0 0 auto;
-  max-width: 50%;
+  max-width: 58%;
   overflow: hidden;
+  align-items: center;
+  gap: 0.35rem;
   padding: 0.25rem 0.65rem;
   border: 1px solid var(--tag-border);
   border-radius: 9999px;
@@ -244,6 +270,32 @@
   background: rgb(236 72 153 / 0.14);
   color: #db2777;
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
+}
+
+
+
+.detailTagReturn {
+  border-color: rgb(59 130 246 / 0.55);
+  background: rgb(59 130 246 / 0.14);
+  color: #2563eb;
+}
+
+.detailTagFocusChange {
+  border-color: rgb(245 158 11 / 0.58);
+  background: rgb(245 158 11 / 0.15);
+  color: #b45309;
+}
+
+.detailTagDoubleHalf {
+  border-color: rgb(139 92 246 / 0.55);
+  background: rgb(139 92 246 / 0.14);
+  color: #7c3aed;
+}
+
+.detailTagPowerCritical {
+  border-color: rgb(239 68 68 / 0.55);
+  background: rgb(239 68 68 / 0.14);
+  color: #dc2626;
 }
 
 .slotGridViewport {
@@ -450,47 +502,38 @@
 }
 
 @media (max-width: 639px) {
+  .mobileSlotSelect {
+    display: block;
+  }
+
+  .mobileSlotTabs {
+    display: grid;
+    grid-template-columns:
+      repeat(var(--mobile-tab-count), minmax(0, 1fr));
+    gap: 0.25rem;
+    overflow: visible;
+  }
+
+  .mobileTabButton {
+    overflow: hidden;
+    padding: 0.42rem 0.1rem;
+    border-radius: 0.65rem;
+    font-size: 0.6875rem;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .desktopSlotTabs {
+    display: none;
+  }
+
   .card {
     padding: 1rem;
   }
 
   .card > * + * {
     margin-top: 0.85rem;
-  }
-
-  .tabsFullBleed {
-    margin-inline: 0;
-  }
-
-  .tabsScroller {
-    display: grid;
-    grid-template-columns: repeat(calc(var(--tab-count)), minmax(0, 1fr));
-    gap: 0.25rem;
-    overflow: visible;
-    padding: 0;
-  }
-  .tabs {
-  display: grid;
-  grid-template-columns: repeat(var(--tab-count), minmax(0, 1fr));
-}
-
-/* タブが6個以上の場合 */
-.tabsScrollable {
-  grid-template-columns: repeat(var(--tab-count), minmax(120px, 1fr));
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: thin;
-  -webkit-overflow-scrolling: touch;
-}
-
-  .tabButton {
-    width: 100%;
-    min-width: 0;
-    overflow: hidden;
-    padding: 0.4rem 0.1rem;
-    border-radius: 0.65rem;
-    font-size: 0.6875rem;
-    text-overflow: ellipsis;
   }
 
   .swipeHint {
@@ -611,5 +654,21 @@
 
   .detailTagPink {
     color: #f9a8d4;
+  }
+
+  .detailTagReturn {
+    color: #93c5fd;
+  }
+
+  .detailTagFocusChange {
+    color: #fcd34d;
+  }
+
+  .detailTagDoubleHalf {
+    color: #c4b5fd;
+  }
+
+  .detailTagPowerCritical {
+    color: #fca5a5;
   }
 }

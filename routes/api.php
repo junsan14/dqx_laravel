@@ -28,6 +28,10 @@ use App\Http\Controllers\Api\ContentReportController;
 use App\Http\Controllers\Api\AdminContentReportController;
 use App\Http\Controllers\Api\MonsterSystemTypeController;
 
+use App\Http\Controllers\Api\CraftProductTypeController;
+
+Route::Resource('/craft-product-types', CraftProductTypeController::class);
+
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();

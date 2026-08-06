@@ -24,7 +24,9 @@ class MapController extends Controller
                 'continents.display_order as continent_display_order',
                 'continents.name as continent',
                 'continents.name_en as continent_name_en',
+                'continents.map_image_folder as continent_folder',
                 'maps.name',
+                'maps.name_kana',
                 'maps.name_en',
                 'maps.map_type',
                 'maps.source_url',
@@ -37,6 +39,7 @@ class MapController extends Controller
         if ($keyword !== '') {
             $query->where(function ($sub) use ($keyword) {
                 $sub->where('maps.name', 'like', "%{$keyword}%")
+                    ->orWhere('maps.name_kana', 'like', "%{$keyword}%")
                     ->orWhere('maps.name_en', 'like', "%{$keyword}%")
                     ->orWhere('continents.name', 'like', "%{$keyword}%")
                     ->orWhere('continents.name_en', 'like', "%{$keyword}%")
@@ -80,8 +83,9 @@ class MapController extends Controller
                 'continent' => $row->continent,
                 'continent_name' => $row->continent,
                 'continent_name_en' => $row->continent_name_en,
-                'continent_folder' => null,
+                'continent_folder' => $row->continent_folder,
                 'name' => $row->name,
+                'name_kana' => $row->name_kana,
                 'name_en' => $row->name_en,
                 'map_type' => $row->map_type,
                 'source_url' => $row->source_url,
@@ -106,7 +110,9 @@ class MapController extends Controller
                 'continents.display_order as continent_display_order',
                 'continents.name as continent',
                 'continents.name_en as continent_name_en',
+                'continents.map_image_folder as continent_folder',
                 'maps.name',
+                'maps.name_kana',
                 'maps.name_en',
                 'maps.map_type',
                 'maps.source_url',
@@ -132,8 +138,9 @@ class MapController extends Controller
                 'continent' => $row->continent,
                 'continent_name' => $row->continent,
                 'continent_name_en' => $row->continent_name_en,
-                'continent_folder' => null,
+                'continent_folder' => $row->continent_folder,
                 'name' => $row->name,
+                'name_kana' => $row->name_kana,
                 'name_en' => $row->name_en,
                 'map_type' => $row->map_type,
                 'source_url' => $row->source_url,
@@ -153,6 +160,7 @@ class MapController extends Controller
             $mapId = DB::table('maps')->insertGetId([
                 'continent_id' => $data['continent_id'],
                 'name' => $data['name'],
+                'name_kana' => $this->nullableString($data['name_kana'] ?? null),
                 'name_en' => $this->nullableString($data['name_en'] ?? null),
                 'map_type' => $data['map_type'],
                 'source_url' => $this->nullableString($data['source_url'] ?? null),
@@ -202,6 +210,10 @@ class MapController extends Controller
 
             if (array_key_exists('name', $data)) {
                 $updateData['name'] = $data['name'];
+            }
+
+            if (array_key_exists('name_kana', $data)) {
+                $updateData['name_kana'] = $this->nullableString($data['name_kana']);
             }
 
             if (array_key_exists('name_en', $data)) {
@@ -268,7 +280,7 @@ class MapController extends Controller
     public function options()
     {
         $continents = DB::table('continents')
-            ->select('id', 'display_order', 'name', 'name_en')
+            ->select('id', 'display_order', 'name', 'name_kana', 'name_en', 'map_image_folder')
             ->orderBy('display_order', 'asc')
             ->orderBy('id', 'asc')
             ->get()
@@ -277,7 +289,11 @@ class MapController extends Controller
                     'id' => (int) $row->id,
                     'display_order' => (int) $row->display_order,
                     'name' => $row->name,
+                    'name_kana' => $row->name_kana,
                     'name_en' => $row->name_en,
+                    'map_image_folder' => $row->map_image_folder,
+                    'continent_folder' => $row->map_image_folder,
+                    'folder' => $row->map_image_folder,
                 ];
             })
             ->values();
@@ -310,6 +326,7 @@ class MapController extends Controller
             'name' => $isUpdate
                 ? ['sometimes', 'required', 'string', 'max:255']
                 : ['required', 'string', 'max:255'],
+            'name_kana' => ['nullable', 'string', 'max:255'],
             'name_en' => ['nullable', 'string', 'max:255'],
             'map_type' => $isUpdate
                 ? ['sometimes', 'required', 'string', 'max:255']

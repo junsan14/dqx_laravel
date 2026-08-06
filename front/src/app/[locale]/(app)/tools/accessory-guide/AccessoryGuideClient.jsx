@@ -8,9 +8,9 @@ import {
 import styles from "./accessory-guide.module.css";
 import Image from "next/image";
 import PageHeroTitle from "@/components/PageHeroTitle";
-import SearchableSelect from "@/components/common/SearchableSelect";
-import DropdownSelect from "@/components/common/DropdownSelect";
-import ContentReportArea from "@/components/common/ContentReportArea";
+import SearchableSelect from "@/components/common/form/SearchableSelect";
+import DropdownSelect from "@/components/common/form/DropdownSelect";
+import ContentReportArea from "@/components/common/content-report-area/ContentReportArea";
 
 /**
  * 部位の表示順

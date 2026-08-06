@@ -23,7 +23,9 @@ function createEmptyContinent() {
     id: null,
     display_order: "",
     name: "",
+    name_kana: "",
     name_en: "",
+    map_image_folder: "",
   };
 }
 
@@ -35,7 +37,9 @@ function normalizeContinent(row) {
         ? String(row.display_order)
         : "",
     name: row?.name ?? "",
+    name_kana: row?.name_kana ?? "",
     name_en: row?.name_en ?? "",
+    map_image_folder: row?.map_image_folder ?? "",
   };
 }
 
@@ -48,7 +52,9 @@ function buildContinentPayload(form) {
         ? null
         : Number(form.display_order),
     name: (form.name ?? "").trim(),
+    name_kana: (form.name_kana ?? "").trim() || null,
     name_en: (form.name_en ?? "").trim() || null,
+    map_image_folder: (form.map_image_folder ?? "").trim() || null,
   };
 }
 
@@ -310,7 +316,7 @@ export default function ContinentsClient() {
             createLabel="新規追加"
             loading={loadingList}
             title="大陸編集"
-            searchPlaceholder="名前で検索"
+            searchPlaceholder="名前・かな・英語・フォルダ名で検索"
           >
             {!hideSearchList ? (
               <div style={styles.listWrap}>

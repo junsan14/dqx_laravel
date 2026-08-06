@@ -249,7 +249,7 @@
     "title": "マップ別モンスター検索",
     "continent": "大陸",
     "loadingContinentData": "大陸データを読み込んでいます...",
-    "continentPlaceholder": "大陸を入力",
+    "continentPlaceholder": "大陸名・かなを入力",
     "mapSearch": "地名検索",
     "mapPlaceholder": "地名を入力",
     "selectContinentFirst": "大陸を選択して下さい",
@@ -276,7 +276,40 @@
     "loadFailed": "データ取得に失敗",
     "emptyGuide": "大陸と地名を選ぶと、出現モンスターを確認できます",
     "selectMap": "地名を選択して下さい",
-    "noMatchedMonster": "この条件に一致するモンスターはいない"
+    "noMatchedMonster": "この条件に一致するモンスターはいない",
+    "search": {
+      "method": "検索方法",
+      "byMap": "地名で探す",
+      "bySystem": "モンスター系統で探す",
+      "byDrop": "ドロップ品で探す",
+      "systemSearch": "モンスター系統",
+      "dropSearch": "ドロップ品",
+      "selectSystem": "系統を選択してください",
+      "selectDrop": "ドロップ品を入力してください",
+      "dropMinLength": "2文字以上入力してください",
+      "loadingSystems": "系統データを読み込み中...",
+      "loadingDrops": "ドロップ品を検索中...",
+      "noSystems": "この大陸には系統データがありません",
+      "noDrops": "該当するドロップ品がありません",
+      "filteredMapSearch": "該当する地名",
+      "selectSystemFirst": "先にモンスター系統を選択してください",
+      "selectDropFirst": "先にドロップ品を入力してください",
+      "matchedMaps": "該当する地名 {count}件",
+      "selectedSystem": "「{systemType}」が出現する地名だけを表示中",
+      "selectedDrop": "「{dropName}」を落とすモンスターだけを表示中"
+    },
+    "report": {
+      "fields": {
+        "mapName": "地名",
+        "continentName": "大陸・地域",
+        "layerName": "階層名・フロア名",
+        "floorNo": "階層順・フロア番号",
+        "image": "マップ画像",
+        "other": "その他"
+      },
+      "layerFallback": "マップ階層 #{id}",
+      "description": "地名・大陸・階層名・フロア番号・マップ画像の間違いを送ってください。"
+    }
   },
   "MonsterDetailPage": {
     "fetchError": "モンスター詳細を取得できなかった",
@@ -475,7 +508,7 @@
     "target": "報告対象",
     "anonymous": "名前やメールアドレスは不要です。投稿内容は確認後に反映します。",
     "message": "指摘内容",
-    "messagePlaceholder": "例：必要素材が10個と表示されていますが、実際は12個です。確認できるURLや方法があれば一緒に記入してください。",
+    "messagePlaceholder": "例：必要素材が10個と表示されていますが、実際は12個です。",
     "close": "閉じる",
     "submit": "匿名で送信",
     "submitting": "送信中…",

@@ -21,7 +21,169 @@ const collatorEn = new Intl.Collator("en");
 export const DEFAULT_FEE_RATE = 5;
 
 const CRYSTAL_UNIT_PRICE = 3200;
-const EXPENSIVE_ITEM_PRICE_RATE = 1.25;
+const STANDARD_STAR0_PRICE_RATE = 0.7;
+const STANDARD_STAR1_PRICE_RATE = 0.85;
+const STANDARD_STAR2_PRICE_RATE = 1;
+
+export const MATERIAL_OUTPUT_COUNTS = Object.freeze({
+  star0: 1, // ☆なし
+  star1: 2, // ☆1
+  star2: 3, // ☆2
+  star3: 10, // 大成功
+});
+
+export function isMaterialCraftProductType(value) {
+  if (!value) return false;
+
+  const craftProductType =
+    value?.craftProductType ??
+    value?.craft_product_type ??
+    value;
+
+  const kind = String(
+    craftProductType?.kind ??
+      value?.craftProductTypeKind ??
+      value?.craft_product_type_kind ??
+      ""
+  )
+    .trim()
+    .toLowerCase();
+
+  const key = String(
+    craftProductType?.key ??
+      value?.craftProductTypeKey ??
+      value?.craft_product_type_key ??
+      ""
+  )
+    .trim()
+    .toLowerCase();
+
+  const name = String(
+    craftProductType?.name ??
+      value?.craftProductTypeName ??
+      value?.craft_product_type_name ??
+      ""
+  )
+    .trim()
+    .toLowerCase();
+
+  const displayName = String(
+    craftProductType?.displayName ??
+      craftProductType?.display_name ??
+      value?.craftProductTypeDisplayName ??
+      value?.craft_product_type_display_name ??
+      ""
+  )
+    .trim()
+    .toLowerCase();
+
+  return (
+    ["material", "materials", "ingredient", "raw_material", "素材"].includes(kind) ||
+    key === "material" ||
+    key.startsWith("material_") ||
+    key.endsWith("_material") ||
+    key.includes("raw_material") ||
+    name.includes("素材") ||
+    displayName.includes("素材")
+  );
+}
+
+export function getCraftProductOutputCounts(value) {
+  if (!value) return null;
+
+  const items =
+    Array.isArray(value?.items) && value.items.length
+      ? value.items
+      : [value];
+
+  return items.length > 0 && items.every(isMaterialCraftProductType)
+    ? MATERIAL_OUTPUT_COUNTS
+    : null;
+}
+
+export function isCrystalEligibleCraftProductType(value) {
+  if (!value) return false;
+
+  const items =
+    Array.isArray(value?.items) && value.items.length
+      ? value.items.filter(Boolean)
+      : [];
+
+  // セットの場合は、構成するすべての装備が結晶対象のときだけ対象にする。
+  if (items.length) {
+    return items.every(isCrystalEligibleCraftProductType);
+  }
+
+  const craftProductType =
+    value?.craftProductType ??
+    value?.craft_product_type ??
+    value;
+
+  const kind = String(
+    craftProductType?.kind ??
+      value?.craftProductTypeKind ??
+      value?.craft_product_type_kind ??
+      ""
+  )
+    .trim()
+    .toLowerCase();
+
+  const key = String(
+    craftProductType?.key ??
+      value?.craftProductTypeKey ??
+      value?.craft_product_type_key ??
+      ""
+  )
+    .trim()
+    .toLowerCase();
+
+  const groupKind = String(
+    value?.groupKind ?? value?.group_kind ?? ""
+  )
+    .trim()
+    .toLowerCase();
+
+  const slotKey = normalizeSlotKey(
+    value?.slotKey ?? value?.slot ?? ""
+  );
+
+  return (
+    ["weapon", "armor", "shield"].includes(kind) ||
+    ["weapon_set", "armor_set", "tailoring_set", "shield_set"].includes(
+      groupKind
+    ) ||
+    key.startsWith("armor_") ||
+    key.startsWith("tailoring_") ||
+    key.startsWith("shield_") ||
+    slotKey === "weapon" ||
+    slotKey === "shield"
+  );
+}
+
+export function normalizeGreatSuccessRate(value) {
+  if (value === null || value === undefined || value === "") return null;
+
+  const rate = Number(value);
+  if (!Number.isFinite(rate) || rate <= 0 || rate > 100) return null;
+
+  return rate;
+}
+
+export function calcGreatSuccessPriceRate(
+  greatSuccessRate,
+  feeRate = 0
+) {
+  const rate = normalizeGreatSuccessRate(greatSuccessRate);
+  if (rate == null) return null;
+
+  const successProbability = rate / 100;
+  const netSaleRate = Math.max(0.01, 1 - Math.max(0, Number(feeRate) || 0));
+
+  // 大成功品の期待手取りだけで原価を回収する販売倍率。
+  // 固定の利益倍率は使わず、大成功率と販売手数料だけで逆算する。
+  return 1 / (successProbability * netSaleRate);
+}
+
 const CRYSTAL_ITEM_DISCOUNT = 10000;
 const BUYER_PROFIT_RATE = 0.2;
 const MARKET_PRICE_ROUND_UNIT = 100;
@@ -243,18 +405,28 @@ function toItemSummary(item) {
     materials: item.materials,
     slotGrid: item.slotGrid,
     jobs: item.jobs,
+    greatSuccessRate: item.greatSuccessRate,
 
     jobOverrideMode: item.jobOverrideMode,
     jobOverrides: item.jobOverrides,
     equipmentType: item.equipmentType,
     equipmentTypeName: item.equipmentTypeName,
+    craftProductType: item.craftProductType,
+    craftProductTypeName: item.craftProductTypeName,
+    craftProductTypeDisplayName: item.craftProductTypeDisplayName,
+    craftProductTypeKey: item.craftProductTypeKey,
+    craftProductTypeKind: item.craftProductTypeKind,
 
     craftLevel: item.craftLevel,
     equipLevel: item.equipLevel,
     recipeBook: item.recipeBook,
     recipePlace: item.recipePlace,
     description: item.description,
-    fabricType: item.fabricType,
+    craftMaterialTrait:
+      item.craftMaterialTrait ?? item.fabricType ?? "",
+    // 移行期間中の旧コンポーネント向け互換フィールド。
+    fabricType:
+      item.craftMaterialTrait ?? item.fabricType ?? "",
 
     maxHp: item.maxHp,
     maxMp: item.maxMp,
@@ -313,6 +485,59 @@ export function normalizeEquipmentRow(row, itemMap = new Map(), locale = "ja") {
     : [];
 
   const equipmentType = row?.equipmentType ?? row?.equipment_type ?? null;
+  const craftProductType =
+    row?.craftProductType ?? row?.craft_product_type ?? null;
+  const craftProductTypeName = String(
+    craftProductType?.name ??
+      row?.craftProductTypeName ??
+      row?.craft_product_type_name ??
+      ""
+  ).trim();
+  const craftProductTypeDisplayName = String(
+    craftProductType?.displayName ??
+      craftProductType?.display_name ??
+      row?.craftProductTypeDisplayName ??
+      row?.craft_product_type_display_name ??
+      craftProductTypeName
+  ).trim();
+  const craftProductTypeKey = String(
+    craftProductType?.key ??
+      row?.craftProductTypeKey ??
+      row?.craft_product_type_key ??
+      ""
+  ).trim().toLowerCase();
+  const craftProductTypeKind = String(
+    craftProductType?.kind ??
+      row?.craftProductTypeKind ??
+      row?.craft_product_type_kind ??
+      ""
+  ).trim().toLowerCase();
+
+  const rawSlotName =
+    craftProductTypeDisplayName || craftProductTypeName || "other";
+  const normalizedDisplaySlotKey = normalizeSlotKey(rawSlotName);
+  const productSlotKey =
+    normalizedDisplaySlotKey !== "other"
+      ? normalizedDisplaySlotKey
+      : craftProductTypeKind === "weapon"
+      ? "weapon"
+      : craftProductTypeKind === "shield" ||
+        craftProductTypeKey.startsWith("shield_")
+      ? "shield"
+      : "other";
+
+  const craftTypeData =
+    craftProductType?.craftType ??
+    craftProductType?.craft_type ??
+    row?.craftType ??
+    row?.craft_type ??
+    null;
+  const greatSuccessRate = normalizeGreatSuccessRate(
+    craftTypeData?.greatSuccessRate ??
+      craftTypeData?.great_success_rate ??
+      row?.greatSuccessRate ??
+      row?.great_success_rate
+  );
   const jobOverrideMode =
     row?.jobOverrideMode ?? row?.job_override_mode ?? "inherit";
   const jobOverrides = row?.jobOverrides ?? row?.job_overrides ?? [];
@@ -338,16 +563,16 @@ export function normalizeEquipmentRow(row, itemMap = new Map(), locale = "ja") {
     name: row?.itemName ?? row?.item_name ?? row?.name ?? "",
     nameKana: row?.itemNameKana ?? row?.item_name_kana ?? "", // 追加
 
-    slotKey: normalizeSlotKey(row?.slot ?? "other"),
-    slot: normalizeSlotName(row?.slot ?? "other", locale),
+    slotKey: productSlotKey,
+    slot:
+      locale === "ja" && craftProductTypeDisplayName
+        ? craftProductTypeDisplayName
+        : normalizeSlotName(productSlotKey, locale),
 
     craftType:
-      row?.equipmentType?.craftType?.name ??
-      row?.equipmentType?.craft_type?.name ??
-      row?.equipment_type?.craft_type?.name ??
-      row?.craftType ??
-      row?.craft_type ??
+      (typeof craftTypeData === "object" ? craftTypeData?.name : craftTypeData) ??
       "",
+    greatSuccessRate,
 
     craftLevel: Number(row?.craftLevel ?? row?.craft_level ?? 0) || null,
     equipLevel: Number(row?.equipLevel ?? row?.equip_level ?? 0) || null,
@@ -355,7 +580,21 @@ export function normalizeEquipmentRow(row, itemMap = new Map(), locale = "ja") {
     recipeBook: row?.recipeBook ?? row?.recipe_book ?? "",
     recipePlace: row?.recipePlace ?? row?.recipe_place ?? "",
     description: row?.description ?? "",
-    fabricType: String(row?.fabricType ?? row?.fabric_type ?? "").trim(),
+    craftMaterialTrait: String(
+      row?.craftMaterialTrait ??
+        row?.craft_material_trait ??
+        row?.fabricType ??
+        row?.fabric_type ??
+        ""
+    ).trim(),
+    // 旧名称を参照する箇所が残っていても表示が消えないようにする。
+    fabricType: String(
+      row?.craftMaterialTrait ??
+        row?.craft_material_trait ??
+        row?.fabricType ??
+        row?.fabric_type ??
+        ""
+    ).trim(),
 
     maxHp: Number(row?.maxHp ?? row?.max_hp ?? 0) || 0,
     maxMp: Number(row?.maxMp ?? row?.max_mp ?? 0) || 0,
@@ -379,6 +618,11 @@ export function normalizeEquipmentRow(row, itemMap = new Map(), locale = "ja") {
     equipmentTypeName: String(
       equipmentType?.name ?? row?.equipmentTypeName ?? row?.equipment_type_name ?? ""
     ).trim(),
+    craftProductType,
+    craftProductTypeName,
+    craftProductTypeDisplayName,
+    craftProductTypeKey,
+    craftProductTypeKind,
 
     groupId:
       row?.groupId ??
@@ -433,6 +677,7 @@ export function buildSetsFromEquipments(rows, itemMap = new Map(), locale = "ja"
       id: key,
       name: item.groupName || item.name,
       craftType: item.craftType,
+      greatSuccessRate: item.greatSuccessRate,
       craftLevel: item.craftLevel,
       equipLevel: item.equipLevel,
       recipeBook: item.recipeBook,
@@ -447,6 +692,9 @@ export function buildSetsFromEquipments(rows, itemMap = new Map(), locale = "ja"
     current.jobs = Array.from(new Set([...current.jobs, ...(item.jobs || [])]));
 
     if (!current.craftType && item.craftType) current.craftType = item.craftType;
+    if (current.greatSuccessRate == null && item.greatSuccessRate != null) {
+      current.greatSuccessRate = item.greatSuccessRate;
+    }
     if (!current.craftLevel && item.craftLevel) current.craftLevel = item.craftLevel;
     if (!current.equipLevel && item.equipLevel) current.equipLevel = item.equipLevel;
     if (!current.recipeBook && item.recipeBook) current.recipeBook = item.recipeBook;
@@ -483,6 +731,11 @@ function roundMarketPrice(value) {
   return Math.round(safeValue / MARKET_PRICE_ROUND_UNIT) * MARKET_PRICE_ROUND_UNIT;
 }
 
+function roundUnitPrice(value) {
+  const safeValue = Math.max(0, Number(value) || 0);
+  return Math.ceil(safeValue);
+}
+
 function buildCrystalValues(crystalByEquipLevel) {
   if (!crystalByEquipLevel) return null;
 
@@ -505,7 +758,13 @@ function buildCrystalValues(crystalByEquipLevel) {
 export function isCrystalEquipment({
   costPerItem,
   crystalByEquipLevel,
+  craftProductType = null,
 }) {
+  // 結晶装備として扱うのは、武器・防具・盾だけ。
+  if (!isCrystalEligibleCraftProductType(craftProductType)) {
+    return false;
+  }
+
   const crystalValues = buildCrystalValues(crystalByEquipLevel);
   if (!crystalValues) return false;
 
@@ -518,34 +777,82 @@ export function isCrystalEquipment({
 export function calcRecommendedStarPrices({
   costPerItem,
   crystalByEquipLevel,
+  craftProductType = null,
+  outputCounts = null,
+  greatSuccessRate,
+  feeRate = 0,
 }) {
-  const crystalValues = buildCrystalValues(crystalByEquipLevel);
-  if (!crystalValues) return null;
-
   const cost = Math.max(0, Number(costPerItem) || 0);
-  const crystalEquipment = isCrystalEquipment({
-    costPerItem: cost,
-    crystalByEquipLevel,
-  });
+  const crystalEligible =
+    isCrystalEligibleCraftProductType(craftProductType);
+  const crystalValues = crystalEligible
+    ? buildCrystalValues(crystalByEquipLevel)
+    : null;
+  const greatSuccessPriceRate = calcGreatSuccessPriceRate(
+    greatSuccessRate,
+    feeRate
+  );
 
-  if (!crystalEquipment) {
-    // 高額商材：購入者利益率は使わず、★3は原価の25%増し。
+  if (outputCounts) {
+    if (greatSuccessPriceRate == null) return null;
+    // 「素材」タイプだけ、品質によって完成個数が変わる。
+    // 大成功時の完成個数と大成功率から、期待手取りが
+    // 1回の作成原価と等しくなる1個あたりの単価を逆算する。
+    const greatSuccessCount = Math.max(
+      1,
+      Number(outputCounts.star3) || 1
+    );
+    const unitPrice = roundUnitPrice(
+      (cost * greatSuccessPriceRate) / greatSuccessCount
+    );
+
+    // 売られるアイテムは同じなので、結果にかかわらず単価は共通。
+    // 損益計算時に完成個数を掛けて総売上へ戻す。
     return {
-      star0: roundMarketPrice(crystalValues.star0 - CRYSTAL_ITEM_DISCOUNT),
-      star1: roundMarketPrice(crystalValues.star1 - CRYSTAL_ITEM_DISCOUNT),
-      star2: roundMarketPrice(crystalValues.star2 - CRYSTAL_ITEM_DISCOUNT),
-      star3: roundMarketPrice(cost * EXPENSIVE_ITEM_PRICE_RATE),
+      star0: unitPrice,
+      star1: unitPrice,
+      star2: unitPrice,
+      star3: unitPrice,
+      unitPrice,
     };
   }
 
-  // 結晶装備だけ、購入者が20%利益を取れる価格にする。
-  const buyerPriceRate = 1 + BUYER_PROFIT_RATE;
+  const crystalEquipment = isCrystalEquipment({
+    costPerItem: cost,
+    crystalByEquipLevel,
+    craftProductType,
+  });
 
+  if (crystalEquipment) {
+    // 結晶装備だけ、購入者が20%利益を取れる価格にする。
+    const buyerPriceRate = 1 + BUYER_PROFIT_RATE;
+
+    return {
+      star0: roundMarketPrice(crystalValues.star0 / buyerPriceRate),
+      star1: roundMarketPrice(crystalValues.star1 / buyerPriceRate),
+      star2: roundMarketPrice(crystalValues.star2 / buyerPriceRate),
+      star3: roundMarketPrice(crystalValues.star3 / buyerPriceRate),
+    };
+  }
+
+  // 通常商材は大成功率がなければ販売目安を決められない。
+  if (greatSuccessPriceRate == null) return null;
+
+  if (!crystalValues) {
+    return {
+      star0: roundMarketPrice(cost * STANDARD_STAR0_PRICE_RATE),
+      star1: roundMarketPrice(cost * STANDARD_STAR1_PRICE_RATE),
+      star2: roundMarketPrice(cost * STANDARD_STAR2_PRICE_RATE),
+      star3: roundMarketPrice(cost * greatSuccessPriceRate),
+    };
+  }
+
+  // 結晶対象の武器・防具・盾だが、結晶装備価格に当てはまらない場合。
   return {
-    star0: roundMarketPrice(crystalValues.star0 / buyerPriceRate),
-    star1: roundMarketPrice(crystalValues.star1 / buyerPriceRate),
-    star2: roundMarketPrice(crystalValues.star2 / buyerPriceRate),
-    star3: roundMarketPrice(crystalValues.star3 / buyerPriceRate),
+    star0: roundMarketPrice(crystalValues.star0 - CRYSTAL_ITEM_DISCOUNT),
+    star1: roundMarketPrice(crystalValues.star1 - CRYSTAL_ITEM_DISCOUNT),
+    star2: roundMarketPrice(crystalValues.star2 - CRYSTAL_ITEM_DISCOUNT),
+    star3: roundMarketPrice(cost * greatSuccessPriceRate),
   };
 }
 
@@ -566,27 +873,106 @@ export function normalizeSlots(items) {
 }
 
 function isCraftToolSet(selectedSet) {
-  return String(selectedSet?.groupKind || "") === "craft_tool_set";
+  return (
+    String(selectedSet?.groupKind ?? selectedSet?.group_kind ?? "") ===
+    "craft_tool_set"
+  );
+}
+
+function shouldUseItemAxis(selectedSet, normalizedItems) {
+  const groupKind = String(
+    selectedSet?.groupKind ?? selectedSet?.group_kind ?? ""
+  );
+
+  return (
+    isCraftToolSet(selectedSet) ||
+    normalizedItems.length > 1 ||
+    groupKind.endsWith("_set")
+  );
+}
+
+function getItemAxisBaseKey(item, index, prefix = "item") {
+  return String(
+    item?.id ??
+      item?.itemId ??
+      item?.item_id ??
+      item?.equipmentId ??
+      item?.equipment_id ??
+      item?.name ??
+      `${prefix}_${index}`
+  );
+}
+
+function buildItemAxisKeys(items, prefix = "item") {
+  const used = new Set();
+
+  return items.map((item, index) => {
+    const baseKey = getItemAxisBaseKey(item, index, prefix);
+    let key = baseKey;
+    let suffix = 2;
+
+    while (used.has(key)) {
+      key = `${baseKey}__${suffix}`;
+      suffix += 1;
+    }
+
+    used.add(key);
+    return key;
+  });
 }
 
 function getAxisMeta(selectedSet, normalizedItems, locale = "ja") {
-  if (isCraftToolSet(selectedSet)) {
-    const axisKeys = normalizedItems.map((item, index) =>
-      String(item.id || item.name || `tool_${index}`)
+  if (shouldUseItemAxis(selectedSet, normalizedItems)) {
+    const axisKeys = buildItemAxisKeys(
+      normalizedItems,
+      isCraftToolSet(selectedSet) ? "tool" : "equipment"
     );
-
+    const slotCounts = normalizedItems.reduce((result, item) => {
+      const slotKey = normalizeSlotKey(item.slotKey ?? item.slot ?? "other");
+      result[slotKey] = (result[slotKey] || 0) + 1;
+      return result;
+    }, {});
+    const duplicateIndexes = {};
     const axisMeta = {};
+
     normalizedItems.forEach((item, index) => {
       const key = axisKeys[index];
-      const fallbackLabel = getToolFallbackLabel(index, locale);
+      const slotKey = normalizeSlotKey(item.slotKey ?? item.slot ?? "other");
+      const slotLabel = getSlotKeyLabel(slotKey, locale);
+      const duplicateSlot = Number(slotCounts[slotKey] || 0) > 1;
+      const duplicateIndex = (duplicateIndexes[slotKey] || 0) + 1;
+      duplicateIndexes[slotKey] = duplicateIndex;
+
+      const craftProductDisplayName = String(
+        item?.craftProductTypeDisplayName ??
+          item?.craft_product_type_display_name ??
+          item?.craftProductType?.displayName ??
+          item?.craftProductType?.display_name ??
+          item?.craft_product_type?.display_name ??
+          ""
+      ).trim();
+
+      const productLabel =
+        locale === "ja" && craftProductDisplayName
+          ? craftProductDisplayName
+          : slotLabel;
+
+      const fallbackLabel = isCraftToolSet(selectedSet)
+        ? getToolFallbackLabel(index, locale)
+        : `${productLabel}${duplicateSlot ? duplicateIndex : ""}`;
+      const itemName = String(item?.name ?? "").trim() || fallbackLabel;
+      const displayLabel =
+        isCraftToolSet(selectedSet) || duplicateSlot ? itemName : productLabel;
 
       axisMeta[key] = {
         key,
-        shortLabel: item.name || fallbackLabel,
-        label: item.name || fallbackLabel,
-        itemName: item.name || fallbackLabel,
-        slotKey: normalizeSlotKey(item.slotKey ?? item.slot ?? "other"),
-        slot: normalizeSlotName(item.slotKey ?? item.slot ?? "other", locale),
+        shortLabel: displayLabel,
+        label: displayLabel,
+        itemName,
+        slot: slotLabel,
+        slotKey,
+        duplicateSlot,
+        duplicateIndex,
       };
     });
 
@@ -608,6 +994,8 @@ function getAxisMeta(selectedSet, normalizedItems, locale = "ja") {
       itemName: item?.name ?? null,
       slot: getSlotKeyLabel(slotKey, locale),
       slotKey,
+      duplicateSlot: false,
+      duplicateIndex: 1,
     };
   });
 
@@ -646,15 +1034,20 @@ export function buildMatrix(selectedSet, locale = "ja") {
         ]
       : [];
 
-  const { axisKeys, axisMeta } = getAxisMeta(selectedSet, normalizedItems, locale);
+  const { axisKeys, axisMeta, mode } = getAxisMeta(
+    selectedSet,
+    normalizedItems,
+    locale
+  );
   const materialMap = new Map();
   const slotGrids = {};
   const slotGridMeta = {};
 
   normalizedItems.forEach((item, index) => {
-    const axisKey = isCraftToolSet(selectedSet)
-      ? String(item.id || item.name || `tool_${index}`)
-      : normalizeSlotKey(item.slotKey ?? item.slot ?? "other");
+    const axisKey =
+      mode === "item"
+        ? axisKeys[index]
+        : normalizeSlotKey(item.slotKey ?? item.slot ?? "other");
 
     for (const material of item.materials || []) {
       const key = `${material.item_id ?? "noid"}::${material.name}`;
@@ -705,15 +1098,37 @@ export function getSlotItemName(selectedSet, slot) {
   if (!selectedSet) return null;
 
   if (Array.isArray(selectedSet.items)) {
-    if (isCraftToolSet(selectedSet)) {
-      const item = selectedSet.items.find(
-        (it) => String(it.id || it.name) === String(slot)
-      );
-      return item?.name ?? null;
+    const items = selectedSet.items;
+    const axisKeys = buildItemAxisKeys(
+      items,
+      isCraftToolSet(selectedSet) ? "tool" : "equipment"
+    );
+    const exactIndex = axisKeys.findIndex(
+      (axisKey) => String(axisKey) === String(slot)
+    );
+
+    if (exactIndex >= 0) {
+      return items[exactIndex]?.name ?? null;
     }
 
+    const exactItem = items.find((item) => {
+      const ids = [
+        item?.id,
+        item?.itemId,
+        item?.item_id,
+        item?.equipmentId,
+        item?.equipment_id,
+      ];
+
+      return ids.some(
+        (value) => value != null && String(value) === String(slot)
+      );
+    });
+
+    if (exactItem) return exactItem.name ?? null;
+
     const normalizedSlotKey = normalizeSlotKey(slot);
-    const item = selectedSet.items.find(
+    const item = items.find(
       (it) => normalizeSlotKey(it.slotKey ?? it.slot) === normalizedSlotKey
     );
     return item?.name ?? null;
@@ -729,7 +1144,11 @@ export function getSlotItemName(selectedSet, slot) {
   return null;
 }
 
-export function recommendFromP3(p3, locale = "ja") {
+export function recommendFromP3(
+  p3,
+  locale = "ja",
+  resultMode = "star"
+) {
   if (p3 == null) {
     return {
       label: "—",
@@ -738,82 +1157,76 @@ export function recommendFromP3(p3, locale = "ja") {
     };
   }
 
-  if (locale === "en") {
-    if (p3 <= 10) {
-      return {
-        label: "Highly Recommended",
-        tone: "text-emerald-700 dark:text-emerald-300",
-        sub: "Profitable even without 3★",
-      };
-    }
-
-    if (p3 <= 25) {
-      return {
-        label: "Recommended",
-        tone: "text-emerald-700 dark:text-emerald-300",
-        sub: "A few 3★ results should keep profit",
-      };
-    }
-
-    if (p3 <= 40) {
-      return {
-        label: "Average",
-        tone: "text-amber-700 dark:text-amber-300",
-        sub: "Needs a fair amount of 3★",
-      };
-    }
-
-    if (p3 <= 60) {
-      return {
-        label: "Tough",
-        tone: "text-rose-700 dark:text-rose-300",
-        sub: "Profit depends heavily on 3★ luck",
-      };
-    }
-
-    return {
-      label: "Not Recommended",
-      tone: "text-rose-700 dark:text-rose-300",
-      sub: "Too many 3★ results are needed for profit",
-    };
-  }
+  const isMaterialOutput = resultMode === "materialOutput";
+  const subText =
+    locale === "en"
+      ? isMaterialOutput
+        ? {
+            high: "Profitable with little or no great success",
+            recommended: "A few great successes should keep profit",
+            average: "Needs a fair amount of great success",
+            tough: "Profit depends heavily on great-success results",
+            bad: "Too many great successes are needed for profit",
+          }
+        : {
+            high: "Profitable even without 3★",
+            recommended: "A few 3★ results should keep profit",
+            average: "Needs a fair amount of 3★",
+            tough: "Profit depends heavily on 3★ luck",
+            bad: "Too many 3★ results are needed for profit",
+          }
+      : isMaterialOutput
+      ? {
+          high: "大成功がほぼなくても黒字",
+          recommended: "大成功が少し出れば黒字",
+          average: "大成功がそこそこ必要",
+          tough: "大成功の結果にかなり依存",
+          bad: "大成功が多くないと黒字にならない",
+        }
+      : {
+          high: "★★★なしでも黒字",
+          recommended: "★★★が少し出れば黒字",
+          average: "★★★がそこそこ必要",
+          tough: "★★★運にかなり依存",
+          bad: "★3が多すぎないと黒字にならない",
+        };
 
   if (p3 <= 10) {
     return {
-      label: "超おすすめ",
+      label: locale === "en" ? "Highly Recommended" : "超おすすめ",
       tone: "text-emerald-700 dark:text-emerald-300",
-      sub: "★★★なしでも黒字",
+      sub: subText.high,
     };
   }
 
   if (p3 <= 25) {
     return {
-      label: "おすすめ",
+      label: locale === "en" ? "Recommended" : "おすすめ",
       tone: "text-emerald-700 dark:text-emerald-300",
-      sub: "★★★が少し出れば黒字",
+      sub: subText.recommended,
     };
   }
 
   if (p3 <= 40) {
     return {
-      label: "普通",
+      label: locale === "en" ? "Average" : "普通",
       tone: "text-amber-700 dark:text-amber-300",
-      sub: "★★★がそこそこ必要",
+      sub: subText.average,
     };
   }
 
   if (p3 <= 60) {
     return {
-      label: "厳しめ",
+      label: locale === "en" ? "Tough" : "厳しめ",
       tone: "text-rose-700 dark:text-rose-300",
-      sub: "★★★運にかなり依存",
+      sub: subText.tough,
     };
   }
 
   return {
-    label: "非推奨",
+    label: locale === "en" ? "Not Recommended" : "非推奨",
     tone: "text-rose-700 dark:text-rose-300",
-    sub: "★3が多すぎないと黒字にならない",
+    sub: subText.bad,
   };
 }
 
@@ -821,16 +1234,25 @@ export function calcMinRatesToBreakEven({
   feeRate,
   costPerItem,
   starPrice,
+  outputCounts = null,
   stepPercent = 1,
   locale = "ja",
 }) {
   const rate = Math.max(0, Number(feeRate) || 0);
-  const net = (price) => Math.max(0, Number(price) || 0) * (1 - rate);
+  const net = (price, outputKey) => {
+    const unitNet = Math.max(0, Number(price) || 0) * (1 - rate);
+    const outputCount =
+      outputCounts == null
+        ? 1
+        : Math.max(0, Number(outputCounts?.[outputKey]) || 0);
 
-  const net0 = net(starPrice.star0);
-  const net1 = net(starPrice.star1);
-  const net2 = net(starPrice.star2);
-  const net3 = net(starPrice.star3);
+    return unitNet * outputCount;
+  };
+
+  const net0 = net(starPrice.star0, "star0");
+  const net1 = net(starPrice.star1, "star1");
+  const net2 = net(starPrice.star2, "star2");
+  const net3 = net(starPrice.star3, "star3");
 
   const cost = Math.max(0, Number(costPerItem) || 0);
 
@@ -847,7 +1269,11 @@ export function calcMinRatesToBreakEven({
       p0: 0,
       note:
         locale === "en"
-          ? "Even 100% 3★ will not make profit"
+          ? outputCounts
+            ? "Even 100% great success will not make profit"
+            : "Even 100% 3★ will not make profit"
+          : outputCounts
+          ? "大成功100%でも黒字にならない"
           : "100%★3でも黒字にならない",
     };
   }

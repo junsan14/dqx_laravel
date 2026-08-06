@@ -1,9 +1,3 @@
-.root,
-.compactCard {
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-}
 
 .root {
   margin-bottom: 16px;
@@ -27,7 +21,6 @@
   border-radius: 18px;
 
   background: transparent;
-  padding: 16px;
   box-sizing: border-box;
 }
 

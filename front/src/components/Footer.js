@@ -94,6 +94,16 @@ export default function Footer() {
           </FooterNavLink>
         </nav>
 
+        <div className={styles.mobileAboutWrap}>
+          <FooterNavLink
+            href="/about"
+            localized
+            className={styles.mobileAboutLink}
+          >
+            {t("links.about")}
+          </FooterNavLink>
+        </div>
+
         <div className={styles.bottomRow}>
           <div className={styles.legalText}>
             <span>© {currentYear} アストルティアの孫の手</span>

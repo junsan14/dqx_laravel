@@ -12,19 +12,39 @@
 .systemTypeFilter {
   grid-column: 3;
   justify-self: end;
-  width: 150px;
-  
+  width: var(--system-type-width-pc, 150px);
   min-width: 0;
+  transition: width 0.16s ease;
 }
 
 .systemTypeSelect {
   width: 100%;
 }
 
-.systemTypeInput {
+/* 系統候補はPC/SPともに1行で表示する */
+.systemTypeSelect :global([role="listbox"]) {
+  right: 0;
+  left: auto;
+  width: max-content;
+  min-width: 100%;
+  max-width: min(280px, calc(100vw - 24px));
+  overflow-x: auto;
+}
+
+.systemTypeSelect :global([role="option"]) {
+  width: max-content;
+  min-width: 100%;
+  white-space: nowrap;
+}
+
+.systemTypeSelect :global([role="option"] span) {
+  white-space: nowrap;
+}
+
+.systemTypeTrigger {
   min-height: 38px;
-  padding-top: 7px;
-  padding-bottom: 7px;
+  padding: 7px 10px;
+  gap: 7px;
   font-size: 13px;
 }
 
@@ -341,32 +361,55 @@
 
 @media (max-width: 639px) {
   .zukanControls {
-    grid-template-columns: 150px minmax(0, 1fr);
-    gap: 8px;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    column-gap: 8px;
+    row-gap: 6px;
+    padding: 0 8px;
   }
 
   .sortTabWrap {
-    grid-column: 1;
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
   }
 
   .systemTypeFilter {
-    grid-column: 2;
-    width: 100%;
-    max-width: 170px;
+    grid-column: 3;
+    grid-row: 2;
+    justify-self: end;
+    width: var(--system-type-width-sp, 128px);
+    max-width: 100%;
   }
 
-  .systemTypeInput {
-    min-height: 32px;
-    padding: 5px 9px;
+  .systemTypeTrigger {
+    min-height: 30px;
+    padding: 4px 7px;
+    gap: 5px;
     font-size: 11px;
+    line-height: 1.15;
+  }
+
+  /* buttonなのでiPhoneのinput自動ズームは発生しない */
+  .systemTypeTrigger :global(svg) {
+    width: 16px;
+    height: 16px;
+  }
+
+  .systemTypeSelect :global([role="option"]) {
+    padding: 7px 10px;
+    font-size: 12px;
   }
 
   .sortTabInner {
-    width: 150px;
+    width: 148px;
+    gap: 3px;
+    padding: 3px;
   }
 
   .sortTabButton {
-    padding: 3px 4px;
+    min-height: 28px;
+    padding: 4px 5px;
     font-size: 11px;
   }
 }

@@ -50,6 +50,11 @@ class CraftTypeController extends Controller
                 'string',
                 'max:255',
             ],
+            'great_success_rate' => [
+                'nullable',
+                'numeric',
+                'between:0,100',
+            ],
         ]);
 
         $craftType = CraftType::create($validated);
@@ -72,6 +77,11 @@ class CraftTypeController extends Controller
                 'required',
                 'string',
                 'max:255',
+            ],
+            'great_success_rate' => [
+                'nullable',
+                'numeric',
+                'between:0,100',
             ],
         ]);
 

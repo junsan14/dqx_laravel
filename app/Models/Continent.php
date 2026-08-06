@@ -11,6 +11,8 @@ class Continent extends Model
         'display_order',
         'name',
         'name_en',
+        'name_kana',
+        'map_image_folder',
     ];
 
     public function maps(): HasMany

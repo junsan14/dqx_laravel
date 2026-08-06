@@ -4,10 +4,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { MdSwipe } from "react-icons/md";
 import { clamp0, yen } from "@/lib/money";
+import DropdownSelect from "@/components/common/form/DropdownSelect";
 import {
   getSlotItemName,
+  getSlotOrder,
   normalizeSlotKey,
-  sortSlots,
 } from "./craftProfitHelpers";
 import styles from "./CraftProfitMaterialsCard.module.css";
 
@@ -78,12 +79,22 @@ function getAxisLabel(slot, slotGridMeta, slotItemMap) {
 function getSelectedItem(slot, selectedSet) {
   const items = Array.isArray(selectedSet?.items) ? selectedSet.items : [];
 
-  const exactItem = items.find(
-    (item) =>
-      String(item?.id ?? item?.name ?? "") === String(slot) ||
+  const exactItem = items.find((item) => {
+    const ids = [
+      item?.id,
+      item?.itemId,
+      item?.item_id,
+      item?.equipmentId,
+      item?.equipment_id,
+    ];
+
+    return (
+      ids.some((value) => value != null && String(value) === String(slot)) ||
       String(item?.slotKey ?? "") === String(slot) ||
-      String(item?.slot ?? "") === String(slot)
-  );
+      String(item?.slot ?? "") === String(slot) ||
+      String(item?.name ?? "") === String(slot)
+    );
+  });
 
   if (exactItem) return exactItem;
 
@@ -96,6 +107,48 @@ function getSelectedItem(slot, selectedSet) {
         normalizedSlot
     ) ?? null
   );
+}
+
+function getAxisSortSlot(slot, slotGridMeta, selectedSet) {
+  const item = getSelectedItem(slot, selectedSet);
+
+  return (
+    slotGridMeta?.[slot]?.slotKey ??
+    item?.slotKey ??
+    item?.slot ??
+    slot
+  );
+}
+
+function sortAxisSlots(slots, locale, slotGridMeta, selectedSet) {
+  const collator = new Intl.Collator(locale === "en" ? "en" : "ja", {
+    numeric: true,
+    sensitivity: "base",
+  });
+
+  return [...slots].sort((a, b) => {
+    const aOrder = getSlotOrder(
+      getAxisSortSlot(a, slotGridMeta, selectedSet)
+    );
+    const bOrder = getSlotOrder(
+      getAxisSortSlot(b, slotGridMeta, selectedSet)
+    );
+
+    if (aOrder !== bOrder) return aOrder - bOrder;
+
+    const aLabel =
+      slotGridMeta?.[a]?.itemName ??
+      slotGridMeta?.[a]?.label ??
+      getSelectedItem(a, selectedSet)?.name ??
+      a;
+    const bLabel =
+      slotGridMeta?.[b]?.itemName ??
+      slotGridMeta?.[b]?.label ??
+      getSelectedItem(b, selectedSet)?.name ??
+      b;
+
+    return collator.compare(String(aLabel ?? ""), String(bLabel ?? ""));
+  });
 }
 
 function getAxisItemName(slot, slotGridMeta, selectedSet) {
@@ -115,18 +168,25 @@ function isEquipmentSet(selectedSet) {
   return items.length > 1 || groupKind.endsWith("_set");
 }
 
-function getEquipmentTypeName(item) {
+function getCraftProductDisplayName(item) {
   return String(
-    item?.equipmentTypeName ??
+    item?.craftProductTypeDisplayName ??
+      item?.craft_product_type_display_name ??
+      item?.craftProductType?.displayName ??
+      item?.craftProductType?.display_name ??
+      item?.craft_product_type?.display_name ??
+      item?.craftProductTypeName ??
+      item?.craft_product_type_name ??
+      item?.craftProductType?.name ??
+      item?.craft_product_type?.name ??
+      item?.equipmentTypeName ??
       item?.equipment_type_name ??
-      item?.equipmentType?.name ??
-      item?.equipment_type?.name ??
       ""
   ).trim();
 }
 
-function getFabricTypeTagClass(fabricType) {
-  const normalized = String(fabricType ?? "").trim();
+function getCraftMaterialTraitTagClass(trait) {
+  const normalized = String(trait ?? "").trim();
 
   if (normalized.includes("再生")) {
     return styles.detailTagRegenerated;
@@ -138,6 +198,22 @@ function getFabricTypeTagClass(fabricType) {
 
   if (normalized.includes("ピンク")) {
     return styles.detailTagPink;
+  }
+
+  if (normalized === "戻り") {
+    return styles.detailTagReturn;
+  }
+
+  if (normalized === "集中変化") {
+    return styles.detailTagFocusChange;
+  }
+
+  if (normalized === "倍半") {
+    return styles.detailTagDoubleHalf;
+  }
+
+  if (normalized === "威力会心") {
+    return styles.detailTagPowerCritical;
   }
 
   return "";
@@ -206,9 +282,9 @@ function getTabLabel({
 
     // 単体装備は「弓・片手剣・小盾」などを表示
     const selectedItem = getSelectedItem(slot, selectedSet);
-    const equipmentTypeName = getEquipmentTypeName(selectedItem);
+    const craftProductDisplayName = getCraftProductDisplayName(selectedItem);
 
-    return equipmentTypeName || defaultLabel;
+    return craftProductDisplayName || defaultLabel;
   }
 function SlotTabs({
   slots,
@@ -221,6 +297,26 @@ function SlotTabs({
 }) {
   const tabListRef = useRef(null);
   const tabRefs = useRef(new Map());
+
+  const safeSlots = Array.isArray(slots) ? slots : [];
+  const tabs = isEquipmentSet(selectedSet)
+    ? [ALL_SLOT, ...safeSlots]
+    : safeSlots;
+
+  const options = tabs.map((slot) => ({
+    value: slot,
+    label: getTabLabel({
+      slot,
+      slotGridMeta,
+      slotItemMap,
+      selectedSet,
+      locale,
+    }),
+  }));
+
+  // 部位5箇所までなら、「全て」を含む最大6タブをSPでも横並び表示する。
+  // それより多い場合だけセレクトへ切り替える。
+  const useMobileTabs = safeSlots.length <= 5;
 
   useEffect(() => {
     const activeButton = tabRefs.current.get(activeSlot);
@@ -237,53 +333,86 @@ function SlotTabs({
     });
   }, [activeSlot]);
 
-const safeSlots = Array.isArray(slots) ? slots : [];
-const tabs = isEquipmentSet(selectedSet)
-  ? [ALL_SLOT, ...safeSlots]
-  : safeSlots;
-
   return (
-    <div className={styles.tabsFullBleed}>
+    <>
+      {useMobileTabs ? (
         <div
-          ref={tabListRef}
-          className={`${styles.tabsScroller} ${
-            tabs.length > 6 ? styles.tabsScrollable : ""
-          }`}
+          className={styles.mobileSlotTabs}
           role="tablist"
           aria-label={locale === "en" ? "Equipment part" : "装備部位"}
-          style={{ "--tab-count": tabs.length }}
+          style={{ "--mobile-tab-count": options.length }}
         >
-        {tabs.map((slot) => {
-          const isActive = slot === activeSlot;
-         const label = getTabLabel({
-            slot,
-            slotGridMeta,
-            slotItemMap,
-            selectedSet,
-            locale,
-          });
+          {options.map((option) => {
+            const isActive = option.value === activeSlot;
 
-          return (
-            <button
-              key={slot}
-              ref={(node) => {
-                if (node) tabRefs.current.set(slot, node);
-                else tabRefs.current.delete(slot);
-              }}
-              type="button"
-              role="tab"
-              aria-selected={isActive}
-              className={`${styles.tabButton} ${
-                isActive ? styles.tabButtonActive : ""
-              }`}
-              onClick={() => onChange(slot)}
-            >
-              {label}
-            </button>
-          );
-        })}
+            return (
+              <button
+                key={option.value}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                className={`${styles.tabButton} ${styles.mobileTabButton} ${
+                  isActive ? styles.tabButtonActive : ""
+                }`}
+                onClick={() => onChange(option.value)}
+              >
+                {option.label}
+              </button>
+            );
+          })}
+        </div>
+      ) : (
+        <div className={styles.mobileSlotSelect}>
+          <DropdownSelect
+            value={activeSlot}
+            onChange={(nextValue) => onChange(nextValue)}
+            options={options}
+            getOptionValue={(option) => option.value}
+            getOptionLabel={(option) => option.label}
+            placeholder={
+              locale === "en" ? "Select equipment part" : "部位を選択"
+            }
+            emptyText={
+              locale === "en" ? "No equipment parts" : "部位がありません"
+            }
+            ariaLabel={locale === "en" ? "Equipment part" : "装備部位"}
+            className={styles.mobileSlotSelectControl}
+          />
+        </div>
+      )}
+
+      <div className={`${styles.tabsFullBleed} ${styles.desktopSlotTabs}`}>
+        <div
+          ref={tabListRef}
+          className={styles.tabsScroller}
+          role="tablist"
+          aria-label={locale === "en" ? "Equipment part" : "装備部位"}
+        >
+          {options.map((option) => {
+            const isActive = option.value === activeSlot;
+
+            return (
+              <button
+                key={option.value}
+                ref={(node) => {
+                  if (node) tabRefs.current.set(option.value, node);
+                  else tabRefs.current.delete(option.value);
+                }}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                className={`${styles.tabButton} ${
+                  isActive ? styles.tabButtonActive : ""
+                }`}
+                onClick={() => onChange(option.value)}
+              >
+                {option.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -312,11 +441,15 @@ function BaseValuePanel({
   const selectedItem = getSelectedItem(slot, selectedSet);
   const itemName =
     getAxisItemName(slot, slotGridMeta, selectedSet) || label;
-  const fabricType = String(
-    selectedItem?.fabricType ?? selectedItem?.fabric_type ?? ""
+  const craftMaterialTrait = String(
+    selectedItem?.craftMaterialTrait ??
+      selectedItem?.craft_material_trait ??
+      selectedItem?.fabricType ??
+      selectedItem?.fabric_type ??
+      ""
   ).trim();
 
-  const detailTag = fabricType;
+  const detailTag = craftMaterialTrait;
 
   return (
     <div className={styles.sectionBlock}>
@@ -330,9 +463,11 @@ function BaseValuePanel({
 
           {detailTag ? (
             <span
-              className={`${styles.detailTag} ${getFabricTypeTagClass(
+              className={`${styles.detailTag} ${getCraftMaterialTraitTagClass(
                 detailTag
               )}`}
+              title={detailTag}
+              aria-label={detailTag}
             >
               {detailTag}
             </span>
@@ -545,7 +680,51 @@ function getRecommendedPrices(selectedSlot, sortedSlots, slotPricing) {
   }, {});
 }
 
-function RecommendedPricePanel({ prices, locale }) {
+function RecommendedPricePanel({ prices, locale, outputCounts }) {
+  const isMaterialProduct = !!outputCounts;
+  const unitPrice = Number(prices?.unitPrice ?? prices?.star3 ?? 0);
+
+  const priceRows = isMaterialProduct
+    ? [
+        {
+          key: "star0",
+          label:
+            locale === "en"
+              ? `No stars (${outputCounts.star0})`
+              : `☆なし（${outputCounts.star0}個）`,
+          count: outputCounts.star0,
+        },
+        {
+          key: "star1",
+          label:
+            locale === "en"
+              ? `1★ (${outputCounts.star1})`
+              : `☆1（${outputCounts.star1}個）`,
+          count: outputCounts.star1,
+        },
+        {
+          key: "star2",
+          label:
+            locale === "en"
+              ? `2★ (${outputCounts.star2})`
+              : `☆2（${outputCounts.star2}個）`,
+          count: outputCounts.star2,
+        },
+        {
+          key: "star3",
+          label:
+            locale === "en"
+              ? `Great success (${outputCounts.star3})`
+              : `大成功（${outputCounts.star3}個）`,
+          count: outputCounts.star3,
+        },
+      ]
+    : STAR_ROWS.map(([key, label]) => ({
+        key,
+        label,
+        count: 1,
+      }));
+
   return (
     <div className={styles.sectionBlock}>
       <SectionTitle>
@@ -555,10 +734,22 @@ function RecommendedPricePanel({ prices, locale }) {
       <div className={styles.priceTableCard}>
         <table className={styles.priceTable}>
           <tbody>
-            {STAR_ROWS.map(([key, label]) => (
-              <tr key={key}>
-                <th>{label}</th>
-                <td>{prices ? `${yen(prices[key])}G` : "—"}</td>
+            {priceRows.map((row) => (
+              <tr key={row.key}>
+                <th>{row.label}</th>
+                <td>
+                  {!prices
+                    ? "—"
+                    : isMaterialProduct
+                    ? locale === "en"
+                      ? `${yen(unitPrice)}G each / ${yen(
+                          unitPrice * row.count
+                        )}G total`
+                      : `${yen(unitPrice)}G / 個（合計 ${yen(
+                          unitPrice * row.count
+                        )}G）`
+                    : `${yen(prices[row.key])}G`}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -593,8 +784,8 @@ export default function CraftProfitMaterialsCard({
   const safeSlots = Array.isArray(slots) ? slots : [];
   const safeRows = Array.isArray(rows) ? rows : [];
   const sortedSlots = useMemo(
-    () => sortSlots(safeSlots, locale),
-    [safeSlots, locale]
+    () => sortAxisSlots(safeSlots, locale, slotGridMeta, selectedSet),
+    [safeSlots, locale, slotGridMeta, selectedSet]
   );
   const equipmentIsSet = useMemo(
     () => isEquipmentSet(selectedSet),
@@ -603,15 +794,34 @@ export default function CraftProfitMaterialsCard({
 
   const slotItemMap = useMemo(() => {
     const map = {};
+    const items = Array.isArray(selectedSet?.items) ? selectedSet.items : [];
+    const slotCounts = items.reduce((result, item) => {
+      const slotKey = normalizeSlotKey(item?.slotKey ?? item?.slot);
+      result[slotKey] = (result[slotKey] || 0) + 1;
+      return result;
+    }, {});
 
-    for (const item of selectedSet?.items || []) {
-      const keyById = String(item.id || item.slotKey || item.slot || item.name);
-      map[keyById] = item.name;
+    for (const item of items) {
+      const idKeys = [
+        item?.id,
+        item?.itemId,
+        item?.item_id,
+        item?.equipmentId,
+        item?.equipment_id,
+      ];
 
-      const slotKey = normalizeSlotKey(item.slotKey ?? item.slot);
-      map[slotKey] = item.name;
+      for (const idKey of idKeys) {
+        if (idKey != null) map[String(idKey)] = item.name;
+      }
 
-      if (item.slot) map[item.slot] = item.name;
+      const slotKey = normalizeSlotKey(item?.slotKey ?? item?.slot);
+
+      // 同じ部位が複数ある場合、部位キーでは上書きしない。
+      // 個別の装備IDキーと slotGridMeta の itemName を使って表示する。
+      if (slotCounts[slotKey] === 1) {
+        map[slotKey] = item.name;
+        if (item?.slot) map[item.slot] = item.name;
+      }
     }
 
     return map;
@@ -833,6 +1043,20 @@ export default function CraftProfitMaterialsCard({
     [selectedTab, sortedSlots, slotPricing]
   );
 
+  const selectedOutputCounts = useMemo(() => {
+    if (selectedTab !== ALL_SLOT) {
+      return slotPricing?.[selectedTab]?.outputCounts ?? null;
+    }
+
+    const counts = sortedSlots
+      .map((slot) => slotPricing?.[slot]?.outputCounts ?? null)
+      .filter(Boolean);
+
+    return counts.length === sortedSlots.length && counts.length > 0
+      ? counts[0]
+      : null;
+  }, [selectedTab, sortedSlots, slotPricing]);
+
   const showBaseValues = selectedTab !== ALL_SLOT;
 
   if (!selectedSet || sortedSlots.length === 0 || !selectedTab) {
@@ -908,7 +1132,11 @@ export default function CraftProfitMaterialsCard({
         </div>
 
           {selectedTab !== ALL_SLOT ? (
-            <RecommendedPricePanel prices={recommendedPrices} locale={locale} />
+            <RecommendedPricePanel
+              prices={recommendedPrices}
+              locale={locale}
+              outputCounts={selectedOutputCounts}
+            />
           ) : null}
         </div>
       </div>

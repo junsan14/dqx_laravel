@@ -16,7 +16,7 @@ import CraftProfitMaterialsCard from "./CraftProfitMaterialsCard";
 import EquipmentInfoCard from "./EquipmentInfoCard";
 import SalePriceCard from "./SalePriceCard";
 import PageHeroTitle from "@/components/PageHeroTitle";
-import ContentReportArea from "@/components/common/ContentReportArea";
+import ContentReportArea from "@/components/common/content-report-area/ContentReportArea";
 import {
   DEFAULT_FEE_RATE,
   buildInitialUnitCostMap,
@@ -29,6 +29,7 @@ import {
   getCrystalInfo,
   getDisplayJobs,
   isCrystalEquipment,
+  getCraftProductOutputCounts,
   normalizeSlotKey,
   recommendFromP3,
 } from "./craftProfitHelpers";
@@ -38,6 +39,102 @@ const TOOL_USES = 30;
 const MIN_SEARCH_LENGTH = 2;
 const SEARCH_DEBOUNCE_MS = 300;
 const ALL_SLOT = "__all__";
+const FAVORITES_STORAGE_KEY = "dqx-tool:craft-profit:favorites:v1";
+const FAVORITES_LIMIT = 100;
+
+function getSelectionType(selection) {
+  const groupKind = String(
+    selection?.groupKind ?? selection?.group_kind ?? ""
+  );
+  const items = Array.isArray(selection?.items) ? selection.items : [];
+
+  return groupKind.endsWith("_set") || items.length > 1
+    ? "group"
+    : "item";
+}
+
+function getFavoriteKey(favorite) {
+  const type = favorite?.type === "group" ? "group" : "item";
+  const id = String(favorite?.id ?? "").trim();
+  return id ? `${type}:${id}` : "";
+}
+
+function normalizeFavorite(value) {
+  if (!value || typeof value !== "object") return null;
+
+  const type = value.type === "group" ? "group" : "item";
+  const id = String(value.id ?? "").trim();
+  const name = String(value.name ?? "").trim();
+
+  if (!id || !name) return null;
+
+  return {
+    type,
+    id,
+    name,
+    groupKind: String(value.groupKind ?? value.group_kind ?? "").trim(),
+    savedAt: Number(value.savedAt ?? 0) || 0,
+  };
+}
+
+function readFavoriteEquipments() {
+  if (typeof window === "undefined") return [];
+
+  try {
+    const parsed = JSON.parse(
+      window.localStorage.getItem(FAVORITES_STORAGE_KEY) || "[]"
+    );
+
+    if (!Array.isArray(parsed)) return [];
+
+    const unique = new Map();
+
+    parsed
+      .map(normalizeFavorite)
+      .filter(Boolean)
+      .forEach((favorite) => {
+        const key = getFavoriteKey(favorite);
+        if (key && !unique.has(key)) unique.set(key, favorite);
+      });
+
+    return Array.from(unique.values())
+      .sort((a, b) => b.savedAt - a.savedAt)
+      .slice(0, FAVORITES_LIMIT);
+  } catch (error) {
+    console.warn("Failed to read craft-profit favorites", error);
+    return [];
+  }
+}
+
+function writeFavoriteEquipments(favorites) {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.localStorage.setItem(
+      FAVORITES_STORAGE_KEY,
+      JSON.stringify(favorites.slice(0, FAVORITES_LIMIT))
+    );
+  } catch (error) {
+    console.warn("Failed to save craft-profit favorites", error);
+  }
+}
+
+function createFavoriteFromSelection(selection) {
+  const id = String(selection?.id ?? "").trim();
+  const name = String(selection?.name ?? "").trim();
+
+  if (!id || !name) return null;
+
+  return {
+    type: getSelectionType(selection),
+    id,
+    name,
+    groupKind: String(
+      selection?.groupKind ?? selection?.group_kind ?? ""
+    ).trim(),
+    savedAt: Date.now(),
+  };
+}
 
 const EQUIPMENT_REPORT_FIELDS = [
   { value: "basic_info", label: "装備名・装備レベル・部位" },
@@ -135,6 +232,41 @@ function normalizeSearchText(value) {
     .toLowerCase()
     .replace(/\s+/g, " ")
     .trim();
+}
+
+
+function getSelectedSetItemForSlot(selectedSet, slot) {
+  const items = Array.isArray(selectedSet?.items) ? selectedSet.items : [];
+  if (!items.length) return selectedSet ?? null;
+
+  const exact = items.find((item) => {
+    const ids = [
+      item?.id,
+      item?.itemId,
+      item?.item_id,
+      item?.equipmentId,
+      item?.equipment_id,
+    ];
+
+    return (
+      ids.some((value) => value != null && String(value) === String(slot)) ||
+      String(item?.slotKey ?? "") === String(slot) ||
+      String(item?.slot ?? "") === String(slot)
+    );
+  });
+
+  if (exact) return exact;
+
+  const normalizedSlot = normalizeSlotKey(slot);
+  return (
+    items.find(
+      (item) =>
+        normalizeSlotKey(item?.slotKey ?? item?.slot ?? "other") ===
+        normalizedSlot
+    ) ??
+    items[0] ??
+    null
+  );
 }
 
 function SkeletonLine({ width = "100%", height = "0.875rem" }) {
@@ -281,6 +413,7 @@ export default function CraftProfitClient() {
 
   const [sets, setSets] = useState([]);
   const [selectedSet, setSelectedSet] = useState(null);
+  const [favoriteEquipments, setFavoriteEquipments] = useState([]);
   // buildSetsFromEquipments() の変換前データ。
   // content_reports.reportable_id には equipments.id が必要なので保持する。
   const [selectedEquipmentRows, setSelectedEquipmentRows] = useState([]);
@@ -302,6 +435,10 @@ export default function CraftProfitClient() {
   const [unitCostMap, setUnitCostMap] = useState({});
   const [activeSlot, setActiveSlot] = useState("その他");
   const [reportSelectedSlot, setReportSelectedSlot] = useState("");
+
+  useEffect(() => {
+    setFavoriteEquipments(readFavoriteEquipments());
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -429,6 +566,19 @@ export default function CraftProfitClient() {
   }, [sets]);
 
   const craftType = selectedSet?.craftType;
+  const greatSuccessRate = useMemo(
+    () =>
+      selectedSet?.greatSuccessRate ??
+      selectedSet?.items?.find((item) => item?.greatSuccessRate != null)
+        ?.greatSuccessRate ??
+      null,
+    [selectedSet]
+  );
+  const selectedOutputCounts = useMemo(
+    () => getCraftProductOutputCounts(selectedSet),
+    [selectedSet]
+  );
+  const isMaterialProduct = !!selectedOutputCounts;
   const feeRate = useMemo(() => clamp0(feeRatePct) / 100, [feeRatePct]);
 
   useEffect(() => {
@@ -490,16 +640,27 @@ export default function CraftProfitClient() {
     const keywords = matchersByCraftType[String(craftType)] ?? [];
 
     const rows = craftTools.filter((row) => {
-      const slotGridType = String(
-        row?.slotGridType ?? row?.slot_grid_type ?? ""
-      );
+      const craftProductType =
+        row?.craftProductType ?? row?.craft_product_type ?? null;
+      const craftProductText = [
+        row?.craftProductTypeDisplayName,
+        row?.craft_product_type_display_name,
+        craftProductType?.displayName,
+        craftProductType?.display_name,
+        row?.craftProductTypeName,
+        row?.craft_product_type_name,
+        craftProductType?.name,
+        craftProductType?.key,
+      ]
+        .filter(Boolean)
+        .join(" ");
       const itemName = String(
         row?.itemName ?? row?.item_name ?? row?.name ?? ""
       );
 
       return keywords.some(
         (keyword) =>
-          slotGridType.includes(keyword) || itemName.includes(keyword)
+          craftProductText.includes(keyword) || itemName.includes(keyword)
       );
     });
 
@@ -585,34 +746,29 @@ export default function CraftProfitClient() {
     }
   }, [slots, activeSlot]);
 
-  const onChangeSet = async (nextId) => {
-    const nextSet =
-      sets.find((set) => String(set.id) === String(nextId)) || null;
-
-    if (!nextSet) {
-      setSetQuery("");
-      return;
-    }
+  const loadEquipmentSelection = async (selection) => {
+    if (!selection?.id) return;
 
     const requestId = selectionRequestRef.current + 1;
     selectionRequestRef.current = requestId;
-    selectingNameRef.current = nextSet.name;
+    selectingNameRef.current = selection.name ?? "";
 
-    setSetQuery(nextSet.name);
+    setSetQuery(selection.name ?? "");
     setSets([]);
     setSelectedEquipmentRows([]);
     setSelectionLoading(true);
     setSearchError("");
 
     try {
-      const isGrouped =
-        String(nextSet?.groupKind ?? "").endsWith("_set") ||
-        (Array.isArray(nextSet?.items) && nextSet.items.length > 1);
+      const selectionType =
+        selection.type === "group" || selection.type === "item"
+          ? selection.type
+          : getSelectionType(selection);
 
       let response = await fetchEquipmentSelection(
-        isGrouped
-          ? { groupId: nextSet.id }
-          : { itemId: nextSet.id }
+        selectionType === "group"
+          ? { groupId: selection.id }
+          : { itemId: selection.id }
       );
 
       let equipmentRows = localizeEquipmentRows(
@@ -621,9 +777,9 @@ export default function CraftProfitClient() {
       );
 
       // 古いデータで group_id / item_id が空の場合の保険。
-      if (!equipmentRows.length) {
+      if (!equipmentRows.length && selection.name) {
         response = await fetchEquipments({
-          q: nextSet.name,
+          q: selection.name,
           limit: 100,
         });
         equipmentRows = localizeEquipmentRows(
@@ -655,9 +811,9 @@ export default function CraftProfitClient() {
       );
       const resolvedSet =
         detailSets.find(
-          (set) => String(set.id) === String(nextSet.id)
+          (set) => String(set.id) === String(selection.id)
         ) ||
-        detailSets.find((set) => set.name === nextSet.name) ||
+        detailSets.find((set) => set.name === selection.name) ||
         detailSets[0] ||
         null;
 
@@ -682,6 +838,65 @@ export default function CraftProfitClient() {
         setSelectionLoading(false);
       }
     }
+  };
+
+  const onChangeSet = async (nextId) => {
+    const nextSet =
+      sets.find((set) => String(set.id) === String(nextId)) || null;
+
+    if (!nextSet) {
+      setSetQuery("");
+      return;
+    }
+
+    await loadEquipmentSelection(nextSet);
+  };
+
+  const selectedFavorite = useMemo(
+    () => createFavoriteFromSelection(selectedSet),
+    [selectedSet]
+  );
+
+  const selectedFavoriteKey = useMemo(
+    () => getFavoriteKey(selectedFavorite),
+    [selectedFavorite]
+  );
+
+  const isSelectedFavorite = useMemo(
+    () =>
+      !!selectedFavoriteKey &&
+      favoriteEquipments.some(
+        (favorite) => getFavoriteKey(favorite) === selectedFavoriteKey
+      ),
+    [favoriteEquipments, selectedFavoriteKey]
+  );
+
+  const toggleSelectedFavorite = () => {
+    if (!selectedFavorite) return;
+
+    setFavoriteEquipments((previous) => {
+      const currentKey = getFavoriteKey(selectedFavorite);
+      const exists = previous.some(
+        (favorite) => getFavoriteKey(favorite) === currentKey
+      );
+      const next = exists
+        ? previous.filter(
+            (favorite) => getFavoriteKey(favorite) !== currentKey
+          )
+        : [selectedFavorite, ...previous].slice(0, FAVORITES_LIMIT);
+
+      writeFavoriteEquipments(next);
+      return next;
+    });
+  };
+
+  const selectFavoriteEquipment = async (favoriteKey) => {
+    const favorite = favoriteEquipments.find(
+      (item) => getFavoriteKey(item) === String(favoriteKey)
+    );
+
+    if (!favorite) return;
+    await loadEquipmentSelection(favorite);
   };
 
   const updateUnitCost = (materialKey, value) => {
@@ -748,31 +963,56 @@ export default function CraftProfitClient() {
 
     for (const slot of slots) {
       const slotCost = clamp0(slotTotalsWithTool?.amount?.[slot] ?? 0);
+      const slotItem = getSelectedSetItemForSlot(selectedSet, slot);
+      const outputCounts = getCraftProductOutputCounts(slotItem);
       const prices = calcRecommendedStarPrices({
         costPerItem: slotCost,
         crystalByEquipLevel,
+        craftProductType: slotItem,
+        outputCounts,
+        greatSuccessRate,
+        feeRate,
       });
 
       result[slot] = {
         cost: slotCost,
         prices,
+        outputCounts,
         isCrystalEquipment: isCrystalEquipment({
           costPerItem: slotCost,
           crystalByEquipLevel,
+          craftProductType: slotItem,
         }),
       };
     }
 
     return result;
-  }, [slots, slotTotalsWithTool, crystalByEquipLevel]);
+  }, [
+    slots,
+    slotTotalsWithTool,
+    crystalByEquipLevel,
+    selectedSet,
+    greatSuccessRate,
+    feeRate,
+  ]);
 
   const recommendedStarPrices = useMemo(
     () =>
       calcRecommendedStarPrices({
         costPerItem,
         crystalByEquipLevel,
+        craftProductType: selectedSet,
+        outputCounts: selectedOutputCounts,
+        greatSuccessRate,
+        feeRate,
       }),
-    [costPerItem, crystalByEquipLevel]
+    [
+      costPerItem,
+      crystalByEquipLevel,
+      selectedOutputCounts,
+      greatSuccessRate,
+      feeRate,
+    ]
   );
 
   const crystalEquipmentLabel = useMemo(() => {
@@ -793,22 +1033,33 @@ export default function CraftProfitClient() {
       : "一部 結晶装備";
   }, [slots, slotPricing, locale]);
 
-  const minRates = useMemo(
-    () =>
-      calcMinRatesToBreakEven({
-        feeRate,
-        costPerItem,
-        starPrice: recommendedStarPrices ?? {
-          star0: 0,
-          star1: 0,
-          star2: 0,
-          star3: 0,
-        },
-        stepPercent: 1,
-        locale,
-      }),
-    [feeRate, costPerItem, recommendedStarPrices, locale]
-  );
+  const minRates = useMemo(() => {
+    if (!recommendedStarPrices) {
+      return {
+        ok: false,
+        impossible: false,
+        note:
+          locale === "en"
+            ? "Set the great-success rate for this craft type"
+            : "この職人種別の大成功率を設定してください",
+      };
+    }
+
+    return calcMinRatesToBreakEven({
+      feeRate,
+      costPerItem,
+      starPrice: recommendedStarPrices,
+      outputCounts: selectedOutputCounts,
+      stepPercent: 1,
+      locale,
+    });
+  }, [
+    feeRate,
+    costPerItem,
+    recommendedStarPrices,
+    selectedOutputCounts,
+    locale,
+  ]);
 
   const recommend = useMemo(() => {
     if (minRates?.impossible) {
@@ -820,15 +1071,21 @@ export default function CraftProfitClient() {
         tone: "var(--danger-text)",
         sub:
           locale === "en"
-            ? "Even 100% 3★ won't make profit"
+            ? isMaterialProduct
+              ? "Even 100% great success won't make profit"
+              : "Even 100% 3★ won't make profit"
+            : isMaterialProduct
+            ? "大成功100%でも黒字にならない"
             : "100%★3でも黒字にならない",
       };
     }
 
+    const resultMode = isMaterialProduct ? "materialOutput" : "star";
+
     return minRates?.ok
-      ? recommendFromP3(minRates.p3, locale)
-      : recommendFromP3(null, locale);
-  }, [minRates, locale]);
+      ? recommendFromP3(minRates.p3, locale, resultMode)
+      : recommendFromP3(null, locale, resultMode);
+  }, [minRates, locale, isMaterialProduct]);
 
   const recommendRate = useMemo(() => {
     if (!minRates?.ok) return 0;
@@ -844,6 +1101,20 @@ export default function CraftProfitClient() {
     if (!selectedSet || selectedEquipmentRows.length === 0) return null;
 
     const cleanText = (value) => String(value ?? "").trim();
+    const getCraftProductDisplayName = (row) => {
+      const craftProductType =
+        row?.craftProductType ?? row?.craft_product_type ?? null;
+
+      return cleanText(
+        row?.craftProductTypeDisplayName ??
+          row?.craft_product_type_display_name ??
+          craftProductType?.displayName ??
+          craftProductType?.display_name ??
+          row?.craftProductTypeName ??
+          row?.craft_product_type_name ??
+          craftProductType?.name
+      );
+    };
     const isAllSelected = reportSelectedSlot === ALL_SLOT;
     const reportSlot = isAllSelected ? activeSlot : reportSelectedSlot || activeSlot;
     const currentSlotKey = normalizeSlotKey(reportSlot);
@@ -853,7 +1124,7 @@ export default function CraftProfitClient() {
     const activeRow =
       selectedEquipmentRows.find((row) =>
         [
-          row?.slot,
+          getCraftProductDisplayName(row),
           row?.part,
           row?.equipmentSlot,
           row?.equipment_slot,
@@ -884,9 +1155,9 @@ export default function CraftProfitClient() {
     );
 
     const rowSlot = cleanText(
-      activeRow?.slot ??
-        activeRow?.part ??
-        activeRow?.equipmentSlot ??
+      getCraftProductDisplayName(activeRow) ||
+        activeRow?.part ||
+        activeRow?.equipmentSlot ||
         activeRow?.equipment_slot
     );
 
@@ -986,6 +1257,13 @@ export default function CraftProfitClient() {
               searchError={searchError}
               craftType={craftType}
               selectedSet={selectedSet}
+              favoriteEquipments={favoriteEquipments}
+              selectedFavoriteKey={
+                isSelectedFavorite ? selectedFavoriteKey : ""
+              }
+              isSelectedFavorite={isSelectedFavorite}
+              onToggleFavorite={toggleSelectedFavorite}
+              onSelectFavorite={selectFavoriteEquipment}
               toolId={toolId}
               setToolId={setToolId}
               toolOptions={toolOptions}
@@ -1040,6 +1318,7 @@ export default function CraftProfitClient() {
                 recommend={recommend}
                 recommendRate={recommendRate}
                 crystalEquipmentLabel={crystalEquipmentLabel}
+                outputCounts={selectedOutputCounts}
               />
 
               {equipmentReportTarget ? (

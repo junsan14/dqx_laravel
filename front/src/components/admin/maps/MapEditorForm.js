@@ -44,7 +44,12 @@ function normalizeOption(option) {
       option?.value ??
       option?.continent_name ??
       "",
-    folder: option?.folder ?? option?.continent_folder ?? "",
+    folder: String(
+      option?.map_image_folder ??
+        option?.continent_folder ??
+        option?.folder ??
+        ""
+    ).trim(),
     fileName: option?.fileName ?? "",
     display_id:
       option?.display_id !== null &&
@@ -217,14 +222,17 @@ export default function MapEditorForm({
         ? String(value.continent_id)
         : "";
 
-    if (!currentContinentId || value?.continent_folder) return;
+    if (!currentContinentId || value?.id) return;
 
     const matched = mergedContinentOptions.find(
       (item) => String(item.value) === currentContinentId
     );
 
-    if (matched?.folder) {
-      onChangeField?.("continent_folder", matched.folder);
+    const nextFolder = String(matched?.folder ?? "").trim();
+    const currentFolder = String(value?.continent_folder ?? "").trim();
+
+    if (nextFolder && nextFolder !== currentFolder) {
+      onChangeField?.("continent_folder", nextFolder);
     }
   }, [
     value?.continent_id,
@@ -294,6 +302,16 @@ export default function MapEditorForm({
           </label>
 
           <label style={styles.field}>
+            <div style={styles.label}>マップ名（かな）</div>
+            <input
+              value={value?.name_kana ?? ""}
+              onChange={(e) => onChangeField?.("name_kana", e.target.value)}
+              style={styles.input}
+              placeholder="オーグリードたいりく"
+            />
+          </label>
+
+          <label style={styles.field}>
             <div style={styles.label}>マップ名(en)</div>
             <input
               value={value?.name_en ?? ""}
@@ -319,7 +337,7 @@ export default function MapEditorForm({
           </label>
 
           <label style={styles.field}>
-            <div style={styles.label}>continent_folder</div>
+            <div style={styles.label}>画像アップロードフォルダ</div>
             <input
               value={value?.continent_folder ?? ""}
               onChange={(e) =>
@@ -576,15 +594,15 @@ const styles = {
     fontWeight: 700,
     color: "var(--text-main, #0f172a)",
   },
-  removeButton: {
-    background: "var(--danger-bg, #ef4444)",
-    color: "var(--danger-text-on, #ffffff)",
-    border: "1px solid var(--danger-border, #ef4444)",
-    padding: "6px 10px",
-    borderRadius: "6px",
-    cursor: "pointer",
-    fontWeight: 700,
-  },
+removeButton: {
+  background: "var(--danger-bg)",
+  color: "var(--danger-text)",
+  border: "1px solid var(--danger-border, #ef4444)",
+  padding: "6px 10px",
+  borderRadius: "6px",
+  cursor: "pointer",
+  fontWeight: 700,
+},
   previewWrap: {
     position: "relative",
     width: "100%",

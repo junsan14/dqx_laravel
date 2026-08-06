@@ -19,6 +19,7 @@ export function createEmptyCraftType() {
     id: null,
     key: "",
     name: "",
+    greatSuccessRate: "",
     createdAt: null,
     updatedAt: null,
   };
@@ -29,6 +30,10 @@ function normalizeCraftType(row = {}) {
     id: row?.id ?? null,
     key: row?.key ?? "",
     name: row?.name ?? "",
+    greatSuccessRate:
+      row?.great_success_rate == null || row?.great_success_rate === ""
+        ? null
+        : Number(row.great_success_rate),
     createdAt: row?.created_at ?? null,
     updatedAt: row?.updated_at ?? null,
   };
@@ -38,6 +43,10 @@ function toPayload(data = {}) {
   return {
     key: String(data.key ?? "").trim(),
     name: String(data.name ?? "").trim(),
+    great_success_rate:
+      data.greatSuccessRate == null || data.greatSuccessRate === ""
+        ? null
+        : Number(data.greatSuccessRate),
   };
 }
 

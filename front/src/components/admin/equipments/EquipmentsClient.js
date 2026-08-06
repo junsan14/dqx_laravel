@@ -12,7 +12,8 @@ import {
 } from "@/lib/equipments";
 import { fetchGameJobs } from "@/lib/gameJobs";
 import { fetchEquipmentTypes } from "@/lib/equipmentTypes";
-import RouteProgressDoneOnDataReady from "@/components/common/RouteProgressDoneOnDataReady";
+import { fetchCraftProductTypes } from "@/lib/craftProductTypes";
+
 
 import EditorSidebar from "@/components/admin/shared/editor/EditorSidebar";
 import EditorShell from "@/components/admin/shared/editor/EditorShell";
@@ -26,33 +27,30 @@ import EquipmentEditorPanel from "./EquipmentEditorPanel";
 import EquipmentDetailsPanel from "./EquipmentDetailsPanel";
 
 import {
-  GROUP_MEMBER_PRESETS,
   safeJsonParse,
   toJsonString,
   buildGroupedRows,
   str,
   buildEmptyGroupMembers,
   makeGroupId,
-  getDefaultGroupItemName,
-  getGridPreset,
-  getAutoSlotGridType,
-  findEquipmentTypeById,
+  findCraftProductTypeById,
+  findCraftProductTypeByKey,
+  getCraftProductTypeName,
   getGroupDisplayName,
 } from "./equipmentFormHelpers";
 
 const DEFAULT_GROUP_KIND = "armor_set";
 
+function buildCreateGroupMembers(groupKind) {
+  return buildEmptyGroupMembers(groupKind).map((member) => ({
+    ...member,
+    itemName: "",
+  }));
+}
+
 function createInitialNewItem() {
   return {
-    itemId: "",
     itemName: "",
-    itemNameKana: "",
-    equipmentTypeId: "",
-    jobOverrideMode: "inherit",
-    slot: "",
-    slotGridType: "",
-    groupName: "",
-    equipLevel: "",
   };
 }
 
@@ -62,26 +60,50 @@ function createInitialNewGroup(groupKind = DEFAULT_GROUP_KIND) {
   return {
     groupName: "",
     groupKind: safeGroupKind,
-    equipmentTypeId: "",
-    jobOverrideMode: "inherit",
-    members: buildEmptyGroupMembers(safeGroupKind),
-    equipLevel: "",
+    members: buildCreateGroupMembers(safeGroupKind),
+  };
+}
+
+function makeAutomaticItemId(usedItemIds, prefix = "equipment") {
+  const normalizedPrefix =
+    str(prefix)
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9_-]+/g, "_")
+      .replace(/^_+|_+$/g, "") || "equipment";
+  const timestamp = Date.now().toString(36);
+
+  let index = 0;
+  let candidate = `${normalizedPrefix}_${timestamp}`;
+
+  while (usedItemIds.has(candidate)) {
+    index += 1;
+    candidate = `${normalizedPrefix}_${timestamp}_${index}`;
+  }
+
+  usedItemIds.add(candidate);
+  return candidate;
+}
+
+function hydrateCraftProductType(row, craftProductTypes = []) {
+  if (!row) return row;
+
+  const current = row.craftProductType ?? row.craft_product_type ?? null;
+  const resolved =
+    findCraftProductTypeById(craftProductTypes, row.craftProductTypeId) ??
+    current ??
+    null;
+
+  return {
+    ...row,
+    craftProductTypeId:
+      row.craftProductTypeId || (resolved?.id != null ? String(resolved.id) : ""),
+    craftProductType: resolved,
   };
 }
 
 function getPresetMemberLabel(row) {
-  const groupKind = str(row?.groupKind).trim();
-  const presets = GROUP_MEMBER_PRESETS[groupKind] ?? [];
-
-  const slot = str(row?.slot).trim();
-  const slotGridType = str(row?.slotGridType).trim();
-
-  const matched =
-    presets.find((preset) => str(preset.slot).trim() === slot) ??
-    presets.find((preset) => str(preset.slotGridType).trim() === slotGridType) ??
-    null;
-
-  return str(matched?.label).trim();
+  return getCraftProductTypeName(row);
 }
 
 function getDeleteTargetText(row) {
@@ -161,9 +183,12 @@ function buildRowSearchParts(row) {
     row.group_id,
     row.groupKind,
     row.group_kind,
-    row.slot,
-    row.slotGridType,
-    row.slot_grid_type,
+    row.craftProductType?.name,
+    row.craft_product_type?.name,
+    row.craftProductType?.key,
+    row.craft_product_type?.key,
+    row.craftProductType?.craftType?.name,
+    row.craft_product_type?.craft_type?.name,
     row.recipeBook,
     row.recipe_book,
     row.recipePlace,
@@ -236,6 +261,7 @@ export default function EquipmentsClient() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [equipmentTypes, setEquipmentTypes] = useState([]);
+  const [craftProductTypes, setCraftProductTypes] = useState([]);
   const [allJobs, setAllJobs] = useState([]);
   const [allItems, setAllItems] = useState([]);
   const [activeTab, setActiveTab] = useState("edit");
@@ -357,26 +383,36 @@ export default function EquipmentsClient() {
   try {
     setLoading(true);
 
-    const [equipments, fetchedEquipmentTypes, jobs, materialItems] =
-      await Promise.all([
-        fetchEquipments(),
-        fetchEquipmentTypes(),
-        fetchGameJobs(),
+    const [
+      equipments,
+      fetchedEquipmentTypes,
+      fetchedCraftProductTypes,
+      jobs,
+      materialItems,
+    ] = await Promise.all([
+      fetchEquipments(),
+      fetchEquipmentTypes(),
+      fetchCraftProductTypes(),
+      fetchGameJobs(),
 
-        // category が material のアイテムだけ取得
-        fetchItems("", "material"),
-      ]);
+      // category が material のアイテムだけ取得
+      fetchItems("", "material"),
+    ]);
 
     const safeMaterialItems = Array.isArray(materialItems)
       ? materialItems
       : [];
 
     const hydratedEquipments = equipments.map((row) =>
-      hydrateRowMaterialsWithItems(row)
+      hydrateCraftProductType(
+        hydrateRowMaterialsWithItems(row),
+        fetchedCraftProductTypes
+      )
     );
 
     setRows(hydratedEquipments);
     setEquipmentTypes(fetchedEquipmentTypes);
+    setCraftProductTypes(fetchedCraftProductTypes);
     setAllJobs(jobs);
     setAllItems(safeMaterialItems);
 
@@ -440,8 +476,20 @@ export default function EquipmentsClient() {
   function handleJoinGroup(payload) {
     if (!selectedRow) return;
 
+    const withoutEquipmentType = ["craft_tool_set", "other_set"].includes(
+      str(payload?.groupKind).trim()
+    );
+
     setSelectedRowPatch({
       ...payload,
+      ...(withoutEquipmentType
+        ? {
+            equipmentTypeId: "",
+            equipmentType: null,
+            jobOverrideMode: "inherit",
+            jobOverrides: [],
+          }
+        : {}),
       __saveSingleOnly: true,
     });
 
@@ -467,10 +515,22 @@ export default function EquipmentsClient() {
 
     setSyncGroup(false);
 
+    const withoutEquipmentType = ["craft_tool_set", "other_set"].includes(
+      groupKind
+    );
+
     setSelectedRowPatch({
       groupKind,
       groupId,
       groupName,
+      ...(withoutEquipmentType
+        ? {
+            equipmentTypeId: "",
+            equipmentType: null,
+            jobOverrideMode: "inherit",
+            jobOverrides: [],
+          }
+        : {}),
       __saveSingleOnly: true,
     });
 
@@ -506,69 +566,40 @@ export default function EquipmentsClient() {
     const name = str(safeNewItem.itemName).trim();
 
     if (!name) {
-      showToast("itemName は必須", "error");
+      showToast("装備名を入力してください", "error");
       return;
     }
-
-    const selectedType = findEquipmentTypeById(
-      equipmentTypes,
-      safeNewItem.equipmentTypeId
-    );
-
-    const autoSlotGridType = getAutoSlotGridType(
-      safeNewItem.slot,
-      selectedType
-    );
-    const preset = getGridPreset(autoSlotGridType);
 
     const usedItemIds = new Set(
       rows.map((row) => str(row.itemId ?? row.item_id).trim()).filter(Boolean)
     );
 
-    const manualItemId = str(safeNewItem.itemId).trim();
-
-    const armorSetNo = isNormalArmorType(selectedType)
-      ? findNextBouguSetNo({
-          equipLevel: safeNewItem.equipLevel,
-          rows,
-          usedItemIds,
-        })
-      : null;
-
-    const generatedItemId = makeCreateItemId({
-      equipmentType: selectedType,
-      equipLevel: safeNewItem.equipLevel,
-      slot: safeNewItem.slot,
-      usedItemIds,
-      armorSetNo,
-    });
-
     const row = {
       ...createEmptyEquipmentRow(),
-      itemId: manualItemId || generatedItemId,
+      itemId: makeAutomaticItemId(usedItemIds, "equipment"),
       itemName: name,
-      itemNameKana: str(safeNewItem.itemNameKana),
-      equipmentTypeId: str(safeNewItem.equipmentTypeId),
-      equipmentType: selectedType,
+      equipmentTypeId: "",
+      equipmentType: null,
+      craftProductTypeId: "",
+      craftProductType: null,
       jobOverrideMode: "inherit",
-      slot: str(safeNewItem.slot),
-      slotGridType: autoSlotGridType,
-      slotGridCols: preset?.cols ? String(preset.cols) : "",
-      groupName: str(safeNewItem.groupName),
+      groupName: "",
       groupKind: "",
-      equipLevel: str(safeNewItem.equipLevel),
+      equipLevel: "",
     };
 
     try {
       setSaving(true);
 
       const created = await createEquipment(row);
-      const saved = hydrateRowMaterialsWithItems(created, allItems);
+      const saved = hydrateCraftProductType(
+        hydrateRowMaterialsWithItems(created, allItems),
+        craftProductTypes
+      );
 
-      setRows((prev) => [saved, ...prev]);
+      setRows((previous) => [saved, ...previous]);
       setSelectedKey(saved.__key);
       setActiveTab("edit");
-
       setNewItem(createInitialNewItem());
       showToast(`「${saved.itemName || name}」を作成した`);
 
@@ -586,97 +617,76 @@ export default function EquipmentsClient() {
     const groupName = str(safeNewGroup.groupName).trim();
 
     if (!groupName) {
-      showToast("groupName は必須", "error");
+      showToast("セット名を入力してください", "error");
       return;
     }
 
     const enabledMembers = Array.isArray(safeNewGroup.members)
-      ? safeNewGroup.members.filter((m) => m.enabled)
+      ? safeNewGroup.members.filter((member) => member.enabled !== false)
       : [];
 
     if (!enabledMembers.length) {
-      showToast("少なくとも1つの部位をONにしてくれ", "error");
+      showToast("子どもを1件以上追加してください", "error");
       return;
     }
 
-    const groupId = makeGroupId(groupName);
-    const selectedType = findEquipmentTypeById(
-      equipmentTypes,
-      safeNewGroup.equipmentTypeId
+    const unnamedMember = enabledMembers.find(
+      (member) => !str(member.itemName).trim()
     );
-    const isCraftToolSet = str(safeNewGroup.groupKind) === "craft_tool_set";
+
+    if (unnamedMember) {
+      showToast("すべての子どもの名前を入力してください", "error");
+      return;
+    }
+
+    const groupKind = str(safeNewGroup.groupKind).trim() || DEFAULT_GROUP_KIND;
+    const groupId = makeUniqueGroupId(makeGroupId(groupName), rows);
 
     try {
       setSaving(true);
 
       const created = [];
-
       const usedItemIds = new Set(
         rows.map((row) => str(row.itemId ?? row.item_id).trim()).filter(Boolean)
       );
 
-      const armorSetNo =
-        !isCraftToolSet && isNormalArmorType(selectedType)
-          ? findNextBouguSetNo({
-              equipLevel: safeNewGroup.equipLevel,
-              rows,
-              usedItemIds,
-            })
+      for (const member of enabledMembers) {
+        const craftProductType = member.craftProductTypeKey
+          ? findCraftProductTypeByKey(
+              craftProductTypes,
+              member.craftProductTypeKey
+            )
           : null;
 
-      for (const member of enabledMembers) {
-        const name =
-          str(member.itemName).trim() ||
-          (isCraftToolSet
-            ? str(member.slotLabel).trim()
-            : getDefaultGroupItemName(groupName, member.slotLabel));
-
-        const autoSlotGridType = getAutoSlotGridType(
-          member.slot,
-          selectedType,
-          safeNewGroup.groupKind,
-          member
-        );
-
-        const preset = getGridPreset(autoSlotGridType);
-
-        const itemId = isCraftToolSet
-          ? ""
-          : makeCreateItemId({
-              equipmentType: selectedType,
-              equipLevel: safeNewGroup.equipLevel,
-              slot: member.slot,
-              usedItemIds,
-              armorSetNo,
-            });
+        const itemIdPrefix =
+          craftProductType?.key || groupKind.replace(/_set$/, "") || "equipment";
 
         const row = {
           ...createEmptyEquipmentRow(),
-          itemId,
-          itemName: name,
-          equipmentTypeId: isCraftToolSet
-            ? ""
-            : str(safeNewGroup.equipmentTypeId),
-          equipmentType: isCraftToolSet ? null : selectedType,
+          itemId: makeAutomaticItemId(usedItemIds, itemIdPrefix),
+          itemName: str(member.itemName).trim(),
+          equipmentTypeId: "",
+          equipmentType: null,
+          craftProductTypeId:
+            craftProductType?.id == null ? "" : String(craftProductType.id),
+          craftProductType,
           jobOverrideMode: "inherit",
-          slot: member.slot,
-          slotGridType: autoSlotGridType,
-          slotGridCols: preset?.cols ? String(preset.cols) : "",
-          groupKind: str(safeNewGroup.groupKind),
+          groupKind,
           groupId,
           groupName,
-          equipLevel: isCraftToolSet ? "" : str(safeNewGroup.equipLevel),
+          equipLevel: "",
         };
 
-        if (row.itemId) {
-          usedItemIds.add(row.itemId);
-        }
-
         const savedRow = await createEquipment(row);
-        created.push(hydrateRowMaterialsWithItems(savedRow, allItems));
+        created.push(
+          hydrateCraftProductType(
+            hydrateRowMaterialsWithItems(savedRow, allItems),
+            craftProductTypes
+          )
+        );
       }
 
-      setRows((prev) => [...created, ...prev]);
+      setRows((previous) => [...created, ...previous]);
 
       if (created[0]) {
         setSelectedKey(created[0].__key);
@@ -719,7 +729,10 @@ export default function EquipmentsClient() {
           await updateEquipment(row.id, cleanRow);
         } else {
           const savedRow = await createEquipment(cleanRow);
-          const saved = hydrateRowMaterialsWithItems(savedRow, allItems);
+          const saved = hydrateCraftProductType(
+            hydrateRowMaterialsWithItems(savedRow, allItems),
+            craftProductTypes
+          );
 
           setRows((prev) =>
             prev.map((r) => (r.__key === row.__key ? saved : r))
@@ -869,28 +882,24 @@ export default function EquipmentsClient() {
     setSelectedRowPatch({ effectsJson: toJsonString(next, "[]") });
   }
   function getSidebarSlotOrder(row) {
-    const slot = str(row?.slot).trim();
+    const key = str(
+      row?.craftProductType?.key ?? row?.craft_product_type?.key
+    ).trim();
 
     const order = {
-      頭: 1,
-      あたま: 1,
-
-      体上: 2,
-      からだ上: 2,
-      身体上: 2,
-
-      体下: 3,
-      からだ下: 3,
-      身体下: 3,
-
-      腕: 4,
-      うで: 4,
-
-      足: 5,
-      あし: 5,
+      armor_head: 1,
+      tailoring_head: 1,
+      armor_upper: 2,
+      tailoring_upper: 2,
+      armor_lower: 3,
+      tailoring_lower: 3,
+      armor_arms: 4,
+      tailoring_arms: 4,
+      armor_feet: 5,
+      tailoring_feet: 5,
     };
 
-    return order[slot] ?? 999;
+    return order[key] ?? 999;
   }
   const isCreateTab = activeTab === "create";
   const createAction =
@@ -908,7 +917,6 @@ export default function EquipmentsClient() {
 
   return (
     <>
-    <RouteProgressDoneOnDataReady ready={!loading} />
       <EditorShell
         isMobile={isMobile}
         sidebar={
@@ -978,7 +986,7 @@ export default function EquipmentsClient() {
                               }}
                             >
                               <span>
-                                {getPresetMemberLabel(row) || row.slot || "-"}
+                                {getPresetMemberLabel(row) || "-"}
                               </span>
                               <strong>{row.itemName || "名称なし"}</strong>
                             </button>
@@ -1006,7 +1014,7 @@ export default function EquipmentsClient() {
                       {entry.label || entry.row?.itemName || "名称なし"}
                     </div>
                     <div style={styles.itemMeta}>
-                      {entry.row?.slot || "-"} /{" "}
+                      {getCraftProductTypeName(entry.row) || "-"} /{" "}
                       {entry.row?.equipmentTypeName || "-"}
                     </div>
                   </button>
@@ -1078,6 +1086,7 @@ export default function EquipmentsClient() {
             newGroup={newGroup}
             setNewGroup={setNewGroup}
             equipmentTypes={equipmentTypes}
+            craftProductTypes={craftProductTypes}
             existingEquipments={rows}
           />
         ) : (
@@ -1085,6 +1094,7 @@ export default function EquipmentsClient() {
             <EquipmentEditorPanel
               row={selectedRow}
               equipmentTypes={equipmentTypes}
+              craftProductTypes={craftProductTypes}
               allJobs={allJobs}
               syncGroup={syncGroup}
               setSyncGroup={setSyncGroup}
@@ -1127,99 +1137,9 @@ export default function EquipmentsClient() {
   );
 }
 
-function isNormalArmorType(equipmentType) {
-  const kind = str(equipmentType?.kind).trim();
-  const key = str(equipmentType?.key).trim();
 
-  return kind === "armor" && key !== "shield_small" && key !== "shield_large";
-}
 
-function normalizeSlotKey(slot) {
-  const value = str(slot).trim();
 
-  if (["head", "あたま", "頭"].includes(value)) return "head";
-  if (["body_top", "からだ上", "身体上", "体上"].includes(value)) {
-    return "body_top";
-  }
-  if (["body_bottom", "からだ下", "身体下", "体下", "体した"].includes(value)) {
-    return "body_bottom";
-  }
-  if (["arm", "arms", "うで", "腕"].includes(value)) return "arm";
-  if (["foot", "feet", "足", "あし"].includes(value)) return "foot";
-
-  return value || "unknown";
-}
-
-function makeCreateItemId({
-  equipmentType,
-  equipLevel,
-  slot = "",
-  usedItemIds,
-  armorSetNo = null,
-}) {
-  const level = str(equipLevel).trim();
-  const typeKey = str(equipmentType?.key).trim();
-
-  if (!level || !typeKey) return "";
-
-  if (isNormalArmorType(equipmentType)) {
-    const slotKey = normalizeSlotKey(slot);
-    const setNo = armorSetNo || 1;
-    const base = `bougu_${level}_${setNo}_${slotKey}`;
-
-    return makeUniqueItemId(base, usedItemIds);
-  }
-
-  const base = `${typeKey}_${level}`;
-
-  return makeUniqueItemId(base, usedItemIds);
-}
-
-function findNextBouguSetNo({ equipLevel, rows, usedItemIds }) {
-  const level = str(equipLevel).trim();
-
-  if (!level) return 1;
-
-  for (let setNo = 1; setNo <= 999; setNo++) {
-    const prefix = `bougu_${level}_${setNo}_`;
-
-    const existsInRows = rows.some((row) =>
-      str(row.itemId ?? row.item_id).startsWith(prefix)
-    );
-
-    const existsInUsed = Array.from(usedItemIds).some((itemId) =>
-      str(itemId).startsWith(prefix)
-    );
-
-    if (!existsInRows && !existsInUsed) {
-      return setNo;
-    }
-  }
-
-  return Date.now();
-}
-
-function makeUniqueItemId(baseItemId, usedSet) {
-  const base = str(baseItemId).trim();
-
-  if (!base) {
-    return "";
-  }
-
-  if (!usedSet.has(base)) {
-    return base;
-  }
-
-  let count = 2;
-  let candidate = `${base}_${count}`;
-
-  while (usedSet.has(candidate)) {
-    count++;
-    candidate = `${base}_${count}`;
-  }
-
-  return candidate;
-}
 
 function makeUniqueGroupId(baseGroupId, rows) {
   const base = str(baseGroupId).trim();

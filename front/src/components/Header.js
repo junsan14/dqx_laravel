@@ -1,17 +1,15 @@
 "use client";
-
-import ProgressIntlLink from "@/components/common/ProgressIntlLink";
-import ProgressLink from "@/components/common/ProgressLink";
+import ProgressIntlLink from "@/components/common/route-progress/ProgressIntlLink";
+import ProgressLink from "@/components/common/route-progress/ProgressLink";
 
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { FaXTwitter } from "react-icons/fa6";
-import { FiMoon, FiSun } from "react-icons/fi";
+import { FiMoon, FiShield, FiSun, FiUser } from "react-icons/fi";
 
 import { useAuth } from "@/hooks/auth";
 import { mochiy } from "@/app/fonts";
-import { isAdminPath } from "@/lib/adminPaths";
 
 import styles from "./Header.module.css";
 
@@ -163,88 +161,113 @@ function ThemeSwitcher() {
 const ADMIN_MENUS = [
   {
     href: "/admin/tool-editor/accessories",
-    label: "アクセ",
+    label: "アクセサリー",
+    sortKey: "あくせ",
     localized: false,
   },
   {
     href: "/admin/tool-editor/items",
     label: "アイテム",
+    sortKey: "あいてむ",
     localized: false,
   },
   {
     href: "/admin/tool-editor/orbs",
-    label: "オーブ",
+    label: "達人オーブ",
+    sortKey: "たつじんおーぶ",
     localized: false,
   },
   {
     href: "/admin/tool-editor/clystals",
     label: "結晶",
+    sortKey: "けっしょう",
     localized: false,
   },
   {
     href: "/admin/tool-editor/game-jobs",
     label: "職業",
+    sortKey: "しょくぎょう",
     localized: false,
   },
   {
     href: "/admin/tool-editor/equipments",
     label: "装備",
+    sortKey: "そうび",
     localized: false,
   },
   {
     href: "/admin/tool-editor/equipment-types",
-    label: "装備職人タイプ",
+    label: "装備タイプ",
+    sortKey: "そうびしょくにんたいぷ",
+    localized: false,
+  },
+  {
+    href: "/admin/tool-editor/craft-product-types",
+    label: "作成職人タイプ",
+    sortKey: "さくせいしょくにん",
     localized: false,
   },
   {
     href: "/admin/tool-editor/craft-types",
     label: "職人",
+    sortKey: "しょくにん",
     localized: false,
   },
   {
     href: "/admin/tool-editor/continents",
     label: "大陸",
+    sortKey: "たいりく",
     localized: false,
   },
   {
     href: "/admin/tool-editor/maps",
     label: "マップ",
+    sortKey: "まっぷ",
     localized: false,
   },
   {
     href: "/admin/tool-editor/monsters",
     label: "モンスター",
+    sortKey: "もんすたー",
     localized: false,
   },
   {
     href: "/admin/tool-editor/bosses",
     label: "ボス",
+    sortKey: "ぼす",
     localized: false,
   },
   {
     href: "/admin/tool-editor/content-reports",
-    label: "レポート",
+    label: "レポートチェック",
+    sortKey: "れぽーと",
     localized: false,
   },
   {
     href: "/admin/kishoju",
-    label: "輝晶獣",
+    label: "輝晶獣チェック",
+    sortKey: "きしょうじゅう",
     localized: false,
   },
-].sort((a, b) => a.label.localeCompare(b.label, "ja"));
+].sort((a, b) =>
+  a.sortKey.localeCompare(b.sortKey, "ja")
+);
 
 export default function Header() {
   const t = useTranslations("Header");
   const pathname = usePathname();
+  const { user } = useAuth();
 
   const [open, setOpen] = useState(false);
+  const [menuMode, setMenuMode] = useState(
+    pathname.startsWith("/admin") ? "admin" : "public"
+  );
   const [menuVisible, setMenuVisible] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(0);
 
   const headerRef = useRef(null);
 
   const term = "v8.0対応";
-  const showAdminArea = isAdminPath(pathname);
 
   const publicMenus = useMemo(
     () => [
@@ -350,6 +373,7 @@ export default function Header() {
 
   useEffect(() => {
     setOpen(false);
+    setMenuMode(pathname.startsWith("/admin") ? "admin" : "public");
   }, [pathname]);
 
   function closeMenu() {
@@ -478,73 +502,123 @@ export default function Header() {
               className={styles.menuCard}
               onClick={(event) => event.stopPropagation()}
             >
-              <section className={styles.menuSection}>
-                <div className={styles.sectionTitle}>
-                  {t("menuTitle")}
-                </div>
+              {user ? (
+                <div
+                  className={styles.menuModeTabs}
+                  role="tablist"
+                  aria-label={t("menuTitle")}
+                >
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={menuMode === "public"}
+                    className={[
+                      styles.menuModeTab,
+                      menuMode === "public"
+                        ? styles.menuModeTabActive
+                        : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    onClick={() => setMenuMode("public")}
+                  >
+                    <FiUser aria-hidden="true" />
+                    <span>{t("menuTitle")}</span>
+                  </button>
 
-                <nav className={styles.menuNav}>
-                  {publicMenus.map((menu, index) => (
-                    <HeaderNavLink
-                      key={menu.href}
-                      href={menu.href}
-                      localized={menu.localized}
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={menuMode === "admin"}
+                    className={[
+                      styles.menuModeTab,
+                      styles.menuModeTabAdmin,
+                      menuMode === "admin"
+                        ? styles.menuModeTabActive
+                        : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    onClick={() => setMenuMode("admin")}
+                  >
+                    <FiShield aria-hidden="true" />
+                    <span>{t("adminTitle")}</span>
+                  </button>
+                </div>
+              ) : null}
+
+              {!user || menuMode === "public" ? (
+                <section className={styles.menuSection}>
+                  {!user ? (
+                    <div className={styles.sectionTitle}>
+                      {t("menuTitle")}
+                    </div>
+                  ) : null}
+
+                  <nav className={styles.menuNav}>
+                    {publicMenus.map((menu, index) => (
+                      <HeaderNavLink
+                        key={menu.href}
+                        href={menu.href}
+                        localized={menu.localized}
+                        onClick={closeMenu}
+                        className={styles.menuLink}
+                        style={{
+                          transitionDelay: open
+                            ? `${index * 28}ms`
+                            : "0ms",
+                        }}
+                      >
+                        {menu.label}
+                      </HeaderNavLink>
+                    ))}
+
+                    <a
+                      href="https://x.com/miki0801388249"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       onClick={closeMenu}
                       className={styles.menuLink}
-                      style={{
-                        transitionDelay: open
-                          ? `${index * 28}ms`
-                          : "0ms",
-                      }}
+                      aria-label="X"
+                      title="X"
                     >
-                      {menu.label}
-                    </HeaderNavLink>
-                  ))}
+                      <FaXTwitter />
+                      <span>X</span>
+                    </a>
+                  </nav>
+                </section>
+              ) : null}
 
-                  <a
-                    href="https://x.com/miki0801388249"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={closeMenu}
-                    className={styles.menuLink}
-                    aria-label="X"
-                    title="X"
-                  >
-                    <FaXTwitter />
-                    <span>X</span>
-                  </a>
-                </nav>
-              </section>
-
-              {showAdminArea ? (
+              {user && menuMode === "admin" ? (
                 <HeaderMobileAdminMenu
                   t={t}
                   closeMenu={closeMenu}
+                  user={user}
                 />
               ) : null}
 
-              {showAdminArea ? (
+              {user && menuMode === "admin" ? (
                 <HeaderMobileAuthButtons
                   t={t}
                   closeMenu={closeMenu}
                 />
               ) : null}
 
-              <div className={styles.menuFooter}>
-                <div className={styles.menuPreferenceRow}>
-                  <LanguageSwitcher
-                    onNavigate={closeMenu}
-                  />
+              {!user || menuMode === "public" ? (
+                <div className={styles.menuFooter}>
+                  <div className={styles.menuPreferenceRow}>
+                    <LanguageSwitcher onNavigate={closeMenu} />
 
-                  <ThemeSwitcher />
-                </div>
+                    <ThemeSwitcher />
+                  </div>
 
-                <div
-                  className={`${styles.versionBadge} ${styles.footerVersion}`}
-                >
-                  {term}
+                  <div
+                    className={`${styles.versionBadge} ${styles.footerVersion}`}
+                  >
+                    {term}
+                  </div>
                 </div>
-              </div>
+              ) : null}
             </div>
           </div>
         </div>
@@ -553,9 +627,7 @@ export default function Header() {
   );
 }
 
-function HeaderMobileAdminMenu({ t, closeMenu }) {
-  const { user } = useAuth();
-
+function HeaderMobileAdminMenu({ t, closeMenu, user }) {
   if (!user) return null;
 
   const isAdmin = Boolean(user?.is_admin);
@@ -604,9 +676,11 @@ function HeaderMobileAuthButtons({ t, closeMenu }) {
 
   return (
     <section className={styles.authSection}>
+      {/*
       <div className={styles.userName}>
         {user.name}
       </div>
+      */}
 
       <button
         type="button"

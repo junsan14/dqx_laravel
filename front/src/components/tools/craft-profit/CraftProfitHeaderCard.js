@@ -1,8 +1,8 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import DropdownSelect from "@/components/common/DropdownSelect";
-import SearchableSelect from "@/components/common/SearchableSelect";
+import DropdownSelect from "@/components/common/form/DropdownSelect";
+import SearchableSelect from "@/components/common/form/SearchableSelect";
 import styles from "./CraftProfitHeaderCard.module.css";
 
 export default function CraftProfitHeaderCard({
@@ -15,6 +15,11 @@ export default function CraftProfitHeaderCard({
   searchError,
   craftType,
   selectedSet,
+  favoriteEquipments = [],
+  selectedFavoriteKey = "",
+  isSelectedFavorite = false,
+  onToggleFavorite,
+  onSelectFavorite,
   toolId,
   setToolId,
   toolOptions,
@@ -72,64 +77,138 @@ export default function CraftProfitHeaderCard({
             </div>
 
             <div className={styles.fieldControl}>
-              <SearchableSelect
-                value={setQuery}
-                onChange={(nextValue, option) => {
-                  setSetQuery(nextValue);
+              <div className={styles.searchActionRow}>
+                <div className={styles.searchControl}>
+                  <SearchableSelect
+                    value={setQuery}
+                    onChange={(nextValue, option) => {
+                      setSetQuery(nextValue);
 
-                  if (option) {
-                    onChangeSet(option.id);
+                      if (option) {
+                        onChangeSet(option.id);
+                      }
+                    }}
+                    options={filteredSets}
+                    placeholder={t("header.searchPlaceholder")}
+                    emptyText={searchEmptyText}
+                    maxResults={30}
+                    allowCustomValue
+                    selectOnFocus
+                    selectSingleOnEnter
+                    ariaLabel={t("header.equipmentSet")}
+                    getOptionValue={(option) => option.name}
+                    getOptionLabel={(option) => option.name}
+                    getOptionDescription={() => ""}
+                    getOptionSearchText={(option) => {
+                      const itemNames = Array.isArray(option.items)
+                        ? option.items
+                            .map((item) => item?.name)
+                            .filter(Boolean)
+                        : [];
+
+                      const itemNameKanas = Array.isArray(option.items)
+                        ? option.items
+                            .map((item) => item?.nameKana)
+                            .filter(Boolean)
+                        : [];
+
+                      const itemEquipLevels = Array.isArray(option.items)
+                        ? option.items
+                            .map((item) => item?.equipLevel)
+                            .filter(
+                              (level) => level != null && level !== ""
+                            )
+                        : [];
+
+                      return [
+                        option.name,
+                        option.nameKana,
+                        ...itemNames,
+                        ...itemNameKanas,
+                        option.equipLevel,
+                        ...itemEquipLevels,
+                      ]
+                        .filter(
+                          (value) => value != null && value !== ""
+                        )
+                        .join(" ");
+                    }}
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  className={`${styles.favoriteButton} ${
+                    isSelectedFavorite ? styles.favoriteButtonActive : ""
+                  }`}
+                  onClick={onToggleFavorite}
+                  disabled={!selectedSet || selectionLoading}
+                  aria-pressed={isSelectedFavorite}
+                  aria-label={
+                    isSelectedFavorite
+                      ? locale === "en"
+                        ? "Remove from favorites"
+                        : "お気に入りから解除"
+                      : locale === "en"
+                      ? "Add to favorites"
+                      : "お気に入りに追加"
                   }
-                }}
-                options={filteredSets}
-                placeholder={t("header.searchPlaceholder")}
-                emptyText={searchEmptyText}
-                maxResults={30}
-                allowCustomValue
-                selectOnFocus
-                selectSingleOnEnter
-                ariaLabel={t("header.equipmentSet")}
-                getOptionValue={(option) => option.name}
-                getOptionLabel={(option) => option.name}
-                getOptionDescription={() => ""}
-                getOptionSearchText={(option) => {
-                const itemNames = Array.isArray(option.items)
-                  ? option.items
-                      .map((item) => item?.name)
-                      .filter(Boolean)
-                  : [];
-
-                const itemNameKanas = Array.isArray(option.items)
-                  ? option.items
-                      .map((item) => item?.nameKana)
-                      .filter(Boolean)
-                  : [];
-
-                const itemEquipLevels = Array.isArray(option.items)
-                  ? option.items
-                      .map((item) => item?.equipLevel)
-                      .filter(
-                        (level) => level != null && level !== ""
-                      )
-                  : [];
-
-                return [
-                  option.name,
-                  option.nameKana, // 追加
-                  ...itemNames,
-                  ...itemNameKanas, // 追加
-                  option.equipLevel,
-                  ...itemEquipLevels,
-                ]
-                  .filter(
-                    (value) => value != null && value !== ""
-                  )
-                  .join(" ");
-              }}
-              />
+                  title={
+                    isSelectedFavorite
+                      ? locale === "en"
+                        ? "Remove from favorites"
+                        : "お気に入りから解除"
+                      : locale === "en"
+                      ? "Add to favorites"
+                      : "お気に入りに追加"
+                  }
+                >
+                  {isSelectedFavorite ? "★" : "☆"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
+
+        {favoriteEquipments.length > 0 ? (
+          <div className={`${styles.field} ${styles.favoriteField}`}>
+            <label className={styles.label}>
+              {locale === "en" ? "Favorites" : "お気に入り"}
+            </label>
+
+            <div className={styles.fieldControl}>
+              <DropdownSelect
+                value={selectedFavoriteKey}
+                onChange={(nextValue) => onSelectFavorite?.(nextValue)}
+                options={favoriteEquipments}
+                getOptionValue={(option) =>
+                  `${option.type === "group" ? "group" : "item"}:${option.id}`
+                }
+                getOptionLabel={(option) => option.name}
+                getOptionDescription={(option) =>
+                  option.type === "group"
+                    ? locale === "en"
+                      ? "Set"
+                      : "セット"
+                    : locale === "en"
+                    ? "Single item"
+                    : "単体"
+                }
+                placeholder={
+                  locale === "en"
+                    ? "Select a favorite"
+                    : "お気に入りから選択"
+                }
+                emptyText={
+                  locale === "en"
+                    ? "No favorites"
+                    : "お気に入りはありません"
+                }
+                ariaLabel={locale === "en" ? "Favorites" : "お気に入り"}
+              />
+            </div>
+          </div>
+        ) : null}
 
         {selectionLoading ? (
           <div className={styles.field} aria-hidden="true">

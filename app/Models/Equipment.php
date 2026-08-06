@@ -27,7 +27,8 @@ class Equipment extends Model
         'item_name_en',
 
         'equipment_type_id',
-        'fabric_type',
+        'craft_product_type_id',
+        'craft_material_trait',
         'job_override_mode',
 
         'craft_level',
@@ -35,10 +36,6 @@ class Equipment extends Model
         'recipe_book',
         'recipe_place',
         'description',
-
-        'slot',
-        'slot_grid_type',
-        'slot_grid_cols',
 
         'group_kind',
         'group_id',
@@ -67,16 +64,15 @@ class Equipment extends Model
         'healing_power' => 'integer',
 
         'equipment_type_id' => 'integer',
+        'craft_product_type_id' => 'integer',
         'craft_level' => 'integer',
         'equip_level' => 'integer',
-        'slot_grid_cols' => 'integer',
         'default_price' => 'integer',
         'weight' => 'integer',
 
         'materials_json' => 'array',
         'slot_grid_json' => 'array',
         'effects_json' => 'array',
-        
     ];
 
     protected $attributes = [
@@ -86,6 +82,11 @@ class Equipment extends Model
     public function equipmentType(): BelongsTo
     {
         return $this->belongsTo(EquipmentType::class, 'equipment_type_id');
+    }
+
+    public function craftProductType(): BelongsTo
+    {
+        return $this->belongsTo(CraftProductType::class, 'craft_product_type_id');
     }
 
     public function jobOverrides(): HasMany

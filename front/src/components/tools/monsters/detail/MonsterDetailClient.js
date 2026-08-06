@@ -2,8 +2,8 @@
 
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
-import ContentReportArea from "@/components/common/ContentReportArea";
-import ProgressIntlLink from "@/components/common/ProgressIntlLink";
+import ContentReportArea from "@/components/common/content-report-area/ContentReportArea";
+import ProgressIntlLink from "@/components/common/route-progress/ProgressIntlLink";
 import MonsterInfo from "./MonsterInfo";
 import MonsterDrops from "./MonsterDrops";
 import MonsterHabitats from "./MonsterHabitats";

@@ -9,6 +9,11 @@ class CraftType extends Model
     protected $fillable = [
         'key',
         'name',
+        'great_success_rate',
+    ];
+
+    protected $casts = [
+        'great_success_rate' => 'float',
     ];
 
     public function equipmentTypes()

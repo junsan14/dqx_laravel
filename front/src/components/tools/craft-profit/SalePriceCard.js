@@ -10,6 +10,7 @@ export default function SalePriceCard({
   recommend,
   recommendRate,
   crystalEquipmentLabel,
+  outputCounts = null,
 }) {
   const locale = useLocale();
   const t = useTranslations("CraftProfit");
@@ -19,26 +20,67 @@ export default function SalePriceCard({
       ? recommend.tone
       : "var(--text-main)";
 
-  const rateItems = [
-    {
-      key: "p3",
-      star: t("salePrice.star3"),
-      value: minRates?.p3 ?? 0,
-      note: t("salePrice.requiredRate"),
-    },
-    {
-      key: "p2",
-      star: t("salePrice.star2"),
-      value: minRates?.p2 ?? 0,
-      note: t("salePrice.requiredRate"),
-    },
-    {
-      key: "p1",
-      star: t("salePrice.star1"),
-      value: minRates?.p1 ?? 0,
-      note: t("salePrice.remaining"),
-    },
-  ];
+  const isMaterialProduct = !!outputCounts;
+
+  const rateItems = isMaterialProduct
+    ? [
+        {
+          key: "p3",
+          star:
+            locale === "en"
+              ? `Great success (${outputCounts.star3})`
+              : `大成功（${outputCounts.star3}個）`,
+          value: minRates?.p3 ?? 0,
+          note: t("salePrice.requiredRate"),
+        },
+        {
+          key: "p2",
+          star:
+            locale === "en"
+              ? `2★ (${outputCounts.star2})`
+              : `☆2（${outputCounts.star2}個）`,
+          value: minRates?.p2 ?? 0,
+          note: t("salePrice.requiredRate"),
+        },
+        {
+          key: "p1",
+          star:
+            locale === "en"
+              ? `1★ (${outputCounts.star1})`
+              : `☆1（${outputCounts.star1}個）`,
+          value: minRates?.p1 ?? 0,
+          note: t("salePrice.remaining"),
+        },
+        {
+          key: "p0",
+          star:
+            locale === "en"
+              ? `No stars (${outputCounts.star0})`
+              : `☆なし（${outputCounts.star0}個）`,
+          value: minRates?.p0 ?? 0,
+          note: t("salePrice.remaining"),
+        },
+      ]
+    : [
+        {
+          key: "p3",
+          star: t("salePrice.star3"),
+          value: minRates?.p3 ?? 0,
+          note: t("salePrice.requiredRate"),
+        },
+        {
+          key: "p2",
+          star: t("salePrice.star2"),
+          value: minRates?.p2 ?? 0,
+          note: t("salePrice.requiredRate"),
+        },
+        {
+          key: "p1",
+          star: t("salePrice.star1"),
+          value: minRates?.p1 ?? 0,
+          note: t("salePrice.remaining"),
+        },
+      ];
 
   return (
     <section className={styles.card}>

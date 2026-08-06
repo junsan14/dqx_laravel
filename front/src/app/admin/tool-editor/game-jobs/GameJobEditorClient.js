@@ -292,10 +292,7 @@ export default function GameJobEditorClient() {
     >
       {filteredJobs.map((job) => {
         const active = Number(job.id) === Number(selectedJobId);
-        const equipableCount = getEquipableIdsByJobId(
-          equipmentTypes,
-          job.id
-        ).length;
+
 
         return (
           <button
@@ -306,10 +303,8 @@ export default function GameJobEditorClient() {
           >
             <span style={styles.jobItemTop}>
               <span style={styles.jobName}>{job.name}</span>
-              <span style={styles.jobBadge}>{equipableCount}</span>
             </span>
 
-            <span style={styles.jobKey}>{job.key}</span>
           </button>
         );
       })}

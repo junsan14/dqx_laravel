@@ -18,7 +18,9 @@ class ContinentController extends Controller
             'id',
             'display_order',
             'name',
+            'name_kana',
             'name_en',
+            'map_image_folder',
             'created_at',
             'updated_at',
         ]);
@@ -26,7 +28,9 @@ class ContinentController extends Controller
         if ($q !== '') {
             $query->where(function ($subQuery) use ($q) {
                 $subQuery->where('name', 'like', "%{$q}%")
-                    ->orWhere('name_en', 'like', "%{$q}%");
+                    ->orWhere('name_kana', 'like', "%{$q}%")
+                    ->orWhere('name_en', 'like', "%{$q}%")
+                    ->orWhere('map_image_folder', 'like', "%{$q}%");
             });
         }
 
@@ -45,7 +49,9 @@ class ContinentController extends Controller
         $validated = $request->validate([
             'display_order' => ['required', 'integer', 'min:1'],
             'name' => ['required', 'string', 'max:255', 'unique:continents,name'],
+            'name_kana' => ['nullable', 'string', 'max:255'],
             'name_en' => ['nullable', 'string', 'max:255'],
+            'map_image_folder' => ['nullable', 'string', 'max:255'],
         ]);
 
         $continent = DB::transaction(function () use ($validated) {
@@ -57,8 +63,14 @@ class ContinentController extends Controller
             return Continent::create([
                 'display_order' => $targetOrder,
                 'name' => trim($validated['name']),
+                'name_kana' => filled($validated['name_kana'] ?? null)
+                    ? trim($validated['name_kana'])
+                    : null,
                 'name_en' => filled($validated['name_en'] ?? null)
                     ? trim($validated['name_en'])
+                    : null,
+                'map_image_folder' => filled($validated['map_image_folder'] ?? null)
+                    ? trim($validated['map_image_folder'])
                     : null,
             ]);
         });
@@ -86,7 +98,9 @@ class ContinentController extends Controller
                 'max:255',
                 Rule::unique('continents', 'name')->ignore($continent->id),
             ],
+            'name_kana' => ['nullable', 'string', 'max:255'],
             'name_en' => ['nullable', 'string', 'max:255'],
+            'map_image_folder' => ['nullable', 'string', 'max:255'],
         ]);
 
         $updated = DB::transaction(function () use ($validated, $continent) {
@@ -101,8 +115,14 @@ class ContinentController extends Controller
             $continent->update([
                 'display_order' => $newOrder,
                 'name' => trim($validated['name']),
+                'name_kana' => filled($validated['name_kana'] ?? null)
+                    ? trim($validated['name_kana'])
+                    : null,
                 'name_en' => filled($validated['name_en'] ?? null)
                     ? trim($validated['name_en'])
+                    : null,
+                'map_image_folder' => filled($validated['map_image_folder'] ?? null)
+                    ? trim($validated['map_image_folder'])
                     : null,
             ]);
 

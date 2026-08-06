@@ -18,84 +18,86 @@ export function RouteProgressProvider({ children }) {
   const [visible, setVisible] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  const startAtRef = useRef(0);
-  const finishTimerRef = useRef(null);
-  const maxTimerRef = useRef(null);
-  const progressTimersRef = useRef([]);
+  const startedAtRef = useRef(0);
+  const timersRef = useRef([]);
 
-  const clearProgressTimers = useCallback(() => {
-    progressTimersRef.current.forEach(clearTimeout);
-    progressTimersRef.current = [];
+  const clearTimers = useCallback(() => {
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
   }, []);
 
-  const clearFinishTimer = useCallback(() => {
-    if (finishTimerRef.current) {
-      clearTimeout(finishTimerRef.current);
-      finishTimerRef.current = null;
-    }
-  }, []);
+  const reset = useCallback(() => {
+    clearTimers();
 
-  const clearMaxTimer = useCallback(() => {
-    if (maxTimerRef.current) {
-      clearTimeout(maxTimerRef.current);
-      maxTimerRef.current = null;
-    }
-  }, []);
+    startedAtRef.current = 0;
 
-  const hardReset = useCallback(() => {
-    clearProgressTimers();
-    clearFinishTimer();
-    clearMaxTimer();
     setVisible(false);
     setProgress(0);
-  }, [clearFinishTimer, clearMaxTimer, clearProgressTimers]);
+  }, [clearTimers]);
 
   const done = useCallback(() => {
-    clearProgressTimers();
-    clearFinishTimer();
+    clearTimers();
 
-    if (!startAtRef.current) {
-      hardReset();
+    if (!startedAtRef.current) {
+      reset();
       return;
     }
 
-    const elapsed = Date.now() - startAtRef.current;
+    const elapsed = Date.now() - startedAtRef.current;
     const remaining = Math.max(0, MIN_VISIBLE_MS - elapsed);
 
-    finishTimerRef.current = setTimeout(() => {
+    const finishTimer = setTimeout(() => {
       setProgress(100);
 
-      finishTimerRef.current = setTimeout(() => {
-        hardReset();
-      }, 80);
+      const hideTimer = setTimeout(() => {
+        reset();
+      }, 100);
+
+      timersRef.current.push(hideTimer);
     }, remaining);
-  }, [clearFinishTimer, clearProgressTimers, hardReset]);
+
+    timersRef.current.push(finishTimer);
+  }, [clearTimers, reset]);
 
   const start = useCallback(() => {
-    clearProgressTimers();
-    clearFinishTimer();
-    clearMaxTimer();
+    clearTimers();
 
-    startAtRef.current = Date.now();
+    startedAtRef.current = Date.now();
+
     setVisible(true);
     setProgress(10);
 
-    progressTimersRef.current.push(
-      setTimeout(() => setProgress(25), 80),
-      setTimeout(() => setProgress(45), 180),
-      setTimeout(() => setProgress(62), 320),
-      setTimeout(() => setProgress(76), 520),
-      setTimeout(() => setProgress(86), 900)
-    );
+    const progressSteps = [
+      [25, 80],
+      [45, 180],
+      [62, 320],
+      [76, 520],
+      [86, 900],
+    ];
 
-    maxTimerRef.current = setTimeout(() => {
+    progressSteps.forEach(([value, delay]) => {
+      const timer = setTimeout(() => {
+        setProgress(value);
+      }, delay);
+
+      timersRef.current.push(timer);
+    });
+
+    const maxTimer = setTimeout(() => {
       done();
     }, MAX_VISIBLE_MS);
-  }, [clearFinishTimer, clearMaxTimer, clearProgressTimers, done]);
+
+    timersRef.current.push(maxTimer);
+  }, [clearTimers, done]);
 
   const value = useMemo(
-    () => ({ visible, progress, start, done, hardReset }),
-    [visible, progress, start, done, hardReset]
+    () => ({
+      visible,
+      progress,
+      start,
+      done,
+    }),
+    [visible, progress, start, done]
   );
 
   return (
@@ -109,7 +111,9 @@ export function useRouteProgress() {
   const context = useContext(RouteProgressContext);
 
   if (!context) {
-    throw new Error("useRouteProgress must be used within RouteProgressProvider");
+    throw new Error(
+      "useRouteProgress must be used within RouteProgressProvider"
+    );
   }
 
   return context;

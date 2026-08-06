@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import LabeledField from "./LabeledField";
 import SlotGridEditor from "./SlotGridEditor";
 import {
@@ -115,8 +115,20 @@ export default function EquipmentEditorPanel({
     selectedProductCraftTypeId
   );
 
+  const previousRowIdentityRef = useRef(null);
+
   useEffect(() => {
-    setCraftTypeFilterId(selectedProductCraftTypeId);
+    const rowIdentity = String(safeRow.__key ?? safeRow.id ?? "");
+    const rowChanged = previousRowIdentityRef.current !== rowIdentity;
+
+    previousRowIdentityRef.current = rowIdentity;
+
+    // 行を切り替えたときは、その装備の作成職人を反映する。
+    // 同じ行で職人を選び直した直後は、作成タイプが一時的に空になるため、
+    // 選択中の職人まで空へ戻さない。
+    if (rowChanged || selectedProductCraftTypeId) {
+      setCraftTypeFilterId(selectedProductCraftTypeId);
+    }
   }, [safeRow.__key, safeRow.id, selectedProductCraftTypeId]);
 
   const filteredCraftProductTypes = useMemo(

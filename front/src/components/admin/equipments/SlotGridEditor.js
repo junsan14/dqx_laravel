@@ -9,6 +9,20 @@ import {
 } from "./equipmentFormHelpers";
 import LabeledField from "./LabeledField";
 
+const CUSTOM_GRID_MIN = 1;
+const CUSTOM_GRID_MAX = 12;
+
+function clampGridSize(value) {
+  const numericValue = Number.parseInt(value, 10);
+
+  if (!Number.isFinite(numericValue)) return CUSTOM_GRID_MIN;
+
+  return Math.min(
+    CUSTOM_GRID_MAX,
+    Math.max(CUSTOM_GRID_MIN, numericValue)
+  );
+}
+
 function getGridDimensions(gridLike) {
   if (!Array.isArray(gridLike) || gridLike.length === 0) {
     return { rows: 0, cols: 0 };
@@ -98,6 +112,7 @@ export default function SlotGridEditor({ row, onPatch }) {
     () => getCraftProductGrid(craftProductType),
     [craftProductType]
   );
+  const isCustomGrid = !preset;
 
   const parsed = useMemo(() => {
     if (!row) {
@@ -150,12 +165,7 @@ export default function SlotGridEditor({ row, onPatch }) {
     return {
       nextRows,
       nextCols,
-      nextGrid: buildGrid(
-        gridLike,
-        nextRows,
-        nextCols,
-        disabledCellSet
-      ),
+      nextGrid: buildGrid(gridLike, nextRows, nextCols, disabledCellSet),
       disabledCellSet,
       usesExistingShape,
     };
@@ -196,6 +206,24 @@ export default function SlotGridEditor({ row, onPatch }) {
     next[rowIndex][colIndex] = value;
     setGrid2d(next);
     patchGrid(next);
+  }
+
+  function resizeCustomGrid(nextRowsValue, nextColsValue) {
+    if (!isCustomGrid) return;
+
+    const nextRows = clampGridSize(nextRowsValue);
+    const nextCols = clampGridSize(nextColsValue);
+    const nextGrid = resizeGrid(
+      grid2d,
+      nextRows,
+      nextCols,
+      parsed.disabledCellSet
+    );
+
+    setGridRows(nextRows);
+    setGridCols(nextCols);
+    setGrid2d(nextGrid);
+    patchGrid(nextGrid);
   }
 
   function handleGridPaste(startRow, startCol, text) {
@@ -240,19 +268,58 @@ export default function SlotGridEditor({ row, onPatch }) {
     patchGrid(nextGrid);
   }
 
-  if (!preset && !row.slotGridJson) {
-    return (
-      <LabeledField label="大成功数値">
-        <div style={styles.emptyText}>
-          職人作成タイプにグリッドJSONを設定してください
-        </div>
-      </LabeledField>
-    );
-  }
-
   return (
     <LabeledField label="大成功数値">
       <div style={styles.slotGridBox}>
+        {isCustomGrid ? (
+          <div style={styles.customGridBox}>
+            <div style={styles.customGridHead}>
+              <div>
+                <div style={styles.customGridTitle}>カスタムグリッド</div>
+                <div style={styles.customGridText}>
+                  この職人作成タイプには標準グリッドがないため、行数と列数を指定できます
+                </div>
+              </div>
+
+              <div style={styles.customSizeBadge}>
+                {gridRows}行 × {gridCols}列
+              </div>
+            </div>
+
+            <div style={styles.dimensionControls}>
+              <label style={styles.dimensionField}>
+                <span style={styles.dimensionLabel}>行数</span>
+                <input
+                  type="number"
+                  min={CUSTOM_GRID_MIN}
+                  max={CUSTOM_GRID_MAX}
+                  style={styles.dimensionInput}
+                  value={gridRows}
+                  onChange={(event) =>
+                    resizeCustomGrid(event.target.value, gridCols)
+                  }
+                />
+              </label>
+
+              <span style={styles.dimensionCross}>×</span>
+
+              <label style={styles.dimensionField}>
+                <span style={styles.dimensionLabel}>列数</span>
+                <input
+                  type="number"
+                  min={CUSTOM_GRID_MIN}
+                  max={CUSTOM_GRID_MAX}
+                  style={styles.dimensionInput}
+                  value={gridCols}
+                  onChange={(event) =>
+                    resizeCustomGrid(gridRows, event.target.value)
+                  }
+                />
+              </label>
+            </div>
+          </div>
+        ) : null}
+
         {parsed.usesExistingShape ? (
           <div style={styles.noticeText}>
             この装備は作成タイプの標準グリッドと異なるため、既存の形を維持しています
@@ -305,6 +372,77 @@ const styles = {
     gap: 12,
     minWidth: 0,
   },
+  customGridBox: {
+    border: "1px dashed var(--soft-border)",
+    borderRadius: 12,
+    padding: 12,
+    background: "var(--soft-bg)",
+    display: "flex",
+    flexDirection: "column",
+    gap: 12,
+  },
+  customGridHead: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    gap: 12,
+    flexWrap: "wrap",
+  },
+  customGridTitle: {
+    color: "var(--text-main)",
+    fontSize: 13,
+    fontWeight: 800,
+  },
+  customGridText: {
+    marginTop: 3,
+    color: "var(--text-muted)",
+    fontSize: 12,
+    lineHeight: 1.6,
+  },
+  customSizeBadge: {
+    border: "1px solid var(--soft-border)",
+    borderRadius: 999,
+    padding: "4px 9px",
+    background: "var(--card-bg)",
+    color: "var(--text-muted)",
+    fontSize: 12,
+    fontWeight: 800,
+    whiteSpace: "nowrap",
+  },
+  dimensionControls: {
+    display: "flex",
+    alignItems: "flex-end",
+    gap: 10,
+    flexWrap: "wrap",
+  },
+  dimensionField: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 5,
+  },
+  dimensionLabel: {
+    color: "var(--text-muted)",
+    fontSize: 12,
+    fontWeight: 700,
+  },
+  dimensionInput: {
+    width: 84,
+    height: 40,
+    border: "1px solid var(--input-border)",
+    borderRadius: 9,
+    background: "var(--input-bg)",
+    color: "var(--input-text)",
+    padding: "7px 10px",
+    boxSizing: "border-box",
+    fontSize: 14,
+  },
+  dimensionCross: {
+    height: 40,
+    display: "inline-flex",
+    alignItems: "center",
+    color: "var(--text-muted)",
+    fontWeight: 800,
+  },
   gridOuter: {
     overflowX: "auto",
     display: "flex",
@@ -314,13 +452,6 @@ const styles = {
   gridPlain: {
     display: "grid",
     gap: 8,
-  },
-  emptyText: {
-    border: "1px dashed var(--soft-border)",
-    borderRadius: 10,
-    padding: 12,
-    color: "var(--text-muted)",
-    fontSize: 13,
   },
   noticeText: {
     color: "var(--text-muted)",

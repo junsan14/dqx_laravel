@@ -2,6 +2,27 @@
 
 import { clamp0 } from "@/lib/money";
 import { resolveEquipmentJobNames } from "@/lib/equipments";
+import { normalizeGreatSuccessRate } from "./craftToolPriceAdjustments";
+
+// 既存のimport先を変えなくても動くよう、価格関連APIを再exportする。
+export {
+  PRICE_ADJUSTMENT_CONFIG,
+  CRAFT_TOOL_PRICE_CONFIG,
+  DEFAULT_FEE_RATE,
+  MATERIAL_OUTPUT_COUNTS,
+  isMaterialCraftProductType,
+  getCraftProductOutputCounts,
+  isCrystalEligibleCraftProductType,
+  normalizeGreatSuccessRate,
+  calcGreatSuccessPriceRate,
+  buildCrystalValues,
+  isCrystalEquipment,
+  isCraftToolProductType,
+  calcCraftToolStar2Cap,
+  calcCraftToolRecommendedPrices,
+  defaultStarPrices,
+  calcRecommendedStarPrices,
+} from "./craftToolPriceAdjustments";
 
 export const SLOT_ORDER_MAP = {
   head: 1,
@@ -17,176 +38,6 @@ export const SLOT_ORDER_MAP = {
 
 const collatorJa = new Intl.Collator("ja");
 const collatorEn = new Intl.Collator("en");
-
-export const DEFAULT_FEE_RATE = 5;
-
-const CRYSTAL_UNIT_PRICE = 3200;
-const STANDARD_STAR0_PRICE_RATE = 0.7;
-const STANDARD_STAR1_PRICE_RATE = 0.85;
-const STANDARD_STAR2_PRICE_RATE = 1;
-
-export const MATERIAL_OUTPUT_COUNTS = Object.freeze({
-  star0: 1, // ☆なし
-  star1: 2, // ☆1
-  star2: 3, // ☆2
-  star3: 10, // 大成功
-});
-
-export function isMaterialCraftProductType(value) {
-  if (!value) return false;
-
-  const craftProductType =
-    value?.craftProductType ??
-    value?.craft_product_type ??
-    value;
-
-  const kind = String(
-    craftProductType?.kind ??
-      value?.craftProductTypeKind ??
-      value?.craft_product_type_kind ??
-      ""
-  )
-    .trim()
-    .toLowerCase();
-
-  const key = String(
-    craftProductType?.key ??
-      value?.craftProductTypeKey ??
-      value?.craft_product_type_key ??
-      ""
-  )
-    .trim()
-    .toLowerCase();
-
-  const name = String(
-    craftProductType?.name ??
-      value?.craftProductTypeName ??
-      value?.craft_product_type_name ??
-      ""
-  )
-    .trim()
-    .toLowerCase();
-
-  const displayName = String(
-    craftProductType?.displayName ??
-      craftProductType?.display_name ??
-      value?.craftProductTypeDisplayName ??
-      value?.craft_product_type_display_name ??
-      ""
-  )
-    .trim()
-    .toLowerCase();
-
-  return (
-    ["material", "materials", "ingredient", "raw_material", "素材"].includes(kind) ||
-    key === "material" ||
-    key.startsWith("material_") ||
-    key.endsWith("_material") ||
-    key.includes("raw_material") ||
-    name.includes("素材") ||
-    displayName.includes("素材")
-  );
-}
-
-export function getCraftProductOutputCounts(value) {
-  if (!value) return null;
-
-  const items =
-    Array.isArray(value?.items) && value.items.length
-      ? value.items
-      : [value];
-
-  return items.length > 0 && items.every(isMaterialCraftProductType)
-    ? MATERIAL_OUTPUT_COUNTS
-    : null;
-}
-
-export function isCrystalEligibleCraftProductType(value) {
-  if (!value) return false;
-
-  const items =
-    Array.isArray(value?.items) && value.items.length
-      ? value.items.filter(Boolean)
-      : [];
-
-  // セットの場合は、構成するすべての装備が結晶対象のときだけ対象にする。
-  if (items.length) {
-    return items.every(isCrystalEligibleCraftProductType);
-  }
-
-  const craftProductType =
-    value?.craftProductType ??
-    value?.craft_product_type ??
-    value;
-
-  const kind = String(
-    craftProductType?.kind ??
-      value?.craftProductTypeKind ??
-      value?.craft_product_type_kind ??
-      ""
-  )
-    .trim()
-    .toLowerCase();
-
-  const key = String(
-    craftProductType?.key ??
-      value?.craftProductTypeKey ??
-      value?.craft_product_type_key ??
-      ""
-  )
-    .trim()
-    .toLowerCase();
-
-  const groupKind = String(
-    value?.groupKind ?? value?.group_kind ?? ""
-  )
-    .trim()
-    .toLowerCase();
-
-  const slotKey = normalizeSlotKey(
-    value?.slotKey ?? value?.slot ?? ""
-  );
-
-  return (
-    ["weapon", "armor", "shield"].includes(kind) ||
-    ["weapon_set", "armor_set", "tailoring_set", "shield_set"].includes(
-      groupKind
-    ) ||
-    key.startsWith("armor_") ||
-    key.startsWith("tailoring_") ||
-    key.startsWith("shield_") ||
-    slotKey === "weapon" ||
-    slotKey === "shield"
-  );
-}
-
-export function normalizeGreatSuccessRate(value) {
-  if (value === null || value === undefined || value === "") return null;
-
-  const rate = Number(value);
-  if (!Number.isFinite(rate) || rate <= 0 || rate > 100) return null;
-
-  return rate;
-}
-
-export function calcGreatSuccessPriceRate(
-  greatSuccessRate,
-  feeRate = 0
-) {
-  const rate = normalizeGreatSuccessRate(greatSuccessRate);
-  if (rate == null) return null;
-
-  const successProbability = rate / 100;
-  const netSaleRate = Math.max(0.01, 1 - Math.max(0, Number(feeRate) || 0));
-
-  // 大成功品の期待手取りだけで原価を回収する販売倍率。
-  // 固定の利益倍率は使わず、大成功率と販売手数料だけで逆算する。
-  return 1 / (successProbability * netSaleRate);
-}
-
-const CRYSTAL_ITEM_DISCOUNT = 10000;
-const BUYER_PROFIT_RATE = 0.2;
-const MARKET_PRICE_ROUND_UNIT = 100;
 
 function getCollator(locale = "ja") {
   return locale === "en" ? collatorEn : collatorJa;
@@ -713,147 +564,6 @@ export function buildSetsFromEquipments(rows, itemMap = new Map(), locale = "ja"
   return [...grouped, ...singles].sort((a, b) =>
     collator.compare(String(a?.name ?? ""), String(b?.name ?? ""))
   );
-}
-
-export function defaultStarPrices(setObj) {
-  return (
-    setObj?.starPrices ?? {
-      star0: 0,
-      star1: 20000,
-      star2: 70000,
-      star3: 150000,
-    }
-  );
-}
-
-function roundMarketPrice(value) {
-  const safeValue = Math.max(0, Number(value) || 0);
-  return Math.round(safeValue / MARKET_PRICE_ROUND_UNIT) * MARKET_PRICE_ROUND_UNIT;
-}
-
-function roundUnitPrice(value) {
-  const safeValue = Math.max(0, Number(value) || 0);
-  return Math.ceil(safeValue);
-}
-
-function buildCrystalValues(crystalByEquipLevel) {
-  if (!crystalByEquipLevel) return null;
-
-  return {
-    star0:
-      Math.max(0, Number(crystalByEquipLevel.plus0) || 0) *
-      CRYSTAL_UNIT_PRICE,
-    star1:
-      Math.max(0, Number(crystalByEquipLevel.plus1) || 0) *
-      CRYSTAL_UNIT_PRICE,
-    star2:
-      Math.max(0, Number(crystalByEquipLevel.plus2) || 0) *
-      CRYSTAL_UNIT_PRICE,
-    star3:
-      Math.max(0, Number(crystalByEquipLevel.plus3) || 0) *
-      CRYSTAL_UNIT_PRICE,
-  };
-}
-
-export function isCrystalEquipment({
-  costPerItem,
-  crystalByEquipLevel,
-  craftProductType = null,
-}) {
-  // 結晶装備として扱うのは、武器・防具・盾だけ。
-  if (!isCrystalEligibleCraftProductType(craftProductType)) {
-    return false;
-  }
-
-  const crystalValues = buildCrystalValues(crystalByEquipLevel);
-  if (!crystalValues) return false;
-
-  const cost = Math.max(0, Number(costPerItem) || 0);
-
-  // 原価が★3で取れる結晶価値以下なら結晶装備。
-  return cost <= crystalValues.star3;
-}
-
-export function calcRecommendedStarPrices({
-  costPerItem,
-  crystalByEquipLevel,
-  craftProductType = null,
-  outputCounts = null,
-  greatSuccessRate,
-  feeRate = 0,
-}) {
-  const cost = Math.max(0, Number(costPerItem) || 0);
-  const crystalEligible =
-    isCrystalEligibleCraftProductType(craftProductType);
-  const crystalValues = crystalEligible
-    ? buildCrystalValues(crystalByEquipLevel)
-    : null;
-  const greatSuccessPriceRate = calcGreatSuccessPriceRate(
-    greatSuccessRate,
-    feeRate
-  );
-
-  if (outputCounts) {
-    if (greatSuccessPriceRate == null) return null;
-    // 「素材」タイプだけ、品質によって完成個数が変わる。
-    // 大成功時の完成個数と大成功率から、期待手取りが
-    // 1回の作成原価と等しくなる1個あたりの単価を逆算する。
-    const greatSuccessCount = Math.max(
-      1,
-      Number(outputCounts.star3) || 1
-    );
-    const unitPrice = roundUnitPrice(
-      (cost * greatSuccessPriceRate) / greatSuccessCount
-    );
-
-    // 売られるアイテムは同じなので、結果にかかわらず単価は共通。
-    // 損益計算時に完成個数を掛けて総売上へ戻す。
-    return {
-      star0: unitPrice,
-      star1: unitPrice,
-      star2: unitPrice,
-      star3: unitPrice,
-      unitPrice,
-    };
-  }
-
-  const crystalEquipment = isCrystalEquipment({
-    costPerItem: cost,
-    crystalByEquipLevel,
-    craftProductType,
-  });
-
-  if (crystalEquipment) {
-    // 結晶装備だけ、購入者が20%利益を取れる価格にする。
-    const buyerPriceRate = 1 + BUYER_PROFIT_RATE;
-
-    return {
-      star0: roundMarketPrice(crystalValues.star0 / buyerPriceRate),
-      star1: roundMarketPrice(crystalValues.star1 / buyerPriceRate),
-      star2: roundMarketPrice(crystalValues.star2 / buyerPriceRate),
-      star3: roundMarketPrice(crystalValues.star3 / buyerPriceRate),
-    };
-  }
-
-  // 通常商材は大成功率がなければ販売目安を決められない。
-  if (greatSuccessPriceRate == null) return null;
-
-  if (!crystalValues) {
-    return {
-      star0: roundMarketPrice(cost * STANDARD_STAR0_PRICE_RATE),
-      star1: roundMarketPrice(cost * STANDARD_STAR1_PRICE_RATE),
-      star2: roundMarketPrice(cost * STANDARD_STAR2_PRICE_RATE),
-      star3: roundMarketPrice(cost * greatSuccessPriceRate),
-    };
-  }
-
-  // 結晶対象の武器・防具・盾だが、結晶装備価格に当てはまらない場合。
-  return {
-    star0: roundMarketPrice(crystalValues.star0 - CRYSTAL_ITEM_DISCOUNT),
-    star1: roundMarketPrice(crystalValues.star1 - CRYSTAL_ITEM_DISCOUNT),
-    star2: roundMarketPrice(crystalValues.star2 - CRYSTAL_ITEM_DISCOUNT),
-    star3: roundMarketPrice(cost * greatSuccessPriceRate),
-  };
 }
 
 export function normalizeSlots(items) {

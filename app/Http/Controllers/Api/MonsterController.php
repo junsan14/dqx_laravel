@@ -536,6 +536,7 @@ if ($searchType === 'equipment') {
                     ->where('monster_drops.drop_target_type', '=', 'equipment');
             })
             ->leftJoin('equipment_types', 'equipment_types.id', '=', 'equipments.equipment_type_id')
+            ->leftJoin('craft_product_types', 'craft_product_types.id', '=', 'equipments.craft_product_type_id')
             ->leftJoin('accessories', function ($join) {
                 $join->on('accessories.id', '=', 'monster_drops.drop_target_id')
                     ->where('monster_drops.drop_target_type', '=', 'accessory');
@@ -576,7 +577,7 @@ if ($searchType === 'equipment') {
                 'equipments.item_name as equipment_name',
                 'equipments.item_name_kana as equipment_name_kana',
                 'equipments.item_name_en as equipment_name_en',
-                'equipments.slot as equipment_slot',
+                DB::raw("COALESCE(craft_product_types.display_name, craft_product_types.name, equipment_types.name) as equipment_slot"),
                 'equipment_types.name as equipment_type_name',
 
                 'accessories.name as accessory_name',
